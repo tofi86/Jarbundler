@@ -1,31 +1,43 @@
 Mac OS X Jar Bundler Ant Task
 -----------------------------
+Will Gilbert <gilbert@informagen.com>
+Version 1.5
+February 2006
+
+See <http://informagen.com/jarbundler/> for more information.
+
+=========================================================================================
+Based on the previous work of:
 Seth Morabito <sethm@loomcom.com>
 Version 1.4
 November 13, 2004
 
 See <http://www.loomcom.com/jarbundler/index.html> for more information.
+=========================================================================================
 
+
+Summary
+-------
 This is an ant task which will generate a Mac OS X Application Bundle if
 provided a set of jars and a main class to launch.
 
-Although it should still be considered beta quality software, and has
-not received as much testing as I would like, as of the 1.0 release the
-jarbundler task is probably ready for more widespread use, and is
-extremely flexible and functional.  As always, if you find any bugs or
-make any enhancements please let me know so that I can add your work to
-the next release.
 
-Use
----
+Installation
+------------
+Put the file "jarbundler-1.5.jar" from the "bin" directory into 
+the "/Developer/Java/Ant/lib" directory.  Authenticating as necessary.
 
-In your ant build.xml file, add a task definition like this:
+Windows and UNIX installations add the your ANT lib directory.
+
+
+Usage
+-----
+
+In your ANT build.xml file, add a task definition like this:
 
   <taskdef name="jarbundler" 
-           classpath="${lib}/jarbundler-0.2.jar"
-           classname="com.loomcom.ant.tasks.jarbundler.JarBundler" />
+           classname="com.informagen.ant.tasks.jarbundler.JarBundler" />
 
-(where ${lib} is wherever you've put the jarbundler-0.2 jar file)
 
 Now, from any target you can call the "jarbundler" task.
 
@@ -40,71 +52,77 @@ the directory "release".
 If you prefer, you can use nested FileSets or FileLists in place of the
 "jars" and "execs" attributes.  For example,
 
-  <jarbundler dir="release" name="MyApp 1.0" mainclass="org.foo.myapp.Main"> 
+  <jarbundler dir="release" name="MyApp 1.0" mainclass="org.foo.myapp.Main">
+  
     <jarfileset dir="${bin}>
       <include name="**/*.jar" />
       <exclude name="Test.jar" />
     <jarfileset>
+    
     <jarfileset dir="${lib}>
       <include name="foo.jar" />
       <include name="bar.jar" />
     <jarfileset>
+    
     <execfilelist dir="${extra}" files="FooExec, bar.sh"/>
+    
   </jarbundler>
 
 
 A longer example with all the optional goodies might look like this:
 
-  <jarbundler dir="release"
-              verbose="true"
-              name="MyApp 1.0"
-              mainclass="org.foo.myapp.Main" 
-              icon="${resources}/myapp.icns"
-              version="1.0"
-              infostring="MyApp 1.0, (c) 2003"
-              aboutmenuname="MyApp"
-              jvmversion="1.3+"
-	      bundleid="org.foo.myapp.MyAppBundle"
-	      developmentregion="French"
-	      signature="MYAP"
-	      type="TEST"
-              vmoptions="-Xmx500m"
-	      chmod="/usr/local/bin/chmod"
-              smalltabs="true"
-              antialiasedgraphics="true"
-              antialiasedtext="true"
-              liveresize="true"
-              growboxintrudes="false"
-              stubfile="/Alternate/Path/To/JavaStubFile"
-              screenmenu="true">
-    <jarfileset dir="${lib}">
-      <exclude name="**/CVS" />
-      <include name="**/*.jar" />
-    </jarfileset>
-    <execfileset dir="${exec}">
-      <exclude name="**/CVS" />
-      <include name="**/*.sh" />
-    </execfileset>
-    <!-- these files will NOT be copied into the bundle. -->
-    <extraclasspathfileset dir="/System/Library/Frameworks/JavaFoundation.framework/Resources/Java">
-      <include name="*.jar" />
-    </extraclasspathfileset>
-  </jarbundler>
+      <jarbundler dir="release"
+                  name="Sequence Analysis"
+                  mainclass="com.informagen.sa.SequenceAnalysis"
+                  icon="${MacResources}/SA.icns"
+                  version="${version}"
+                  infostring="${version}, Informagen, Inc."
+                  bundleid="com.informagen.SA"
+                  signature="_SA_"
+                  jvmversion="1.4+"
+                  vmoptions="-Xms512m -Xmx1024m">
+                  
+          <!-- Native Environment Integration -->
+          <javaproperty name="apple.laf.useScreenMenuBar"         value="true"/>
+          <javaproperty name="apple.awt.brushMetalLook"           value="false"/>
+          <javaproperty name="apple.awt.brushMetalRounded"        value="false"/>
+          <javaproperty name="apple.awt.fileDialogForDirectories" value="false"/>
+          <javaproperty name="apple.awt.antialiasing"             value="false"/>
+          <javaproperty name="apple.awt.showGrowBox"              value="true"/>
 
-This will set the various Mac OS X native look-and-feel bells and whistles,
-copy in the appropriate Icon resource, and specify that the application
-requires JVM version 1.3 or higher.
+          <!-- Rendering Hints -->
+          <javaproperty name="apple.awt.textantialiasing"         value="false"/>
+          
+           <!-- Specify the SAX parser -->
+          <javaproperty name="org.xml.sax.driver" value="org.apache.xerces.parsers.SAXParser"/>
 
-To Do
------
-
-- A number of Java runtime system properties are deprecated or changed
-  under Mac OS X Java 1.4.1.  Although some of these were updated with
-  version 0.5, not all were.  More will need to be done to handle this
-  more cleanly.  This is scheduled for a future version.
+       
+          <jarfileset file="${SA.jar}"/>
+          <jarfileset file="${SA-rsrc.jar}"/>
+          
+          <jarfileset dir="${lib}">
+            <include name="**/*.jar" />
+          </jarfileset>
+          
+          
+        </jarbundler>
 
 Changes
 -------
+
+February 2006 (version 1.5)
+
+  Changed the package from 'com.loomcom.ant.tasks.jarbundler' to
+  'com.informagen.ant.tasks.jarbundler' so that version 1.4 can remain installed
+
+  Added a nested DataType called "javaproperty" so that new properties can be added
+  by end users and deprecated properties can be removed.  Former jarbundler
+  tag atributes are still available but have been deprecated in favor of their
+  'javaproperty' equivalents.
+  
+  Currently, a jarbundler tag attribute overrides a javaproperty tag.  This was
+  done to maintain backward compatibility with version 1.4
+
 
 13 November 2004 (version 1.4):
 
@@ -159,6 +177,7 @@ Changes
 
 License
 -------
+Potions Copyright (c) 2006, William Gilbert <gilbert@informagen.com> All rights reserved.
 
 Copyright (c) 2003, Seth J. Morabito <sethm@loomcom.com> All rights reserved.
 

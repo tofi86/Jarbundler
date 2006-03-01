@@ -1,0 +1,587 @@
+<html>
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="Content-Language" content="en-us" />
+
+<style>
+h1 {text-align:center;}
+h2 {margin-top:2em;}
+h3.datatype {margin-top:2em; margin-bottom:0.5em; font-family:monospace;}
+tt {font-family:monospace;}
+pre {margin-bottom:3em;}
+.notes {vertical-align:middle; text-align:center;}
+.description {vertical-align:top; text-align:left;}
+.attribute {vertical-align:middle; text-align:left; font-family:monospace;}
+</style>
+		
+<title>Mac OS X JarBundler ANT Task</title>
+		
+<meta name="ROBOTS" content="ALL" />
+</head>
+<body style="margin:1.5em; margin-right:3em;">
+
+
+<h1>JarBundler Ant Task</h1>
+<h1>Version 1.5</h1>
+
+<p>How many times has this happened to you?  You've written a little
+Java utility, or maybe even a more complex application, and you want to
+create Mac OS X application bundle for easy distribution.
+
+<p>You'd like to be able to do it automatically from your build process,
+but you're forced to go run the Apple Jar Bundler and tweak all the
+settings manually every time you build.</p>
+
+<p>Well no more!  JarBundler is a feature-rich ant task which will
+create a Mac OS X application bundle from a list of Jar files and a
+main class name.  You can add an Icon resource, set various Mac OS X
+native look-and-feel bells and whistles, and maintain your application
+bundles as part of your normal build and release cycle.  It is free
+software licensed under the GNU General Public License.</p>
+
+<p>This release is based on the earlier work of Seth Morabito's JarBundler 1.4 found
+at <a href="http://loomcom.com/jarbundler/">http://loomcom.com/jarbundler/</a>
+
+<h2>What's New</h2>
+Added the <tt>javaproperty</tt> DataType element allowing developers to specify java properties
+as nested elements rather than relying on predefined jarbundler tag attributes.  Any number of
+<tt>javaproperties</tt> may be specified.
+
+
+
+<h2>Download</h2>
+
+<div style="margin-left:5em;">
+<table cellpadding="6" border="0" cellspacing="0">
+<tr><td>Source and binary, all platforms (ZIP):</td>
+<td><a href="dist/jarbundler-1.5.zip">jarbundler-1.5.zip</a></td></tr>
+<tr><td>Source and binary, all platforms (TAR):</td>
+<td><a href="dist/jarbundler-1.5.tar.gz">jarbundler-1.5.tar.gz</a></td></tr>
+</table>
+</div>
+
+
+
+<h2>Installation</h2>
+
+<p>Put the file <tt>jarbundler-1.5.jar</tt> into <tt>/Developer/Java/Ant/lib</tt> or 
+into your local ANT lib directory.
+
+
+
+<h2>Running</h2>
+
+<p>To use the Jar Bundler Ant Task, create a task definition in your
+ANT <tt>build.xml</tt> file like this:</p>
+
+<pre>
+&lt;taskdef name="jarbundler" 
+         classname="com.informagen.ant.tasks.jarbundler.JarBundler" /&gt;
+</pre>
+
+
+
+<p>Now, from any target, you can call the "jarbundler" task.</p>
+
+<pre>
+  &lt;jarbundler dir="release"
+              name="MyApp 1.0"
+              mainclass="org.foo.myapp.Main" 
+              jars="myapp.jar, foo.jar, bar.jar" /&gt;
+</pre>
+
+
+
+<h2>Task Attributes</h2>
+<div align="center">
+<table border="1" cellpadding="4" cellspacing="0" width="90%" style="font-size: 10pt;">
+
+  <tr>
+    <td class="attribute"><b>Attribute</b></td>
+    <td class="description"><b>Description</b></td>
+    <td class="notes"><b>Notes</b></td>
+  </tr>
+
+  <tr>
+    <td class="attribute">dir</td>
+    <td class="description">The directory in which your application bundle 
+        will be created.</td>
+    <td class="notes"><strong>Required</strong></td>
+  </tr>
+
+  <tr>
+    <td class="attribute">jars</td>
+    <td class="description">A list of jar files or patternsets (space- or comma-seperated) to bundle
+        into your application.</td>
+    <td class="notes"><strong>Required</strong><div style="text-align:left; font-size:small;">Unless
+        there are nested jarfileset or jarfilelist elements</div></td>
+  </tr>
+
+  <tr>
+    <td class="attribute">mainclass</td>
+    <td class="description">The name of the main class to run when the application
+        bundle is launched.</td>
+    <td class="notes"><strong>Required</strong></td>
+  </tr>
+
+  <tr>
+    <td class="attribute">name</td>
+    <td class="description">The name of your application bundle (minus the ".app"
+        extension).</td>
+    <td class="notes"><strong>Required</strong></td>
+  </tr>
+
+  <tr>
+    <td class="attribute">aboutmenuname</td>
+    <td class="description">The string to display in the "About" menu of the
+        running application.</td>
+    <td class="notes"></td>
+  </tr>
+
+  <tr>
+    <td class="attribute">arguments</td>
+    <td class="description">Extra command-line arguments for the Java application.</td>
+    <td class="notes"></td>
+  </tr>
+
+  <tr>
+    <td class="attribute">antialiasedgraphics</td>
+    <td class="description">If set to true, use anti-aliasing when rendering graphics.</td>
+    <td class="notes"><em>Deprecated</em></td>
+  </tr>
+
+  <tr>
+    <td class="attribute">antialiasedtext</td>
+    <td class="description">If set to true, use anti-aliasing when rendering text.</td>
+    <td class="notes"><em>Deprecated</em></td>
+  </tr>
+
+  <tr>
+    <td class="attribute">bundleid</td>
+    <td class="description">The unique ID of this bundle, usually in the form
+        of a Java package name (i.e., "org.foo.bar.MyBundle")</td>
+    <td class="notes">No default</td>
+  </tr>
+
+  <tr>
+    <td class="attribute">chmod</td>
+    <td class="description">The full path to the BSD 'chmod' command.  (You do not normally have to worry
+        about changing this)</td>
+    <td class="notes"></td>
+  </tr>
+
+  <tr>
+    <td class="attribute">developmentregion</td>
+    <td class="description">The development region of the bundle. </td>
+    <td class="notes">Default: English</td>
+  </tr>
+
+  <tr>
+    <td class="attribute">execs</td>
+    <td class="description">A list of files or patternsets (space- or comma-seperated) to
+        place into the "Resources/MacOS" directory and set executable.</td>
+    <td class="notes"></td>
+  </tr>
+
+  <tr>
+    <td class="attribute">extraclasspath</td>
+    <td class="description">A list of files or patternsets (space- or comma-seperated) to
+        add to the bundle's classpath.  The files referenced by this property will
+        <i>not</i> be copied into the bundle, so the resulting .app may only work
+        on systems that have these external resources available.
+    <td class="notes"></td>
+  </tr>
+
+  <tr>
+    <td class="attribute">growbox</td>
+    <td class="description">Show the Aqua resize (grow) box.  <i>(Ignored
+        under JVM 1.3.1 and lower)</i></td>
+    <td class="notes"><em>Deprecated</em></td>
+  </tr>
+
+  <tr>
+    <td class="attribute">growboxintrudes</td>
+    <td class="description">Resizable window's growbox (resize control) intrudes
+       into AWT content. If turned off, the bottom of the window is 
+       pushed down 15 pixels. <i>(Deprecated under JVM 1.4.1)</i></td>
+    <td class="notes"><em>Deprecated</em></td>
+  </tr>
+
+  <tr>
+    <td class="attribute">infostring</td>
+    <td class="description">Version string displayed by a "Get Info" or "More Info"</td>
+    <td class="notes"></td>
+  </tr>
+
+
+  <tr>
+    <td class="attribute">jvmversion</td>
+    <td class="description">The version of the JVM required to run the application.
+        Typically a string in the form "1.3", "1.3+", "1.4", "1.4+", etc.
+        <div style="margin-top:1em;">ADC:&nbsp;
+        <a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaDictionaryInfo.plistKeys.html#//apple_ref/doc/uid/TP40001969-DontLinkElementID_3">
+        Specifing the Java Version
+        </a>
+        </div>
+        <div>ADC:&nbsp;
+        <a href="http://developer.apple.com/ReleaseNotes/Java/Java50RN/1_NewFeatures/chapter_2_section_4.html#//apple_ref/doc/uid/TP40001881-202-BCIBFCJB">
+        Specifing the Java Version after installing J2SE 5.0
+        </a>
+        </div>
+        
+        </td>
+    <td class="notes">Default: "1.3+"</td>
+  </tr>
+
+  <tr>
+    <td class="attribute">liveresize</td>
+    <td class="description">If set to true, enable live-resizing of windows.
+        <i>(Deprecated under JVM 1.4.1)</i></td>
+    <td class="notes"><em>Deprecated</em></td>
+  </tr>
+
+  <tr>
+    <td class="attribute">screenmenu</td>
+    <td class="description">If set to true, puts Swing menus 
+       in the Mac OS X menu bar if using the Aqua look and feel.</td>
+    <td class="notes"><em>Deprecated</em></td>
+  </tr>
+
+  <tr>
+    <td class="attribute">shortinfostring</td>
+    <td class="description">Version string displayed in Finder's Get Info</td>
+    <td class="notes">Default: value of "version"</td>
+  </tr>
+
+
+  <tr>
+    <td class="attribute">signature</td>
+    <td class="description">The Mac OS signature of the bundle</td>
+    <td class="notes">Default:<br />"????"</td>
+  </tr>
+
+  <tr>
+    <td class="attribute">smalltabs</td>
+    <td class="description">If set to true, tab controls in Swing applications more 
+        closely resemble the Metal look and feel. If set to false, the tabs 
+        assume a larger size more similar to the default Aqua controls.
+        <i>(Deprecated under JVM 1.4.1)</i></td>
+    <td class="notes"><em>Deprecated</em></td>
+  </tr>
+
+  <tr>
+    <td class="attribute">stubfile</td>
+    <td class="description">If set, the location of the Mac OS X Java Application Stub file
+        to use for this app bundle. See the section "<em>Specifying the Java Launching 
+        Stub File</em>" below.</td>
+    <td class="notes"><strong>Required</strong><div style="text-align:left; font-size:small;">for 
+    Windows or Linux</div></td>
+  </tr>
+
+  <tr>
+    <td class="attribute">type</td>
+    <td class="description">The Mac OS type of the bundle</td>
+    <td class="notes">Default:<br />"APPL"</td>
+  </tr>
+
+  <tr>
+    <td class="attribute">verbose</td>
+    <td class="description">If true, output more verbose information to Ant while the task is
+        running.</td>
+    <td class="notes">Default: "false"</td>
+  </tr>
+
+  <tr>
+    <td class="attribute">version</td>
+    <td class="description">Version number displayed in Finder</td>
+    <td class="notes">Default: 1.0</td>
+  </tr>
+
+  <tr>
+    <td class="attribute">vmoptions</td>
+    <td class="description">Command line options to pass the JVM at startup.</td>
+    <td class="notes"></td>
+  </tr>
+
+  <tr>
+    <td class="attribute">workingdirectory</td>
+    <td class="description">The working directory for the Java application.</td>
+    <td class="notes"></td>
+  </tr>
+
+</table>
+</div>
+
+<h2>Nested DataTypes</h2>
+
+<h3 class="datatype">jarfileset</h3>
+<p>The nested <tt>jarfileset</tt> element specifies a FileSet. All
+files included in this fileset will be included in the application
+bundle and added to the app bundle classpath.  Only required if the
+<tt>jars</tt> attribute is not set.</p>
+
+<h3 class="datatype">jarfilelist</h3>
+<p>The nested <tt>jarfilelist</tt> element specifies a FileList. All
+files included in this filelist will be included in the application
+bundle and added to the app bundle classpath.  Only required if the
+<tt>jars</tt> attribute is not set.</p>
+
+<h3 class="datatype">javaproperty</h3>
+<p>New with release 1.5.  This ANT DataType element allows developers to specify java properties
+for the info.plist.  This DataType deprecates many jarbundler tag attributes. However, if
+a deprecated attribute is used it will take precedent over a javaproperty.  This was done
+to maintain backward compatibility with earlier versions of jarbundler.
+
+<p>ADC:&nbsp;
+<a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaSystemProperties.html">
+Apple Java Properties for JDK 1.4+</a>
+
+<h3 class="datatype">execfileset</h3>
+<p>The nested <tt>execfileset</tt> element specifies a FileSet.  All
+files included in this fileset will be added to the application
+bundle's "Resources/MacOS" directory and set executable.  Optional.</p>
+
+<h3 class="datatype">execfilelist</h3>
+<p>The nested <tt>execfilelist</tt> element specifies a FileList.  All
+files included in this filelist will be added to the application
+bundle's "Resources/MacOS" directory and set executable.  Optional.</p>
+
+<h3 class="datatype">extraclasspathfileset</h3>
+<p>The nested <tt>extraclasspathfileset</tt> element specifies
+a FileSet.  All files included in this fileset will be added to the
+application bundle's classpath, but the files <b>will not</b> be
+copied into the bundle itself.  This allows you to specify external
+system classpath dependencies without bundling the resources.  Resources
+can be files or directories. Optional.</p>
+
+<h3 class="datatype">extraclasspathfilelist</h3>
+<p>The nested <tt>extraclasspathfilelist</tt> element specifies
+a FileList.  All files included in this filelist will be added to the
+application bundle's classpath, but the files <b>will not</b> be
+copied into the bundle itself.  This allows you to specify external
+system classpath dependencies without bundling the resources.  Resources
+can be files or directories. Optional.</p>
+
+
+<h2>Examples</h2>
+
+<p>A minimal example might look like this</p>
+
+<pre>
+        &lt;jarbundler dir="release"
+                    name="MyApp 1.0"
+                    mainclass="org.foo.myapp.Main"
+                    jars="${bin}/myapp.jar" /&gt;
+</pre>
+
+<p>This will create a Mac OS X application bundle called "MyApp 1.0.app" in
+the directory "release".</p>
+
+<p>You can use FileSets or FileLists instead of the <tt>jars</tt> and <tt>execs</tt>
+attributes, for more complex builds.  For example:</p>
+
+<pre>
+        &lt;jarbundler dir="release"
+                    name="MyApp 1.0"
+                    mainclass="org.foo.myapp.Main" &gt;
+
+          &lt;jarfileset dir="${bin}"&gt;
+            &lt;include name="**/*.jar" /&gt;
+            &lt;exclude name="**/CVS" /&gt;
+          &lt;/jarfileset&gt;
+
+        &lt;/jarbundler&gt;
+</pre>
+
+
+<p>A longer example with all the optional goodies will set the various Mac OS X native look-and-feel bells and whistles,
+copy in the appropriate Icon resource, and specify that the application
+requires JVM version 1.4 or the highest JVM available.</p>
+
+
+<pre>
+
+   &lt;target name="mac" depends="jar, rsrc" description="Build Mac OS X application"&gt;
+
+      &lt;delete dir="${release}/${name}.app"/&gt;
+
+      &lt;taskdef name="jarbundler" classname="com.informagen.ant.tasks.jarbundler.JarBundler" /&gt;
+
+      &lt;jarbundler dir="${release}"
+                  name="${name}"
+                  mainclass="com.informagen.sa.SequenceAnalysis"
+                  icon="Mac OS X/SA.icns"
+                  version="${version}"
+                  infostring="${version}, Informagen, Inc."
+                  bundleid="com.informagen.SA"
+                  signature="_SA_"
+                  jvmversion="1.4+"
+                  vmoptions="-Xms512m -Xmx1024m"&gt;
+                  
+          &lt;!-- Native Environment Integration --&gt;
+          &lt;javaproperty name="apple.laf.useScreenMenuBar"         value="true"/&gt;
+          &lt;javaproperty name="apple.awt.brushMetalLook"           value="false"/&gt;
+          &lt;javaproperty name="apple.awt.brushMetalRounded"        value="false"/&gt;
+          &lt;javaproperty name="apple.awt.fileDialogForDirectories" value="false"/&gt;
+          &lt;javaproperty name="apple.awt.antialiasing"             value="false"/&gt;
+          &lt;javaproperty name="apple.awt.showGrowBox"              value="true"/&gt;
+
+          &lt;!-- Rendering Hints --&gt;
+          &lt;javaproperty name="apple.awt.textantialiasing"         value="false"/&gt;
+          
+          &lt;!-- Specify the SAX parser --&gt;
+          &lt;javaproperty name="org.xml.sax.driver" 
+                        value="org.apache.xerces.parsers.SAXParser"/&gt;
+
+       
+          &lt;!-- Specify the JAR files --&gt;
+          &lt;jarfileset file="${SA.jar}"/&gt;
+          &lt;jarfileset file="${SA-rsrc.jar}"/&gt;
+          
+          &lt;jarfileset dir="${lib}"&gt;
+            &lt;include name="**/*.jar" /&gt;
+          &lt;/jarfileset&gt;
+          
+        &lt;/jarbundler&gt;
+
+
+   &lt;/target&gt;
+
+</pre>
+
+<h2>Specifying the Java Launching Stub File</h2>
+
+<p>The stub file "<tt>JavaApplicationStub</tt>" is located inside of your application bundle in the 
+subdirectory "<tt>Contents/MacOS/</tt>".  It is used by the Mac OS X system to launch and the read the
+applications plist and launch the Java VM with the appropriate properties.  
+
+<p>In early 2006 an Apple upgrade to Quicktime (7.0.4) caused 
+older versions of "<tt>JavaApplicationStub</tt>" to fail to start up.  These old versions came from developers 
+who first created the application bundle as directory and then released their applications by 
+replacing the JAR files within the bundle and not replacing "<tt>JavaApplicationStub</tt>" with a more current
+copy.
+
+<p>When run on OS X system, the JarBundler ANT task uses the current copy of the "<tt>JavaApplicationStub</tt>"
+from the developer's disk.  If run under Windows or Linux a copy of this file must be obtained from a Mac OS X
+system and its location specified using the <tt>stubfile</tt> attribute.
+
+<p>Both of these methods may lead to a situation where the "<tt>JavaApplicationStub</tt>" file
+could become obsolete with a future OS X update.  Under Mac OS X and untested under Linux one
+could replace the "<tt>JavaApplicationStub</tt>" file with a symbolic link.  This should guarentee that
+the end user would always be using a current copy of the stub file.  I have used this technique on
+several versions of OS X and have not have had any reported problems with its use.
+
+<p>This is not yet an option of the JarBundler task but can be accomplished with the following lines
+of ANT code after building the bundle.
+
+
+
+<pre>
+         .
+         .
+         .
+        &lt;/jarbundler&gt;
+        
+        &lt;!-- Delete my JavaApplicationStub and replace it with a symbolic link --&gt;
+        &lt;!--   which should work on older and future versions of OS X          --&gt;
+       
+        &lt;delete file="${release}/${name}.app/Contents/MacOS/JavaApplicationStub"/&gt;
+        &lt;exec executable="ln"&gt;
+          &lt;arg line="-s /System/Library/Frameworks/JavaVM.framework/Resources/MacOS/JavaApplicationStub"/&gt;
+          &lt;arg value="${release}/${name}.app/Contents/MacOS/JavaApplicationStub"/&gt;
+        &lt;/exec&gt;
+
+   &lt;/target&gt;
+       
+</pre>
+
+
+<h2>Changes</h2>
+
+<h3>February 2006 (version 1.5)</h3>
+
+<p>Changed the package from 'com.loomcom.ant.tasks.jarbundler' to
+  'com.informagen.ant.tasks.jarbundler' so that version 1.4 can remain installed without 
+  conflict
+
+<p>Added a nested DataType called "javaproperty" so that new properties can be added
+  by end users and deprecated properties can be removed.  Former jarbundler
+  tag atributes are still available but have been deprecated in favor of their
+  'javaproperty' equivalents.
+  
+<p>Currently, a jarbundler tag attribute overrides a javaproperty tag.  This was
+  done to maintain backward compatibility with version 1.4
+
+
+<h3>13 November 2004 (version 1.4):</h3>
+ <p>  Fixed a bug that was causing application arguments not to be set.</p>
+
+<h3>23 October 2004 (version 1.3):</h3>
+ <p>  Added "extraclasspath" attribute, and "extraclasspathfileset" and
+   "extraclasspathfilelist" nested elements, allowing users to
+   optionally add external resources to the runtime classpath which will
+   not be copied into the application bundle at build time.  Removed
+   some Java 1.4 requirements to allow building the sources under Java
+   1.3. Clarified the documentation.</p>
+
+<h3>26 July 2004 (version 1.2):</h3>
+ <p>  Added Ant property setters for "bundleid" and "developmentregion".
+   Bundleid has no default, and is optional.  Developmentregion defaults
+   to "English", and is also optional.  Fixed documentation on the
+   website.</p>
+
+<h3>26 July 2004 (version 1.1):</h3>
+ <p>  Fixed several minor bugs, and improved BuildException messages.
+   Jarfilesets and execfilesets now preserve directory structure
+   when copying.  Thanks to Trevor Harmon for pointing out bugs and
+   enhancements.</p>
+
+
+<h3>25 July 2004 (version 1.0):</h3>
+<p>   "execs" and "jars" can now be set using embedded FileSets or
+   FileLists.  Added a "verbose" flag, which currently sees limited use.
+   Added "chmod" attribute, which can be used to point to a non-standard
+   'chmod' command (not normally needed!)  Increased error checking.
+   Hopefully, the code is now robust enough for widespread production
+   use!</p>
+   
+<h3>28 Dec 2003 (version 0.5):</h3>
+   Added setter for "execs" attribute.  Added setter for "workingdirectory"
+   attribute.  Fixed missing setter for "arguments" attribute.  Added
+   alternate Java runtime parameter names for Mac OS X Java VM version
+   1.4.1.  Included change submitted by Pierre-Luc Paour.
+   Thanks also to Dante Briones and Graham Perks
+   for pointing out bugs and enhancements.</p>
+
+<h3>12 October 2003 (Version 0.2:)</h3>
+<p>Added setter to properly support the "vmoptions" parameter.
+(Change submitted by Alok Saldanha)</p>
+
+<h2>Contact</h2>
+
+<p>Please contact me if you have bugs to report, patches to the code,
+ideas for enhancements, or any other suggestions!  I can be reached
+at <a href="mailto:gilbert@informagen.com">gilbert@informagen.com</a></p>
+
+
+<h2>License</h2>
+
+<p>The Jar Bundler Ant Task is Copyright &copy; 2002 - 2004, Seth J. Morabito. All rights reserved.
+
+<p>This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.</p>
+
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See 
+<a href="http://www.gnu.org/licenses/gpl.html">the
+GNU General Public License</a> for more details.</p>
+
+<p>You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.</p>
+
+</body>
+</html>
