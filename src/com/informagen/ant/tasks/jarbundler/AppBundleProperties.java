@@ -32,11 +32,20 @@ import java.lang.String;
 public class AppBundleProperties {
 
     // Required
-    private String mCFBundleName;
+    private String mApplicationName;
     private String mMainClass;
+    
+    // Application short name
+    private String mCFBundleName = null;
 
-    // Required keys, with defaults
-    private String mCFBundleVersion = "1.0";
+    // Finder version, with default
+    private String mCFBundleShortVersionString = "1.0";
+    
+    // Get Info string, optional
+    private String mCFBundleGetInfoString = null;
+    
+    // Build number, optional
+    private String mCFBundleVersion = null;
 
     // Explicit default: false
     private boolean mCFBundleAllowMixedLocalizations = false;
@@ -48,7 +57,7 @@ public class AppBundleProperties {
     private String mCFBundleDevelopmentRegion = "English";
 
     // Explicit default: APPL
-    private String mCFBundlePackageType = "APPL";
+    private final String mCFBundlePackageType = "APPL";
 
     // Explicit default: ????
     private String mCFBundleSignature = "????";
@@ -57,30 +66,80 @@ public class AppBundleProperties {
     private String mJVMVersion = "1.3+";
 
     // Explicit default: 6.0
-    private String mCFBundleInfoDictionaryVersion = "6.0";
+    private final String mCFBundleInfoDictionaryVersion = "6.0";
 
     // Optional keys, with no defaults.
-    private String mCFBundleIconFile;
-    private String mCFBundleGetInfoString;
-    private String mCFBundleShortVersionString = null;
-    private String mCFBundleIdentifier;
-    private String mVMOptions;// Java VM options
-    private String mWorkingDirectory;// Java Working Dir
-    private String mArguments;// Java command line arguments
+
+    private String mCFBundleIconFile = null;
+    private String mCFBundleIdentifier = null;
+    private String mVMOptions = null;           // Java VM options
+    private String mWorkingDirectory = null;    // Java Working Dir
+    private String mArguments = null;           // Java command line arguments
 
     // Class path and extra class path elements
     private List mClassPath = new ArrayList();
     private List mExtraClassPath = new ArrayList();
 
-    // User-defined Java properties
-    private Hashtable mJavaProperties;
+    // Java properties
+    private Hashtable mJavaProperties = null;
 
-    // Property Getters and Setters
-    public void setCFBundleName(String s) {
-        mCFBundleName = s;
+    //================================================================================
+    
+    /**
+     * Add a Java runtime property to the properties hashtable.
+     */
+    
+    public void addJavaProperty(String prop, String val) {
+
+        if (mJavaProperties == null)
+            mJavaProperties = new Hashtable();
+
+        mJavaProperties.put(prop, val);
+    }
+ 
+    
+    public Hashtable getJavaProperties() {
+        return mJavaProperties;
     }
 
+    public void addToClassPath(String s) {
+        mClassPath.add("$JAVAROOT/" + s);
+    }
+
+    public void addToExtraClassPath(String s) {
+        mExtraClassPath.add(s);
+    }
+
+    public List getExtraClassPath() {
+        return mExtraClassPath;
+    }
+    //================================================================================
+    
+    public void setApplicationName(String s) {
+        mApplicationName = s;
+    }
+
+    public String getApplicationName() {
+        return mApplicationName;
+    } 
+  
+    //================================================================================
+    //
+    // Bundle setters and getters
+    //
+ 
+    public void setCFBundleName(String s) {
+        
+        if (s.length() > 16)
+            System.err.println("WARNING: 'shortname' is recommeded to be no more than 16 " +
+                               "charaters long. See usage notes.");
+        mCFBundleName = s;
+    }
+    
     public String getCFBundleName() {
+        if (mCFBundleName == null)
+            return getApplicationName();
+        
         return mCFBundleName;
     }
 
@@ -93,7 +152,7 @@ public class AppBundleProperties {
     }
 
     public void setCFBundleInfoDictionaryVersion(String s) {
-        mCFBundleInfoDictionaryVersion = s;
+        //mCFBundleInfoDictionaryVersion = s;
     }
 
     public String getCFBundleInfoDictionaryVersion() {
@@ -109,14 +168,16 @@ public class AppBundleProperties {
     }
 
 
-    public void setCFBundleGetInfoString(String s) {
-        mCFBundleGetInfoString = s;
+    public void setCFBundleGetInfoString(String s) {        
+       mCFBundleGetInfoString = s;
     }
 
     public String getCFBundleGetInfoString() {
+        if (mCFBundleGetInfoString == null)
+            return getCFBundleShortVersionString();
+
         return mCFBundleGetInfoString;
     }
-
 
     public void setCFBundleShortVersionString(String s) {
         mCFBundleShortVersionString = s;
@@ -159,7 +220,7 @@ public class AppBundleProperties {
     }
 
     public void setCFBundlePackageType(String s) {
-        mCFBundlePackageType = s;
+        //mCFBundlePackageType = s;
     }
 
     public String getCFBundlePackageType() {
@@ -190,22 +251,7 @@ public class AppBundleProperties {
         return mJVMVersion;
     }
 
-    public Hashtable getJavaProperties() {
-        return mJavaProperties;
-    }
-
-    /**
-     * Add a Java runtime property to the properties hashtable.
-     */
-    public void addJavaProperty(String prop, String val) {
-
-        if (mJavaProperties == null)
-            mJavaProperties = new Hashtable();
-
-        mJavaProperties.put(prop, val);
-    }
-
-
+ 
     public void setVMOptions(String s) {
         mVMOptions = s;
     }
@@ -230,19 +276,8 @@ public class AppBundleProperties {
         return mArguments;
     }
 
-    public void addToClassPath(String s) {
-        mClassPath.add("$JAVAROOT/" + s);
-    }
-
-    public List getClassPath() {
+     public List getClassPath() {
         return mClassPath;
     }
 
-    public void addToExtraClassPath(String s) {
-        mExtraClassPath.add(s);
-    }
-
-    public List getExtraClassPath() {
-        return mExtraClassPath;
-    }
 }

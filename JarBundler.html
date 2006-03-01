@@ -8,10 +8,11 @@ h1 {text-align:center;}
 h2 {margin-top:2em;}
 h3.datatype {margin-top:2em; margin-bottom:0.5em; font-family:monospace;}
 tt {font-family:monospace;}
+li {margin-top:1em;}
 pre {margin-bottom:3em;}
-.notes {vertical-align:middle; text-align:center;}
+td div {margin-top:0.5em;}
+.attribute {vertical-align:top; text-align:left; font-family:monospace; width:200px;}
 .description {vertical-align:top; text-align:left;}
-.attribute {vertical-align:middle; text-align:left; font-family:monospace;}
 </style>
 		
 <title>Mac OS X JarBundler ANT Task</title>
@@ -22,7 +23,7 @@ pre {margin-bottom:3em;}
 
 
 <h1>JarBundler Ant Task</h1>
-<h1>Version 1.5</h1>
+<h1>Version 1.6</h1>
 
 <p>How many times has this happened to you?  You've written a little
 Java utility, or maybe even a more complex application, and you want to
@@ -43,10 +44,14 @@ software licensed under the GNU General Public License.</p>
 at <a href="http://loomcom.com/jarbundler/">http://loomcom.com/jarbundler/</a>
 
 <h2>What's New</h2>
-Added the <tt>javaproperty</tt> DataType element allowing developers to specify java properties
-as nested elements rather than relying on predefined jarbundler tag attributes.  Any number of
-<tt>javaproperties</tt> may be specified.
 
+<ol>
+
+<li>Added <tt>&lt;resourcefileset&gt;</tt> and <tt>&lt;resourcefilelist&gt;</tt> nested elements,
+which mirror <tt>&lt;execfileset&gt;</tt> and <tt>&lt;execfilelist&gt;</tt>, and add files to 
+the <tt>Contents/Resources</tt> directory.
+
+<li>Added <tt>build</tt> attribute to <tt>jarbundler</tt> task.
 
 
 <h2>Download</h2>
@@ -54,9 +59,9 @@ as nested elements rather than relying on predefined jarbundler tag attributes. 
 <div style="margin-left:5em;">
 <table cellpadding="6" border="0" cellspacing="0">
 <tr><td>Source and binary, all platforms (ZIP):</td>
-<td><a href="dist/jarbundler-1.5.zip">jarbundler-1.5.zip</a></td></tr>
+<td><a href="dist/jarbundler.zip">jarbundler.zip</a></td></tr>
 <tr><td>Source and binary, all platforms (TAR):</td>
-<td><a href="dist/jarbundler-1.5.tar.gz">jarbundler-1.5.tar.gz</a></td></tr>
+<td><a href="dist/jarbundler.tar.gz">jarbundler.tar.gz</a></td></tr>
 </table>
 </div>
 
@@ -64,7 +69,7 @@ as nested elements rather than relying on predefined jarbundler tag attributes. 
 
 <h2>Installation</h2>
 
-<p>Put the file <tt>jarbundler-1.5.jar</tt> into <tt>/Developer/Java/Ant/lib</tt> or 
+<p>Put the file <tt>jarbundler-1.6.jar</tt> into <tt>/Developer/Java/Ant/lib</tt> or 
 into your local ANT lib directory.
 
 
@@ -87,130 +92,185 @@ ANT <tt>build.xml</tt> file like this:</p>
   &lt;jarbundler dir="release"
               name="MyApp 1.0"
               mainclass="org.foo.myapp.Main" 
-              jars="myapp.jar, foo.jar, bar.jar" /&gt;
+              jar="myapp.jar" /&gt;
 </pre>
 
 
 
-<h2>Task Attributes</h2>
+<h2>Task Attributes, required</h2>
 <div align="center">
 <table border="1" cellpadding="4" cellspacing="0" width="90%" style="font-size: 10pt;">
 
   <tr>
-    <td class="attribute"><b>Attribute</b></td>
-    <td class="description"><b>Description</b></td>
-    <td class="notes"><b>Notes</b></td>
+    <th><b>Attribute</b></td>
+    <th><b>Description</b></td>
   </tr>
 
   <tr>
     <td class="attribute">dir</td>
-    <td class="description">The directory in which your application bundle 
-        will be created.</td>
-    <td class="notes"><strong>Required</strong></td>
+    <td class="description">The directory in which your application bundle will be created.</td>
   </tr>
-
+  
   <tr>
-    <td class="attribute">jars</td>
-    <td class="description">A list of jar files or patternsets (space- or comma-seperated) to bundle
-        into your application.</td>
-    <td class="notes"><strong>Required</strong><div style="text-align:left; font-size:small;">Unless
-        there are nested jarfileset or jarfilelist elements</div></td>
+    <td class="attribute">name</td>
+    <td class="description">The name of your application bundle (minus the ".app" extension).</td>
   </tr>
 
   <tr>
     <td class="attribute">mainclass</td>
-    <td class="description">The name of the main class to run when the application
-        bundle is launched.</td>
-    <td class="notes"><strong>Required</strong></td>
+    <td class="description">The name of the main class to run when the application bundle is launched.
+    <div>
+    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaDictionaryInfo.plistKeys.html">
+     <tt>MainClass</tt></a>
+    </div>
+    </td>
   </tr>
 
   <tr>
-    <td class="attribute">name</td>
-    <td class="description">The name of your application bundle (minus the ".app"
-        extension).</td>
-    <td class="notes"><strong>Required</strong></td>
+    <td class="attribute">jar</td>
+    <td class="description">A single jar file to be used in your application.
+        <div><strong>Not Required</strong> if there are nested <tt>&lt;jarfileset&gt;</tt> or 
+        <tt>&lt;jarfilelist&gt;</tt> elements or if the <tt>jars</tt> attribute is used.
+        </div>
+        <div>
+        Can be used with nested <tt>&lt;jarfileset&gt;</tt> and/or <tt>&lt;jarfilelist&gt; elements
+        and/or the <tt>jars</tt> attribute.
+        </div>
+        </td>
   </tr>
 
+
   <tr>
-    <td class="attribute">aboutmenuname</td>
-    <td class="description">The string to display in the "About" menu of the
-        running application.</td>
-    <td class="notes"></td>
+    <td class="attribute">jars</td>
+    <td class="description">
+        A list of jar files or patternsets (space or comma seperated) to be used in your application.
+        
+        <div>
+        <strong>Not Required</strong> if there are nested <tt>&lt;jarfileset&gt;</tt> or 
+        <tt>&lt;jarfilelist&gt;</tt> elements or if the <tt>jar</tt> attribute is used.
+        </div>
+        
+        <div>
+        <strong>Warning:</strong> Filenames and directory paths can sometimes contain spaces and 
+        commas.  If these characters are present the build will fail mysteriously when using this
+        attribute.  Multiple JAR files are better handled by using nested 
+        <tt>&lt;jarfileset&gt;</tt> and/or <tt>&lt;jarfilelist&gt;</tt> elements.
+        </div>
+        </td>
+  </tr>
+
+</table>
+</div>
+
+<h2>Task Attributes, optional</h2>
+<div align="center">
+<table border="1" cellpadding="4" cellspacing="0" width="90%" style="font-size: 10pt;">
+
+  <tr>
+    <th class="attribute"><b>Attribute</b></td>
+    <th class="description"><b>Description</b></td>
   </tr>
 
   <tr>
     <td class="attribute">arguments</td>
-    <td class="description">Extra command-line arguments for the Java application.</td>
-    <td class="notes"></td>
+    <td class="description">Extra command-line arguments for the Java application.
+    <div>
+    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaDictionaryInfo.plistKeys.html">
+    <tt>Arguments</tt></a>
+    </div>
+    </td>
   </tr>
 
-  <tr>
-    <td class="attribute">antialiasedgraphics</td>
-    <td class="description">If set to true, use anti-aliasing when rendering graphics.</td>
-    <td class="notes"><em>Deprecated</em></td>
-  </tr>
 
   <tr>
-    <td class="attribute">antialiasedtext</td>
-    <td class="description">If set to true, use anti-aliasing when rendering text.</td>
-    <td class="notes"><em>Deprecated</em></td>
+    <td class="attribute">build</td>
+    <td class="description">Application build number. This string is used in the default 
+    "About..." box along with the 'version' number. This default format is "version (build)" i.e.
+    "4.3.1 (231)".  Also see <tt>version</tt> and <tt>infostring</tt> attributes.
+    
+    <div>
+    The corresponding bundle variable is <a href=http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html#//apple_ref/doc/uid/20001431-102364">
+    CFBundleVersion</a>
+    </div>
+    
+    <div>
+    Default: the value of the <tt>version</tt> attribute
+    </div>
+    </td>
   </tr>
 
   <tr>
     <td class="attribute">bundleid</td>
-    <td class="description">The unique ID of this bundle, usually in the form
-        of a Java package name (i.e., "org.foo.bar.MyBundle")</td>
-    <td class="notes">No default</td>
+    <td class="description">Unique identifier string for the bundle. This string should be in 
+    the form of a java package name, for example com.apple.myapp.
+
+    <div>
+    The corresponding bundle variable is <a href=http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html#//apple_ref/doc/uid/20001431-102364">
+    CFBundleIdentifier</a>
+    </div>
+    
+    
+    </td>
   </tr>
 
   <tr>
     <td class="attribute">chmod</td>
-    <td class="description">The full path to the BSD 'chmod' command.  (You do not normally have to worry
-        about changing this)</td>
-    <td class="notes"></td>
+    <td class="description">The full path to the BSD 'chmod' command. 
+    <div>
+    Mac OS X and UNIX uses do not normally have to worry about changing this.
+    </div>
+    </td>
   </tr>
 
   <tr>
     <td class="attribute">developmentregion</td>
-    <td class="description">The development region of the bundle. </td>
-    <td class="notes">Default: English</td>
+    <td class="description">The development region of the bundle.  
+
+    <div>
+    The corresponding bundle variable is <a href=http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html">
+    CFBundleDevelopmentRegion</a>
+    </div>
+
+    <div>
+    Default: <tt>English</tt>
+    </div>
+    </td>
   </tr>
 
   <tr>
     <td class="attribute">execs</td>
     <td class="description">A list of files or patternsets (space- or comma-seperated) to
         place into the "Resources/MacOS" directory and set executable.</td>
-    <td class="notes"></td>
   </tr>
 
   <tr>
     <td class="attribute">extraclasspath</td>
-    <td class="description">A list of files or patternsets (space- or comma-seperated) to
+    <td class="description">A list of files or patternsets (space or comma seperated) to
         add to the bundle's classpath.  The files referenced by this property will
         <i>not</i> be copied into the bundle, so the resulting .app may only work
         on systems that have these external resources available.
-    <td class="notes"></td>
   </tr>
 
   <tr>
-    <td class="attribute">growbox</td>
-    <td class="description">Show the Aqua resize (grow) box.  <i>(Ignored
-        under JVM 1.3.1 and lower)</i></td>
-    <td class="notes"><em>Deprecated</em></td>
+    <td class="attribute">icon</td>
+    <td class="description">File reference to a Mac OS X icon file.  This file is created with 
+    the Mac OS application located at "<tt>/Developer/Applications/Utilites/Icon Composer</tt>"
   </tr>
 
-  <tr>
-    <td class="attribute">growboxintrudes</td>
-    <td class="description">Resizable window's growbox (resize control) intrudes
-       into AWT content. If turned off, the bottom of the window is 
-       pushed down 15 pixels. <i>(Deprecated under JVM 1.4.1)</i></td>
-    <td class="notes"><em>Deprecated</em></td>
-  </tr>
 
   <tr>
     <td class="attribute">infostring</td>
-    <td class="description">Version string displayed by a "Get Info" or "More Info"</td>
-    <td class="notes"></td>
+    <td class="description">A string for display in the Finder's Get Info panel.   Also see <tt>version</tt> and <tt>build</tt> attributes.
+
+    <div>
+    The corresponding bundle variable is <a href=http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html">
+    CFBundleGetInfoString</a>
+    </div>
+
+    <div>
+    Default: the value of the <tt>version</tt> attribute
+    </div>
+    </td>
   </tr>
 
 
@@ -218,47 +278,189 @@ ANT <tt>build.xml</tt> file like this:</p>
     <td class="attribute">jvmversion</td>
     <td class="description">The version of the JVM required to run the application.
         Typically a string in the form "1.3", "1.3+", "1.4", "1.4+", etc.
+
+    <div>
+    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaDictionaryInfo.plistKeys.html">
+    <tt>JVMVersion</tt></a>
+    </div>
+
+
         <div style="margin-top:1em;">ADC:&nbsp;
-        <a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaDictionaryInfo.plistKeys.html#//apple_ref/doc/uid/TP40001969-DontLinkElementID_3">
+        <a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaDictionaryInfo.plistKeys.html">
         Specifing the Java Version
         </a>
         </div>
+
+
         <div>ADC:&nbsp;
         <a href="http://developer.apple.com/ReleaseNotes/Java/Java50RN/1_NewFeatures/chapter_2_section_4.html#//apple_ref/doc/uid/TP40001881-202-BCIBFCJB">
         Specifing the Java Version after installing J2SE 5.0
         </a>
         </div>
-        
+
+        <div>
+        Default: <tt>1.3+</tt>
+        </div>
         </td>
-    <td class="notes">Default: "1.3+"</td>
+        
+  </tr>
+
+  
+  <tr>
+    <td class="attribute">shortname</td>
+    <td class="description">The string used in the application menu.
+    <div>
+    This string is often shorter than
+    the application's name. For example, "<tt>Microsoft Word</tt>" displays "<tt>Word</tt>"..
+    Apple recommends that this string be limited to 16 characters. JarBuilder enforces this 
+    limit silently by truncating <tt>shortname</tt>.  If the <tt>shortname</tt> is not specified then 
+    the application's name will be used with no truncation.</td>
+    </div>
+  </tr>
+  
+  <tr>
+    <td class="attribute">signature</td>
+    <td class="description">The four-letter code identifying the bundle. 
+
+    <div>
+    The corresponding bundle variable is <a href=http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html">
+    CFBundleSignature</a>
+    </div>
+
+
+    <div>
+    Default: <tt>????</tt>
+    </div>
+    </td>
   </tr>
 
   <tr>
-    <td class="attribute">liveresize</td>
-    <td class="description">If set to true, enable live-resizing of windows.
-        <i>(Deprecated under JVM 1.4.1)</i></td>
-    <td class="notes"><em>Deprecated</em></td>
+    <td class="attribute">stubfile</td>
+    <td class="description">If set, the location of the Mac OS X Java Application Stub file
+        to use for this app bundle. See the section "<em>Specifying the Java Launching 
+        Stub File</em>" below. <div><strong>Required</strong> for Windows or Linux</div></td>
   </tr>
 
   <tr>
-    <td class="attribute">screenmenu</td>
-    <td class="description">If set to true, puts Swing menus 
-       in the Mac OS X menu bar if using the Aqua look and feel.</td>
-    <td class="notes"><em>Deprecated</em></td>
+    <td class="attribute">verbose</td>
+    <td class="description">If true, output more verbose information to Ant while the task is
+        running. 
+        <div>
+        Default: <tt>false</tt>
+        </div>
+        </td>
+  </tr>
+
+  <tr>
+    <td class="attribute">version</td>
+    <td class="description">Version number displayed in Finder, this version number can be though of
+    as the "Marketing" version without distracting build information.  The marketing version 
+    is a string that usually displays the major and minor version of the bundle. This string 
+    is usually of the form n.n.n where n is a number.   Also see <tt>build</tt> and 
+    <tt>infostring</tt> attributes.  
+
+    <div>
+    The corresponding bundle variable is <a href=http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html">
+    CFBundleShortVersionString</a>
+    </div>
+
+
+    <div>
+    Default: <tt>1.0</tt></div>
+    </td>
+  </tr>
+
+  <tr>
+    <td class="attribute">vmoptions</td>
+    <td class="description">Command line options to pass the JVM at startup.
+    <div>
+    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaDictionaryInfo.plistKeys.html">
+    <tt>VMOptions</tt></a>
+    </div>
+    </td>
+  </tr>
+
+  <tr>
+    <td class="attribute">workingdirectory</td>
+    <td class="description">The working directory for the Java application.
+    <div>
+    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaDictionaryInfo.plistKeys.html">
+    <tt>WorkingDirectory</tt></a>
+    </div>
+    </td>
+  </tr>
+
+</table>
+
+</table>
+</div>
+
+<h2>Task Attributes, deprecated</h2>
+<div align="center">
+<table border="1" cellpadding="4" cellspacing="0" width="90%" style="font-size: 10pt;">
+  <tr>
+    <th class="attribute"><b>Attribute</b></td>
+    <th class="description"><b>Description</b></td>
+  </tr>
+
+
+  <tr>
+    <td class="attribute">aboutmenuname</td>
+    <td class="description">The string to display in the "About" menu of the
+        running application. <i>(Deprecated under JVM 1.4.1)</i></td>
+  </tr>
+
+
+  <tr>
+    <td class="attribute">antialiasedgraphics</td>
+    <td class="description">If set to true, use anti-aliasing when rendering graphics.
+    <div>
+    Use <tt>&lt;javaproperty name="apple.awt.antialiasing" .../&gt;</tt>
+    </div>
+    </td>
+  </tr>
+
+  <tr>
+    <td class="attribute">antialiasedtext</td>
+    <td class="description">If set to true, use anti-aliasing when rendering text.
+    <div>
+    Use <tt>&lt;javaproperty name="apple.awt.textantialiasing" .../&gt;</tt>
+    </div>
+    </td>
+  </tr>
+
+  <tr>
+    <td class="attribute">growbox</td>
+    <td class="description">Show the Aqua resize (grow) box. 
+    <div>
+    Use <tt>&lt;javaproperty name="apple.awt.showGrowBox" .../&gt;</tt>
+    </div>
+    </td>
+  </tr>
+
+  <tr>
+    <td class="attribute">growboxintrudes</td>
+    <td class="description">Resizable window's growbox (resize control) intrudes
+       into AWT content. If turned off, the bottom of the window is 
+       pushed down 15 pixels. <i>(Deprecated under JVM 1.4.1)</i></td>
+  </tr>
+
+  <tr>
+    <td class="attribute">type</td>
+    <td class="description">The Mac OS type of the bundle.
+    <div>
+    This attribute is redundant with the implied behavior this ANT task i.e. <tt>CFBundlePackageType</tt>
+    should always be set to <tt>APPL</tt> for applications.
+    </div>
+    </td>
   </tr>
 
   <tr>
     <td class="attribute">shortinfostring</td>
-    <td class="description">Version string displayed in Finder's Get Info</td>
-    <td class="notes">Default: value of "version"</td>
+    <td class="description">Use <tt>infostring</tt> attribute instead.
+    </td>
   </tr>
 
-
-  <tr>
-    <td class="attribute">signature</td>
-    <td class="description">The Mac OS signature of the bundle</td>
-    <td class="notes">Default:<br />"????"</td>
-  </tr>
 
   <tr>
     <td class="attribute">smalltabs</td>
@@ -266,101 +468,119 @@ ANT <tt>build.xml</tt> file like this:</p>
         closely resemble the Metal look and feel. If set to false, the tabs 
         assume a larger size more similar to the default Aqua controls.
         <i>(Deprecated under JVM 1.4.1)</i></td>
-    <td class="notes"><em>Deprecated</em></td>
   </tr>
 
   <tr>
-    <td class="attribute">stubfile</td>
-    <td class="description">If set, the location of the Mac OS X Java Application Stub file
-        to use for this app bundle. See the section "<em>Specifying the Java Launching 
-        Stub File</em>" below.</td>
-    <td class="notes"><strong>Required</strong><div style="text-align:left; font-size:small;">for 
-    Windows or Linux</div></td>
+    <td class="attribute">liveresize</td>
+    <td class="description">If set to true, enable live-resizing of windows.
+        <i>(Deprecated under JVM 1.4.1)</i></td>
   </tr>
 
   <tr>
-    <td class="attribute">type</td>
-    <td class="description">The Mac OS type of the bundle</td>
-    <td class="notes">Default:<br />"APPL"</td>
+    <td class="attribute">screenmenu</td>
+    <td class="description">If set to true, puts Swing menus 
+       in the Mac OS X menu bar if using the Aqua look and feel.</td>
   </tr>
 
-  <tr>
-    <td class="attribute">verbose</td>
-    <td class="description">If true, output more verbose information to Ant while the task is
-        running.</td>
-    <td class="notes">Default: "false"</td>
-  </tr>
-
-  <tr>
-    <td class="attribute">version</td>
-    <td class="description">Version number displayed in Finder</td>
-    <td class="notes">Default: 1.0</td>
-  </tr>
-
-  <tr>
-    <td class="attribute">vmoptions</td>
-    <td class="description">Command line options to pass the JVM at startup.</td>
-    <td class="notes"></td>
-  </tr>
-
-  <tr>
-    <td class="attribute">workingdirectory</td>
-    <td class="description">The working directory for the Java application.</td>
-    <td class="notes"></td>
-  </tr>
 
 </table>
 </div>
 
+
+
 <h2>Nested DataTypes</h2>
 
-<h3 class="datatype">jarfileset</h3>
-<p>The nested <tt>jarfileset</tt> element specifies a FileSet. All
+<h3 class="datatype">&lt;jarfileset&gt;</h3>
+<p>The nested <tt>jarfileset</tt> element specifies a 
+<a href="http://ant.apache.org/manual/CoreTypes/fileset.html">FileSet</a>. 
+All
 files included in this fileset will be included in the application
 bundle and added to the app bundle classpath.  Only required if the
 <tt>jars</tt> attribute is not set.</p>
 
-<h3 class="datatype">jarfilelist</h3>
-<p>The nested <tt>jarfilelist</tt> element specifies a FileList. All
+<h3 class="datatype">&lt;jarfilelist&gt;</h3>
+<p>The nested <tt>jarfilelist</tt> element specifies a <a href="http://ant.apache.org/manual/CoreTypes/filelist.html">FileList</a>. All
 files included in this filelist will be included in the application
 bundle and added to the app bundle classpath.  Only required if the
 <tt>jars</tt> attribute is not set.</p>
 
-<h3 class="datatype">javaproperty</h3>
-<p>New with release 1.5.  This ANT DataType element allows developers to specify java properties
-for the info.plist.  This DataType deprecates many jarbundler tag attributes. However, if
+<h3 class="datatype">&lt;javaproperty ...&gt;</h3>
+<p>This ANT DataType element allows developers to specify java properties
+for the info.plist.  This DataType repalces many <tt>jarbundler</tt> tag attributes. However, if
 a deprecated attribute is used it will take precedent over a javaproperty.  This was done
 to maintain backward compatibility with earlier versions of jarbundler.
 
-<p>ADC:&nbsp;
+<p>This elements takes the form:
+<pre style="margin-left:5em; margin-bottom:0em;">
+&lt;javaproperty name="apple.awt.showGrowBox" value="true"/&gt;
+</pre>
+
+<p>Additional Java Properites can be found in the Apple Developer Connection document: &nbsp;
 <a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaSystemProperties.html">
 Apple Java Properties for JDK 1.4+</a>
 
-<h3 class="datatype">execfileset</h3>
-<p>The nested <tt>execfileset</tt> element specifies a FileSet.  All
+
+
+<h3 class="datatype">&lt;execfileset&gt;</h3>
+<p>The nested <tt>execfileset</tt> element specifies a 
+<a href="http://ant.apache.org/manual/CoreTypes/fileset.html">FileSet</a>.  All
 files included in this fileset will be added to the application
-bundle's "Resources/MacOS" directory and set executable.  Optional.</p>
+bundle's "Contents/MacOS" directory and set executable.  Optional.</p>
 
-<h3 class="datatype">execfilelist</h3>
-<p>The nested <tt>execfilelist</tt> element specifies a FileList.  All
+
+<h3 class="datatype">&lt;execfilelist&gt;</h3>
+<p>The nested <tt>execfilelist</tt> element specifies a 
+<a href="http://ant.apache.org/manual/CoreTypes/filelist.html">FileList</a>.  All
 files included in this filelist will be added to the application
-bundle's "Resources/MacOS" directory and set executable.  Optional.</p>
+bundle's "Contents/MacOS" directory and set executable.  Optional.</p>
 
-<h3 class="datatype">extraclasspathfileset</h3>
+
+
+
+<h3 class="datatype">&lt;resourcefileset&gt;</h3>
+<p>The nested <tt>resourcefileset</tt> element specifies a 
+<a href="http://ant.apache.org/manual/CoreTypes/fileset.html">FileSet</a>.  All
+files included in this fileset will be added to the application
+bundle's "Contents/Resources" directory and set executable.  Optional.</p>
+
+
+
+<h3 class="datatype">&lt;resourcefilelist&gt;</h3>
+<p>The nested <tt>resourcefilelist</tt> element specifies a 
+<a href=http://ant.apache.org/manual/CoreTypes/filelist.html">FileList</a>.  All
+files included in this filelist will be added to the application
+bundle's "Contents/Resources" directory and set executable.  Optional.</p>
+
+
+
+<h3 class="datatype">&lt;extraclasspathfileset&gt;</h3>
 <p>The nested <tt>extraclasspathfileset</tt> element specifies
-a FileSet.  All files included in this fileset will be added to the
+a <a href="http://ant.apache.org/manual/CoreTypes/fileset.html">FileSet</a>.  
+All files included in this fileset will be added to the
 application bundle's classpath, but the files <b>will not</b> be
 copied into the bundle itself.  This allows you to specify external
 system classpath dependencies without bundling the resources.  Resources
 can be files or directories. Optional.</p>
 
-<h3 class="datatype">extraclasspathfilelist</h3>
+<h3 class="datatype">&lt;extraclasspathfilelist&gt;</h3>
 <p>The nested <tt>extraclasspathfilelist</tt> element specifies
-a FileList.  All files included in this filelist will be added to the
+a <a href="http://ant.apache.org/manual/CoreTypes/filelist.html">FileList</a>.  
+All files included in this filelist will be added to the
 application bundle's classpath, but the files <b>will not</b> be
 copied into the bundle itself.  This allows you to specify external
 system classpath dependencies without bundling the resources.  Resources
 can be files or directories. Optional.</p>
+
+<h3>Note on FileList and FileSet target locations</h3>
+<p>Note that in fact the files are installed in locations which have the same relation 
+to either <tt>Contents/MacOS</tt> or <tt>Contents/Resources</tt> directories as the 
+files in the FileSet or FileList have to the '<tt>dir</tt>' attribute.  Thus in the case:
+
+<pre style="margin-left:3em; margin-bottom:0em;">
+ &lt;resourcefileset dir="builddir/architectures" includes="ppc/*.jnilib"/&gt;
+</pre>
+
+<p>the <tt>*.jnilib</tt> files will be installed in <tt>Contents/Resources/ppc</tt>
 
 
 <h2>Examples</h2>
@@ -408,10 +628,12 @@ requires JVM version 1.4 or the highest JVM available.</p>
       &lt;taskdef name="jarbundler" classname="com.informagen.ant.tasks.jarbundler.JarBundler" /&gt;
 
       &lt;jarbundler dir="${release}"
-                  name="${name}"
+                  name="Sequence Analysis"
+                  shortname="Seq. Anal."
                   mainclass="com.informagen.sa.SequenceAnalysis"
-                  icon="Mac OS X/SA.icns"
+                  icon="icons/SA.icns"
                   version="${version}"
+                  build="${version}_${buildnumber}"
                   infostring="${version}, Informagen, Inc."
                   bundleid="com.informagen.SA"
                   signature="_SA_"
