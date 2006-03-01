@@ -1,0 +1,91 @@
+<project name="JarBundler" default="jar" basedir=".">
+
+  <property name="appname" value="jarbundler"/>
+  <property name="version" value="1.5"/>
+  <property name="author" value="Will Gilbert, &lt;gilbert@Informagen.com&gt;"/>
+  <property name="description" value="ANT task for creating Mac OS X application bundles"/>    
+
+  <!-- Directories -->  
+  <property name="src"     value="${basedir}/src" />
+  <property name="classes" value="${basedir}/classes" />
+  <property name="bin"     value="${basedir}/bin" />
+  <property name="release" value="${basedir}/release" />
+
+  <!-- File names -->  
+ 
+  <property name="jarbundler.jar" value="${appname}-${version}.jar" />
+  <property name="release.zip"    value="${appname}-${version}.zip" />
+  <property name="release.tar"    value="${appname}-${version}.tar" />
+
+  <!-- Needs to reference this in order to compile -->
+  <property name="ant.jar" value="/Developer/Java/Ant/lib/ant.jar" />
+   
+  <target name="compile" description="Compile the classes">
+    
+    <mkdir dir="${classes}"/>
+    <mkdir dir="${bin}"/>
+        
+    <javac srcdir="${src}" 
+           debug="false"
+           classpath="${ant.jar}"
+           destdir="${classes}"
+           source="1.4">
+      <compilerarg value="-Xlint:unchecked" />
+     </javac> 
+  </target>
+
+
+  <target name="jar" depends="compile" description="Create JAR file">
+
+    <tstamp/>  
+
+    <jar jarfile="${bin}/${jarbundler.jar}" basedir="${classes}">
+        <manifest>
+          <attribute name="Version"     value="${version}"/>
+          <attribute name="Description" value="${description}"/>
+          <attribute name="Build-Date"  value="${TODAY}"/>
+          <attribute name="Built-By"    value="${author}"/>        
+		</manifest>
+	</jar>
+  </target>
+
+
+
+  <target name="release" depends="jar" description="Create zip and tar.gz files">
+
+    <mkdir dir="${release}"/>
+    <mkdir dir="${release}/dist"/>
+    
+    <copy file="JarBundler.html" tofile="${release}/index.html"/>
+    
+    <zip destfile="${release}/dist/${release.zip}">
+      <zipfileset dir="${basedir}"
+         prefix="${appname}-${version}/"
+         includes="LICENSE.TXT, README.TXT, build.xml, JarBundler.html, src/**, bin/${jarbundler.jar}"
+       />
+    </zip>
+
+    <tar destfile="${release.tar}">
+      <tarfileset dir="${basedir}"
+        prefix="${appname}-${version}/"
+       includes="LICENSE.TXT, README.TXT, build.xml, JarBundler.html, src/**, bin/${jarbundler.jar}"
+       />
+    </tar>
+
+    <!-- Compress the tar -->
+    <gzip src="${release.tar}" zipfile="${release}/dist/${release.tar}.gz"/>
+
+    <!-- Remove the intermediate tar -->
+    <delete quiet="true" file="${release.tar}" />
+  </target>
+
+
+  <target name="clean" description="Clean up">
+    <delete dir="${classes}"/> 
+    <delete dir="${bin}"/> 
+    <delete dir="${release}"/> 
+  </target>
+
+
+
+</project>
