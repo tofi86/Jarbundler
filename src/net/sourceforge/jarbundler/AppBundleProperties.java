@@ -18,7 +18,7 @@
  * Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.informagen.ant.tasks.jarbundler;
+package net.sourceforge.jarbundler;
 
 // Java Utility
 import java.util.ArrayList;

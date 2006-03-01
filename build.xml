@@ -49,7 +49,7 @@
     <mkdir dir="docs"/>
 
     <javadoc destdir="docs" classpath="${ant.jar}">
-      <package name="com.informagen.ant.tasks.jarbundler.*"/>
+      <package name="net.sourceforge.jarbundler.*"/>
       <sourcepath location="src"/>
     </javadoc>
  </target>

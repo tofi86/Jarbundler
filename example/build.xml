@@ -32,7 +32,7 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
 
     <taskdef name="jarbundler"
              classpath="${jarbundler.jar}" 
-             classname="com.informagen.ant.tasks.jarbundler.JarBundler"/>
+             classname="net.sourceforge.jarbundler.JarBundler"/>
 
     <jarbundler dir="${basedir}"
                 name="${ant.project.name}"

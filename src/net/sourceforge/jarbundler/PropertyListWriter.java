@@ -18,10 +18,10 @@
  * Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.informagen.ant.tasks.jarbundler;
+package net.sourceforge.jarbundler;
 
 // This package's imports
-import com.informagen.ant.tasks.jarbundler.AppBundleProperties;
+import net.sourceforge.jarbundler.AppBundleProperties;
 
 // Java I/O
 import java.io.BufferedWriter;

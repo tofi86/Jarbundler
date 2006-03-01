@@ -52,6 +52,7 @@ which mirror <tt>&lt;execfileset&gt;</tt> and <tt>&lt;execfilelist&gt;</tt>, and
 the <tt>Contents/Resources</tt> directory.
 
 <li>Added <tt>build</tt> attribute to <tt>jarbundler</tt> task.
+<li>Changed task package to <tt>net.sourceforge.jarbundler</tt>
 
 
 <h2>Download</h2>
@@ -81,7 +82,7 @@ ANT <tt>build.xml</tt> file like this:</p>
 
 <pre>
 &lt;taskdef name="jarbundler" 
-         classname="com.informagen.ant.tasks.jarbundler.JarBundler" /&gt;
+         classname="net.sourceforge.jarbundler.JarBundler" /&gt;
 </pre>
 
 
@@ -625,7 +626,7 @@ requires JVM version 1.4 or the highest JVM available.</p>
 
       &lt;delete dir="${release}/${name}.app"/&gt;
 
-      &lt;taskdef name="jarbundler" classname="com.informagen.ant.tasks.jarbundler.JarBundler" /&gt;
+      &lt;taskdef name="jarbundler" classname="net.sourceforge.jarbundler.JarBundler" /&gt;
 
       &lt;jarbundler dir="${release}"
                   name="Sequence Analysis"
