@@ -1,0 +1,66 @@
+<project name="JarBundler" default="build-all" basedir=".">
+  <property name="id" value="$Id: build.xml,v 1.10 2004/11/13 22:46:33 sethm Exp $"/>
+  <property name="version" value="1.4"/>
+  <property name="appname" value="jarbundler"/>
+  <property name="dir.classes" value="${basedir}/classes" />
+  <property name="dir.release" value="${basedir}/release" />
+  <property name="dir.resources" value="${basedir}/resources" />
+  <property name="dir.bin" value="${basedir}/bin" />
+  <property name="dir.src" value="${basedir}/src" />
+
+  <property name="lib.ant" value="${basedir}/lib/ant.jar" />
+
+  <property name="jar" value="${appname}-${version}.jar" />
+  <property name="zip" value="${appname}-${version}.zip" />
+  <property name="tar" value="${appname}-${version}.tar" />
+
+  <target name="jar" depends="compile">
+    <jar jarfile="${dir.bin}/${jar}"
+	 basedir="${dir.classes}" />
+  </target>
+
+  <target name="compile">
+    <mkdir dir="${dir.classes}"/>
+    <mkdir dir="${dir.bin}"/>
+    <javac srcdir="${dir.src}" debug="true"
+	   classpath="${lib.ant}"
+	   destdir="${dir.classes}"/>
+    </target>
+
+    <target name="release" depends="build-all">
+      <mkdir dir="${dir.release}"/>
+      <zip destfile="${dir.release}/${zip}">
+	<zipfileset dir="${basedir}"
+		    prefix="${appname}-${version}/"
+		    includes="LICENSE.TXT,README.TXT,build.xml,src/**,bin/**"
+		    excludes="CVS"/>
+      </zip>
+      <tar destfile="${dir.release}/${tar}">
+	<tarfileset dir="${basedir}"
+		    prefix="${appname}-${version}/"
+		    includes="LICENSE.TXT,README.TXT,build.xml,src/**,bin/**"
+		    excludes="CVS"/>
+      </tar>
+      <!-- Compress the tar -->
+      <gzip src="${dir.release}/${tar}" zipfile="${dir.release}/${tar}.gz"/>
+      <!-- Remove the old tar, leave the gzip file -->
+      <delete quiet="true" file="${dir.release}/${tar}" />
+    </target>
+
+    <target name="clean">
+      <delete quiet="true" includeEmptyDirs="true">
+	<fileset dir="${dir.src}">
+	  <include name="**/.DS_Store" />
+	  <include name="**/*~" />
+	</fileset>
+	<fileset dir="${dir.doc}" includes="**" excludes="CVS"/>
+	<fileset dir="${dir.release}" includes="**" excludes="CVS"/>
+	<fileset dir="${dir.classes}" includes="**" excludes="CVS"/>
+	<fileset dir="${dir.bin}" includes="**" excludes="CVS"/>
+	</delete>
+    </target>
+
+    <target name="build-all" depends="jar">
+    </target>
+
+</project>
