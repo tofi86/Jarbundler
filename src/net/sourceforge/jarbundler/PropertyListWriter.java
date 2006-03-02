@@ -18,10 +18,10 @@
  * Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.informagen.ant.tasks.jarbundler;
+package net.sourceforge.jarbundler;
 
 // This package's imports
-import com.informagen.ant.tasks.jarbundler.AppBundleProperties;
+import net.sourceforge.jarbundler.AppBundleProperties;
 
 // Java I/O
 import java.io.BufferedWriter;
@@ -48,11 +48,13 @@ import java.lang.System;
 
 /**
  * Write out a Java application bundle property list file.
+ * For descriptions of the property list keys, see 
+ *    <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html" >Apple docs</a>.
  */
 public class PropertyListWriter {
 
     private PrintWriter mOut;// Where to write
-    private AppBundleProperties mProps;// Our app bundle properties
+    private AppBundleProperties bundleProperties;// Our app bundle properties
 
     private double version = 1.3;
 
@@ -60,9 +62,8 @@ public class PropertyListWriter {
      * Create a new Property List writer.
      */
     public PropertyListWriter(AppBundleProperties p) {
-        mProps = p;
-
-        setJavaVersion(mProps.getJVMVersion());
+        bundleProperties = p;
+        setJavaVersion(bundleProperties.getJVMVersion());
     }
 
     private void setJavaVersion(String version) {
@@ -93,64 +94,60 @@ public class PropertyListWriter {
 
             // Begin contents
             openDict(0);
+                  
+            // Application short name ie About menu name
+             writeKey(1, "CFBundleName");
+             writeString(1, bundleProperties.getCFBundleName());
+             
+             // Finder 'Version' label, defaults to "1.0"
+             writeKey(1, "CFBundleShortVersionString");
+             writeString(1, bundleProperties.getCFBundleShortVersionString());
 
-            // Required key
-            writeKey(1, "CFBundleName");
-            writeString(1, mProps.getCFBundleName());
+             // Finder "Get Info" label
+             writeKey(1, "CFBundleGetInfoString");
+             writeString(1, bundleProperties.getCFBundleGetInfoString());
 
-            // Required key
-            writeKey(1, "CFBundleVersion");
-            writeString(1, mProps.getCFBundleVersion());
+            // Application build number, optional
+            if (bundleProperties.getCFBundleVersion() != null) {
+                writeKey(1, "CFBundleVersion");
+                writeString(1, bundleProperties.getCFBundleVersion());
+            }
 
+            // Optional key
+            if (bundleProperties.getCFBundleIconFile() != null) {
+                writeKey(1, "CFBundleIconFile");
+                writeString(1, bundleProperties.getCFBundleIconFile());
+            }
 
             // Required Key
             writeKey(1, "CFBundleAllowMixedLocalizations");
-            writeString(1, new Boolean(mProps.getCFBundleAllowMixedLocalizations()).toString());
-
-            // Optional key
-            if (mProps.getCFBundleGetInfoString() != null) {
-                writeKey(1, "CFBundleGetInfoString");
-                writeString(1, mProps.getCFBundleGetInfoString());
-            }
-
-            // Finder 'Version' label. If missing use CFBundleVersion
-            writeKey(1, "CFBundleShortVersionString");
-
-            if (mProps.getCFBundleShortVersionString() != null)
-                writeString(1, mProps.getCFBundleShortVersionString());
-            else
-                writeString(1, mProps.getCFBundleVersion());
+            writeString(1, new Boolean(bundleProperties.getCFBundleAllowMixedLocalizations()).toString());
 
             writeKey(1, "CFBundleInfoDictionaryVersion");
-            writeString(1, mProps.getCFBundleInfoDictionaryVersion());
+            writeString(1, bundleProperties.getCFBundleInfoDictionaryVersion());
 
             // Optional key
-            if (mProps.getCFBundleIdentifier() != null) {
+            if (bundleProperties.getCFBundleIdentifier() != null) {
                 writeKey(1, "CFBundleIdentifier");
-                writeString(1, mProps.getCFBundleIdentifier());
+                writeString(1, bundleProperties.getCFBundleIdentifier());
             }
 
             // Required key
             writeKey(1, "CFBundleExecutable");
-            writeString(1, mProps.getCFBundleExecutable());
+            writeString(1, bundleProperties.getCFBundleExecutable());
 
             // Required key
             writeKey(1, "CFBundleDevelopmentRegion");
-            writeString(1, mProps.getCFBundleDevelopmentRegion());
+            writeString(1, bundleProperties.getCFBundleDevelopmentRegion());
 
             // Required key
             writeKey(1, "CFBundlePackageType");
-            writeString(1, mProps.getCFBundlePackageType());
+            writeString(1, bundleProperties.getCFBundlePackageType());
 
             // Required key
             writeKey(1, "CFBundleSignature");
-            writeString(1, mProps.getCFBundleSignature());
+            writeString(1, bundleProperties.getCFBundleSignature());
 
-            // Optional key
-            if (mProps.getCFBundleIconFile() != null) {
-                writeKey(1, "CFBundleIconFile");
-                writeString(1, mProps.getCFBundleIconFile());
-            }
 
             // Required key
             writeKey(1, "Java");
@@ -160,20 +157,20 @@ public class PropertyListWriter {
 
             // Required key
             writeKey(2, "MainClass");
-            writeString(2, mProps.getMainClass());
+            writeString(2, bundleProperties.getMainClass());
 
             // Recommended key
-            if (mProps.getJVMVersion() != null) {
+            if (bundleProperties.getJVMVersion() != null) {
                 writeKey(2, "JVMVersion");
-                writeString(2, mProps.getJVMVersion());
+                writeString(2, bundleProperties.getJVMVersion());
             }
 
             // Classpath is composed of two types.
             // 1: Jars bundled into the JAVA_ROOT of the application
             // 2: External directories or files with an absolute path
 
-            List classPath = mProps.getClassPath();
-            List extraClassPath = mProps.getExtraClassPath();
+            List classPath = bundleProperties.getClassPath();
+            List extraClassPath = bundleProperties.getExtraClassPath();
 
             if ((classPath.size() > 0) || (extraClassPath.size() > 0)) {
                 writeKey(2, "ClassPath");
@@ -184,25 +181,25 @@ public class PropertyListWriter {
             }
 
             // Optional key
-            if (mProps.getVMOptions() != null) {
+            if (bundleProperties.getVMOptions() != null) {
                 writeKey(2, "VMOptions");
-                writeString(2, mProps.getVMOptions());
+                writeString(2, bundleProperties.getVMOptions());
             }
 
             // Optional key
-            if (mProps.getWorkingDirectory() != null) {
+            if (bundleProperties.getWorkingDirectory() != null) {
                 writeKey(2, "WorkingDirectory");
-                writeString(2, mProps.getWorkingDirectory());
+                writeString(2, bundleProperties.getWorkingDirectory());
             }
 
             // Optional key
-            if (mProps.getArguments() != null) {
+            if (bundleProperties.getArguments() != null) {
                 writeKey(2, "Arguments");
-                writeString(2, mProps.getArguments());
+                writeString(2, bundleProperties.getArguments());
             }
 
             // Write out user Java properties (optional)
-            Hashtable javaProperties = mProps.getJavaProperties();
+            Hashtable javaProperties = bundleProperties.getJavaProperties();
 
             if (javaProperties != null) {
                 writeKey(2, "Properties");

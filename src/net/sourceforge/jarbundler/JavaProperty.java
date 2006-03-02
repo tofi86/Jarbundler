@@ -1,5 +1,5 @@
 
-package com.informagen.ant.tasks.jarbundler;
+package net.sourceforge.jarbundler;
 
 public class JavaProperty {
 

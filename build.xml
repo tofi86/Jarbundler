@@ -1,37 +1,30 @@
-<project name="JarBundler" default="jar" basedir=".">
+<project name="jarbundler" default="jar" basedir=".">
 
-  <property name="appname" value="jarbundler"/>
-  <property name="version" value="1.5"/>
-  <property name="author" value="Will Gilbert, &lt;gilbert@Informagen.com&gt;"/>
+  <property name="version" value="1.6"/>
   <property name="description" value="ANT task for creating Mac OS X application bundles"/>    
 
-  <!-- Directories -->  
-  <property name="src"     value="${basedir}/src" />
-  <property name="classes" value="${basedir}/classes" />
-  <property name="bin"     value="${basedir}/bin" />
-  <property name="release" value="${basedir}/release" />
 
   <!-- File names -->  
- 
-  <property name="jarbundler.jar" value="${appname}-${version}.jar" />
-  <property name="release.zip"    value="${appname}-${version}.zip" />
-  <property name="release.tar"    value="${appname}-${version}.tar" />
+  <property name="jarbundler.jar" value="${ant.project.name}-${version}.jar" />
+  <property name="release.zip"    value="${ant.project.name}.zip" />
+  <property name="release.tar"    value="${ant.project.name}.tar" />
 
-  <!-- Needs to reference this in order to compile -->
+
+  <!-- Needs to reference this in order to compile               -->
+  <!-- This path works for OS X, Windows and Linux must redefine -->
   <property name="ant.jar" value="/Developer/Java/Ant/lib/ant.jar" />
+
    
   <target name="compile" description="Compile the classes">
     
-    <mkdir dir="${classes}"/>
-    <mkdir dir="${bin}"/>
+    <mkdir dir="classes"/>
+    <mkdir dir="bin"/>
         
-    <javac srcdir="${src}" 
+    <javac srcdir="src" 
            debug="false"
            classpath="${ant.jar}"
-           destdir="${classes}"
-           source="1.4">
-      <compilerarg value="-Xlint:unchecked" />
-     </javac> 
+           destdir="classes"
+           source="1.4"/>
   </target>
 
 
@@ -39,51 +32,89 @@
 
     <tstamp/>  
 
-    <jar jarfile="${bin}/${jarbundler.jar}" basedir="${classes}">
+    <jar jarfile="bin/${jarbundler.jar}" basedir="classes">
         <manifest>
           <attribute name="Version"     value="${version}"/>
           <attribute name="Description" value="${description}"/>
           <attribute name="Build-Date"  value="${TODAY}"/>
-          <attribute name="Built-By"    value="${author}"/>        
-		</manifest>
-	</jar>
+          <attribute name="Built-By"    value="${user.name}"/>        
+        </manifest>
+    </jar>
   </target>
 
 
 
-  <target name="release" depends="jar" description="Create zip and tar.gz files">
+  <target name="javadocs" depends="compile" description="Create JarBundler API">
 
-    <mkdir dir="${release}"/>
-    <mkdir dir="${release}/dist"/>
+    <mkdir dir="docs"/>
+
+    <javadoc destdir="docs" classpath="${ant.jar}">
+      <package name="net.sourceforge.jarbundler.*"/>
+      <sourcepath location="src"/>
+    </javadoc>
+ </target>
+
+
+
+  <target name="release" depends="jar, javadocs" description="Create zip and tar.gz files">
+
+	<ant dir="./example" target="clean" inheritAll="false"/>
+	
+    <mkdir dir="release"/>
+    <mkdir dir="release/dist"/>
     
-    <copy file="JarBundler.html" tofile="${release}/index.html"/>
+    <copy file="JarBundler.html" tofile="release/index.html"/>
+    <copy todir="release/docs">
+        <fileset dir="docs"/>
+    </copy>
     
-    <zip destfile="${release}/dist/${release.zip}">
-      <zipfileset dir="${basedir}"
-         prefix="${appname}-${version}/"
-         includes="LICENSE.TXT, README.TXT, build.xml, JarBundler.html, src/**, bin/${jarbundler.jar}"
-       />
+    <zip destfile="release/dist/${release.zip}">
+      <zipfileset prefix="${ant.project.name}-${version}/" dir="${basedir}" excludes="CVS">
+        <include name="LICENSE.TXT"/>
+        <include name="README.TXT"/>
+        <include name="JarBundler.html"/>
+        <include name="build.xml"/>
+        <include name="src/**"/>
+        <include name="example/**"/>
+        <include name="bin/${jarbundler.jar}"/> 
+      </zipfileset>
     </zip>
 
-    <tar destfile="${release.tar}">
-      <tarfileset dir="${basedir}"
-        prefix="${appname}-${version}/"
-       includes="LICENSE.TXT, README.TXT, build.xml, JarBundler.html, src/**, bin/${jarbundler.jar}"
-       />
+    <tar destfile="release/dist/${release.tar}">
+      <tarfileset prefix="${ant.project.name}-${version}/" dir="${basedir}" excludes="CVS">
+        <include name="LICENSE.TXT"/>
+        <include name="README.TXT"/>
+        <include name="JarBundler.html"/>
+        <include name="build.xml"/>
+        <include name="src/**"/>
+        <include name="example/**"/>
+        <include name="bin/${jarbundler.jar}"/> 
+      </tarfileset>	
     </tar>
 
     <!-- Compress the tar -->
-    <gzip src="${release.tar}" zipfile="${release}/dist/${release.tar}.gz"/>
+    <gzip src="release/dist/${release.tar}" zipfile="release/dist/${release.tar}.gz"/>
 
     <!-- Remove the intermediate tar -->
-    <delete quiet="true" file="${release.tar}" />
+    <delete quiet="true" file="release/dist/${release.tar}" />
   </target>
 
 
+
+  <target name="test" depends="jar" description="Build an example application">
+	<ant dir="./example" target="app" inheritAll="false">
+      <property name="jarbundler.jar" value="${basedir}/bin/${jarbundler.jar}" />
+	</ant>
+  </target>
+
+
+
   <target name="clean" description="Clean up">
-    <delete dir="${classes}"/> 
-    <delete dir="${bin}"/> 
-    <delete dir="${release}"/> 
+    <delete dir="classes"/> 
+    <delete dir="bin"/> 
+    <delete dir="docs"/>
+    <delete dir="release"/> 
+	<ant dir="example" target="clean" inheritAll="false"/>
   </target>
 
 

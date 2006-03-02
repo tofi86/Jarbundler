@@ -1,0 +1,66 @@
+<!--
+
+Use this sample build in your own projects.  After putting the JarBundler-X.X.jar file in 
+your ANT library remove the 'classpath' attribute from the "taskdef" element.
+
+-->
+
+<project name="Hello World" default="app" basedir=".">
+
+  <property name="version" value="4.3.1"/>
+  <property name="build" value="213"/>
+  <property name="copyright" value="(c)2006  Informagen, Inc."/>
+
+   
+  <target name="compile" description="Compile the classes">
+    <mkdir dir="classes"/>
+    <javac srcdir="src" destdir="classes" source="1.4"/>
+  </target>
+
+
+  <target name="jar" depends="compile" description="Create JAR file">
+    <mkdir dir="bin"/>
+    <jar jarfile="bin/${ant.project.name}.jar" basedir="classes"/>
+  </target>
+
+
+  <!-- Create a simple application to see if all the bits came together properly -->
+
+  <target name="app" depends="jar" description="Build an example application">
+
+    <delete dir="${ant.project.name}.app"/>
+
+    <taskdef name="jarbundler"
+             classpath="${jarbundler.jar}" 
+             classname="net.sourceforge.jarbundler.JarBundler"/>
+
+    <jarbundler dir="${basedir}"
+                name="${ant.project.name}"
+                shortname="Hello"
+                signature="Helo"
+                mainclass="HelloWorld"
+                jar="bin/${ant.project.name}.jar"
+                icon="${ant.project.name}.icns"
+                jvmversion="1.4+"
+                version="${version}"
+                infostring="${ant.project.name}, ${copyright}"
+                build="${build}"
+              >
+                
+      <resourcefilelist dir=".." files="README.TXT, LICENSE.TXT"/>
+      
+      <javaproperty name="apple.awt.brushMetal" value="true"/>
+      <javaproperty name="apple.awt.showGrowBox" value="false"/>
+  
+    </jarbundler>
+    
+  </target>
+
+
+  <target name="clean" description="Clean up anything we can't rebuild">
+    <delete dir="${ant.project.name}.app"/>
+    <delete dir="bin"/> 
+    <delete dir="classes"/> 
+  </target>
+
+</project>
