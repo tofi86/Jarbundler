@@ -51,7 +51,12 @@ at <a href="http://loomcom.com/jarbundler/">http://loomcom.com/jarbundler/</a>
 which mirror <tt>&lt;execfileset&gt;</tt> and <tt>&lt;execfilelist&gt;</tt>, and add files to 
 the <tt>Contents/Resources</tt> directory.
 
-<li>Added <tt>build</tt> attribute to <tt>jarbundler</tt> task.
+<li>Added <tt>build</tt> attribute to <tt>jarbundler</tt> task. See also <tt>version</tt>
+and <tt>infostring</tt> for usage.
+<li>Added <tt>jar</tt> attribute to <tt>jarbundler</tt> task.
+<li>Added <tt>shortname</tt> attribute to <tt>jarbundler</tt> task. See also <tt>name</tt>
+for usage.
+<li>JarBundler is now a SourceForge <a href="http://sourceforge.net/projects/jarbundler">project</a>!
 <li>Changed task package to <tt>net.sourceforge.jarbundler</tt>
 
 
@@ -152,7 +157,7 @@ ANT <tt>build.xml</tt> file like this:</p>
         </div>
         
         <div>
-        <strong>Warning:</strong> Filenames and directory paths can sometimes contain spaces and 
+        <strong>Usage Warning:</strong> Filenames and directory paths can sometimes contain spaces and 
         commas.  If these characters are present the build will fail mysteriously when using this
         attribute.  Multiple JAR files are better handled by using nested 
         <tt>&lt;jarfileset&gt;</tt> and/or <tt>&lt;jarfilelist&gt;</tt> elements.
@@ -592,7 +597,7 @@ files in the FileSet or FileList have to the '<tt>dir</tt>' attribute.  Thus in 
         &lt;jarbundler dir="release"
                     name="MyApp 1.0"
                     mainclass="org.foo.myapp.Main"
-                    jars="${bin}/myapp.jar" /&gt;
+                    jar="${bin}/myapp.jar" /&gt;
 </pre>
 
 <p>This will create a Mac OS X application bundle called "MyApp 1.0.app" in
@@ -685,18 +690,18 @@ replacing the JAR files within the bundle and not replacing "<tt>JavaApplication
 copy.
 
 <p>When run on OS X system, the JarBundler ANT task uses the current copy of the "<tt>JavaApplicationStub</tt>"
-from the developer's disk.  If run under Windows or Linux a copy of this file must be obtained from a Mac OS X
-system and its location specified using the <tt>stubfile</tt> attribute.
+from the developer's disk. 
 
-<p>Both of these methods may lead to a situation where the "<tt>JavaApplicationStub</tt>" file
-could become obsolete with a future OS X update.  Under Mac OS X and untested under Linux one
-could replace the "<tt>JavaApplicationStub</tt>" file with a symbolic link.  This should guarentee that
+<p>Both of these methods could lead to a future situation where the "<tt>JavaApplicationStub</tt>" file
+could become obsolete with a future OS X update.  Under Mac OS X one
+could replace the "<tt>JavaApplicationStub</tt>" file with a symbolic link to the user's current
+copy.  This <em>should</em> guarentee that
 the end user would always be using a current copy of the stub file.  I have used this technique on
 several versions of OS X and have not have had any reported problems with its use.
 
 <p>This is not yet an option of the JarBundler task but can be accomplished with the following lines
-of ANT code after building the bundle.
-
+of ANT code after building the bundle. <strong>NB:</strong> This will not work when building under
+Windows and is untested under Linux .
 
 
 <pre>
@@ -717,6 +722,11 @@ of ANT code after building the bundle.
    &lt;/target&gt;
        
 </pre>
+
+<h3>Running JarBundler under Linux and Windows</h3>
+
+<p>If run under Windows or Linux a copy of "<tt>JavaApplicationStub</tt>" must be obtained from 
+a Mac OS X system and its location specified using the <tt>stubfile</tt> attribute.
 
 
 <h2>Changes</h2>
@@ -805,6 +815,15 @@ GNU General Public License</a> for more details.</p>
 <p>You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.</p>
+
+
+<div style="margin-top:2em;">
+<a href="http://sourceforge.net/projects/jarbundler">
+  <img src="http://sflogo.sourceforge.net/sflogo.php?group_id=160743&amp;type=2" 
+       width="125" height="37" border="0" alt="SourceForge.net Logo" />
+</a>
+</div>
+
 
 </body>
 </html>
