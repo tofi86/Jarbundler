@@ -149,6 +149,76 @@ public class PropertyListWriter {
             writeString(1, bundleProperties.getCFBundleSignature());
 
 
+
+            // CFBundleDocumentTypes, optional
+            
+            List documentTypes = bundleProperties.getDocumentTypes();
+            
+            if (documentTypes.size() > 0) {
+                        
+                writeKey(1, "CFBundleDocumentTypes");
+                openArray(1);
+                
+                Iterator itor = documentTypes.iterator();
+                
+                while(itor.hasNext()) {
+                
+                DocumentType documentType = (DocumentType)itor.next();
+                openDict(2);
+                               
+                String[] extensions = documentType.getExtensions();
+                
+                if (extensions != null) {
+                    writeKey(3, "CFBundleTypeExtensions");
+                    openArray(3);
+                
+                    for(int i=0; i<extensions.length; i++)
+                        writeString(4, extensions[i]);
+                        
+                    closeArray(3);
+                }
+
+
+                String name = documentType.getName();
+                if (name != null) {
+                    writeKey(3, "CFBundleTypeName");
+                    writeString(3, name);
+                }
+
+                String role = documentType.getRole();
+                if (role != null) {
+                    writeKey(3, "CFBundleTypeRole");
+                    writeString(3, role);
+                }
+
+				File iconFile = documentType.getIconFile();
+
+				if (iconFile != null) {
+                    writeKey(3, "CFBundleTypeIconFile");
+                    writeString(3, iconFile.getName());
+                }
+
+                String[] osTypes = documentType.getOSTypes();
+                
+                if (osTypes != null) {
+                    writeKey(3, "CFBundleTypeOSTypes");
+                    openArray(3);
+                    for(int i=0; i<osTypes.length; i++)
+                        writeString(4, osTypes[i]);
+                    closeArray(3);
+                 }
+
+                closeDict(2);
+                
+                }
+                closeArray(1);
+           	}
+
+
+
+
+
+
             // Required key
             writeKey(1, "Java");
 

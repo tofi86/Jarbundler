@@ -24,6 +24,7 @@ package net.sourceforge.jarbundler;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.LinkedList;
 
 // Java language imports
 import java.lang.String;
@@ -80,8 +81,12 @@ public class AppBundleProperties {
     private List mClassPath = new ArrayList();
     private List mExtraClassPath = new ArrayList();
 
+    // Document types
+    private List mDocumentTypes = new LinkedList();
+
+
     // Java properties
-    private Hashtable mJavaProperties = null;
+    private Hashtable mJavaProperties = new Hashtable();
 
     //================================================================================
     
@@ -90,10 +95,6 @@ public class AppBundleProperties {
      */
     
     public void addJavaProperty(String prop, String val) {
-
-        if (mJavaProperties == null)
-            mJavaProperties = new Hashtable();
-
         mJavaProperties.put(prop, val);
     }
  
@@ -113,6 +114,23 @@ public class AppBundleProperties {
     public List getExtraClassPath() {
         return mExtraClassPath;
     }
+    
+    public DocumentType createDocumentType() {
+        return new DocumentType();
+    }
+
+    public List getDocumentTypes() {
+        return mDocumentTypes;
+    }
+
+    /**
+     * Add a document type to the document type list.
+    */
+    public void addDocumentType(DocumentType documentType) {
+        mDocumentTypes.add(documentType);
+    }
+ 
+    
     //================================================================================
     
     public void setApplicationName(String s) {

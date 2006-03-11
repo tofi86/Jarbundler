@@ -51,7 +51,22 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
       
       <javaproperty name="apple.awt.brushMetal" value="true"/>
       <javaproperty name="apple.awt.showGrowBox" value="false"/>
-  
+
+      <documenttype name="Hello World text document"
+                    extensions="txt text" 
+                    ostypes="TEXT sEXT ttro" 
+                    iconFile="txt.icns"
+                    role="Editor"/>
+                    
+      <documenttype name="Hello World HTML document"
+                    extensions="html htm" 
+                    iconFile="html.icns"
+                    role="Editor"/>
+                     
+      <documenttype name="Hello World RTF document"
+                    extensions="rtf" 
+                    role="Viewer"/>
+                     
     </jarbundler>
     
   </target>

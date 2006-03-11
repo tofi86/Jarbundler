@@ -22,6 +22,7 @@ package net.sourceforge.jarbundler;
 
 // This package's imports
 import net.sourceforge.jarbundler.AppBundleProperties;
+import net.sourceforge.jarbundler.DocumentType;
 import net.sourceforge.jarbundler.JavaProperty;
 import net.sourceforge.jarbundler.PropertyListWriter;
 
@@ -668,8 +669,7 @@ public class JarBundler extends MatchingTask {
         mExtraClassPathFileLists.add(fl);
     }
 
-    public void addConfiguredJavaProperty(JavaProperty javaProperty)
-            throws BuildException {
+    public void addConfiguredJavaProperty(JavaProperty javaProperty) throws BuildException {
 
         String name = javaProperty.getName();
         String value = javaProperty.getValue();
@@ -680,6 +680,27 @@ public class JarBundler extends MatchingTask {
 
         bundleProperties.addJavaProperty(name, value);
     }
+
+
+    public void addConfiguredDocumentType(DocumentType documentType) throws BuildException {
+
+        String name = documentType.getName();
+        String role = documentType.getRole();
+        String[] osTypes = documentType.getOSTypes();
+        String[] extensions = documentType.getExtensions();
+
+        if ((name == null) || (role == null))
+            throw new BuildException(
+                 "'<documenttype>' must have both 'name' and 'role' attibutes");
+                 
+        if ((osTypes == null) && (extensions == null))
+            throw new BuildException(
+                 "'<documenttype>' must have either an 'osTypes' and an 'extensions' attibute");
+
+        bundleProperties.addDocumentType(documentType);
+    }
+
+
 
     /***************************************************************************
      * Execute the task
@@ -714,6 +735,7 @@ public class JarBundler extends MatchingTask {
         if (bundleProperties.getMainClass() == null)
             throw new BuildException(
                     "Required attribute \"mainclass\" is not set.");
+
 
         // Set up some Java properties
 
@@ -815,11 +837,25 @@ public class JarBundler extends MatchingTask {
         if (mAppIcon != null) {
 
             try {
-                mFileUtils.copyFile(mAppIcon, new File(mResourcesDir, mAppIcon
-                        .getName()));
+                mFileUtils.copyFile(mAppIcon, new File(mResourcesDir, mAppIcon.getName()));
             } catch (IOException ex) {
                 throw new BuildException("Cannot copy icon file: " + ex);
             }
+        }
+
+
+        // Copy document type icons, if any, to the resource dir
+        try {            
+            Iterator itor = bundleProperties.getDocumentTypes().iterator();
+            
+            while ( itor.hasNext() ) {
+	            DocumentType documentType = (DocumentType) itor.next();
+	            File iconFile = documentType.getIconFile();
+                if (iconFile != null) 
+                    mFileUtils.copyFile(iconFile, new File(mResourcesDir, iconFile.getName()));
+            }
+        } catch (IOException ex) {
+           throw new BuildException("Cannot copy document icon file: " + ex);
         }
 
         // Copy application jar(s) from the "jars" attribute (if any)
