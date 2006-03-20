@@ -1,6 +1,6 @@
 <project name="jarbundler" default="jar" basedir=".">
 
-  <property name="version" value="1.6.1"/>
+  <property name="version" value="1.7.0"/>
   <property name="description" value="ANT task for creating Mac OS X application bundles"/>    
 
 
@@ -101,8 +101,14 @@
 
 
 
-  <target name="test" depends="jar" description="Build an example application">
-	<ant dir="./example" target="app" inheritAll="false">
+  <target name="simple" depends="jar" description="Build an example application">
+	<ant dir="./example" target="simple" inheritAll="false">
+      <property name="jarbundler.jar" value="${basedir}/bin/${jarbundler.jar}" />
+	</ant>
+  </target>
+
+  <target name="complex" depends="jar" description="Build an example application">
+	<ant dir="./example" target="complex" inheritAll="false">
       <property name="jarbundler.jar" value="${basedir}/bin/${jarbundler.jar}" />
 	</ant>
   </target>

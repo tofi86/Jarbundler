@@ -23,7 +23,7 @@ td div {margin-top:0.5em;}
 
 
 <h1>JarBundler Ant Task</h1>
-<h1>Version 1.6</h1>
+<h1>Version 1.7</h1>
 
 <p>How many times has this happened to you?  You've written a little
 Java utility, or maybe even a more complex application, and you want to
@@ -45,20 +45,32 @@ at <a href="http://loomcom.com/jarbundler/">http://loomcom.com/jarbundler/</a>
 
 <h2>What's New</h2>
 
-<ol>
+<ul>
 
-<li>Added <tt>&lt;resourcefileset&gt;</tt> and <tt>&lt;resourcefilelist&gt;</tt> nested elements,
-which mirror <tt>&lt;execfileset&gt;</tt> and <tt>&lt;execfilelist&gt;</tt>, and add files to 
-the <tt>Contents/Resources</tt> directory.
+<li>Added <tt>&lt;documenttype&gt;</tt> nested task so that file association can be set up
+for the application</li>
 
-<li>Added <tt>build</tt> attribute to <tt>jarbundler</tt> task. See also <tt>version</tt>
-and <tt>infostring</tt> for usage.
-<li>Added <tt>jar</tt> attribute to <tt>jarbundler</tt> task.
-<li>Added <tt>shortname</tt> attribute to <tt>jarbundler</tt> task. See also <tt>name</tt>
-for usage.
-<li>JarBundler is now a SourceForge <a href="http://sourceforge.net/projects/jarbundler">project</a>!
-<li>Changed task package to <tt>net.sourceforge.jarbundler</tt>
+<p>Added <tt>&lt;javafileset&gt;</tt> and <tt>&lt;javafilelist&gt;</tt> nested task,
+which mirror <tt>&lt;resourcefileset&gt;</tt> and <tt>&lt;resourcefilelist&gt;</tt>, and adds files to 
+the <tt>Contents/Resources/Java</tt> directory.
 
+<li>Added Apple Help Book support by...
+
+  <ul>
+   <li>Adding <tt>helpbookfolder</tt> attribute to the <tt>jarbundler</tt> task</li>
+   <li>Adding <tt>helpbookname</tt> attribute to the <tt>jarbundler</tt> task</li>
+   <li>Adding <tt>javafilelist</tt> nested task to assist in moving HelpBook hook JNI  
+       library to the correct location. (see above)
+   <li>Creating a new example "Hello, World" which uses a Help Book</li>
+   <li>Example showing usage of existing <tt>&lt;resourcefileset&gt;</tt> task to copy 
+        Help Book HTML files into place.
+  </ul>
+
+<li>Split off a complex version of the  "Hello, World" example which associates
+document types and uses a Help Book</li>
+<li>Reorganize 'example' source directory to include Objective-C JNI code and use
+package structure for "Hello, World" application rather than the default package.
+</ul>
 
 <h2>Download</h2>
 
@@ -75,8 +87,8 @@ for usage.
 
 <h2>Installation</h2>
 
-<p>Put the file <tt>jarbundler-1.6.jar</tt> into <tt>/Developer/Java/Ant/lib</tt> or 
-into your local ANT lib directory.
+<p>Put the file <tt>jarbundler-1.7.jar</tt> into <tt>/Developer/Java/Ant/lib</tt> or 
+into your local ANT lib directory.  Remove any older versions at this time.
 
 
 
@@ -256,6 +268,47 @@ ANT <tt>build.xml</tt> file like this:</p>
         <i>not</i> be copied into the bundle, so the resulting .app may only work
         on systems that have these external resources available.
   </tr>
+
+
+  <tr>
+    <td class="attribute">helpbookfolder</td>
+    <td class="description">Specify the directory name of the Help Book in the "resources"
+      directory.  When this name <strong>must</strong> match the directory name when using 
+      the <tt>&lt;resourcefileset&gt;</tt> task to copy the Help Book HTML files into the bundle. 
+    
+    <div>
+    The corresponding bundle variable is <a href=http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html#//apple_ref/doc/uid/20001431-102364">
+    CFBundleHelpBookFolder</a>
+    </div>
+       
+    </td>
+  </tr>
+
+  <tr>
+    <td class="attribute">helpbookname</td>
+    <td class="description">Specify the name of the Help Book.  This is string is also used
+    as the META tag to designate the initial HTML file to be loaded into the Help Viewer application.
+    <div style="margin-left:3em;">
+    <tt>&lt;meta name="AppleTitle" content="Hello World Help"/&gt;</tt>
+    </div>
+    
+    <div>
+    <strong>NB:</strong> The Apple Help Book system does not open the file <tt>index.html</tt> by default. Although
+      it is a good practice to use this filename with the embedded META tag shown above.
+    </div>
+    
+    <div>
+    The corresponding bundle variable is <a href=http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html#//apple_ref/doc/uid/20001431-102364">
+    CFBundleHelpBookName</a>
+    </div>
+       
+    </td>
+  </tr>
+
+
+
+
+
 
   <tr>
     <td class="attribute">icon</td>
@@ -505,7 +558,8 @@ bundle and added to the app bundle classpath.  Only required if the
 <tt>jars</tt> attribute is not set.</p>
 
 <h3 class="datatype">&lt;jarfilelist&gt;</h3>
-<p>The nested <tt>jarfilelist</tt> element specifies a <a href="http://ant.apache.org/manual/CoreTypes/filelist.html">FileList</a>. All
+<p>The nested <tt>jarfilelist</tt> element specifies a 
+<a href="http://ant.apache.org/manual/CoreTypes/filelist.html">FileList</a>. All
 files included in this filelist will be included in the application
 bundle and added to the app bundle classpath.  Only required if the
 <tt>jars</tt> attribute is not set.</p>
@@ -533,7 +587,6 @@ Apple Java Properties for JDK 1.4+</a>
 files included in this fileset will be added to the application
 bundle's "Contents/MacOS" directory and set executable.  Optional.</p>
 
-
 <h3 class="datatype">&lt;execfilelist&gt;</h3>
 <p>The nested <tt>execfilelist</tt> element specifies a 
 <a href="http://ant.apache.org/manual/CoreTypes/filelist.html">FileList</a>.  All
@@ -547,15 +600,29 @@ bundle's "Contents/MacOS" directory and set executable.  Optional.</p>
 <p>The nested <tt>resourcefileset</tt> element specifies a 
 <a href="http://ant.apache.org/manual/CoreTypes/fileset.html">FileSet</a>.  All
 files included in this fileset will be added to the application
-bundle's "Contents/Resources" directory and set executable.  Optional.</p>
-
-
+bundle's "Contents/Resources" directory.  Optional.</p>
 
 <h3 class="datatype">&lt;resourcefilelist&gt;</h3>
 <p>The nested <tt>resourcefilelist</tt> element specifies a 
-<a href=http://ant.apache.org/manual/CoreTypes/filelist.html">FileList</a>.  All
+<a href="http://ant.apache.org/manual/CoreTypes/filelist.html">FileList</a>.  All
 files included in this filelist will be added to the application
-bundle's "Contents/Resources" directory and set executable.  Optional.</p>
+bundle's "Contents/Resources" directory.  Optional.</p>
+
+
+
+
+<h3 class="datatype">&lt;javafileset&gt;</h3>
+<p>The nested <tt>javafileset</tt> element specifies a 
+<a href="http://ant.apache.org/manual/CoreTypes/fileset.html">FileSet</a>.  All
+files included in this fileset will be added to the application
+bundle's "Contents/Resources/Java" directory.  Optional.</p>
+
+<h3 class="datatype">&lt;javafilelist&gt;</h3>
+<p>The nested <tt>javafilelist</tt> element specifies a 
+<a href="http://ant.apache.org/manual/CoreTypes/filelist.html">FileList</a>.  All
+files included in this filelist will be added to the application
+bundle's "Contents/Resources/Java" directory.  Optional.</p>
+
 
 
 
@@ -677,6 +744,76 @@ requires JVM version 1.4 or the highest JVM available.</p>
 
 </pre>
 
+<h2>Including an Apple Help Book</h2>
+
+<p>Apple Help Book support can be found <a href="http://developer.apple.com/qa/qa2001/qa1022.html">here</a>.
+Basically one needs to specify both the HelpBook directory name and the Help Book name. The application
+must also have a unique Bundle ID so that the Help Viewer can reference the application.
+
+The Help Book itself consists of pure HTML files, images, and optional CSS styling. This is easy
+to create and develop out side of the application.  The "Hello, World" example can be used as a
+starter.  The Help Book viewer does not automatcially open the file named <tt>index.html</tt>
+as would a web server.  The root file <strong>must</strong> contain a META tag specifing the 
+name <tt>AppleTitle</tt>.  This META tag is used to both designate the root HTML file and its
+content is used by the Help Viewer in its "Library" listing.
+
+<div style="margin-left:3em;">
+<tt>&lt;meta name="AppleTitle" content="Hello World Help"/&gt;</tt>
+</div>
+
+<p>Finally, one needs a JNI library to communicate between the "Help" menu item and the "Help Book 
+Viewer".  This is a very simple file and usage is demonstrated in the "Hello, World" example.
+Windows and Linux users will not be able to generate the JNI library on their platforms.
+I have any idea at this point how to generate a univeral binary for this library using 
+command line.  
+Feedback is welcome -- a technique using XCode is described 
+<A href="http://developer.apple.com/qa/qa2005/qa1295.html">here</a>.
+
+<pre>
+
+    &lt;jarbundler dir="${basedir}"
+                name="${ant.project.name}"
+                          .
+                          .
+                          .
+                bundleid="net.sourceforge.jarbundler.example.HelloWorld"   
+                helpbookfolder="HelpBook"
+                helpbookname="Hello World Help" &gt; 
+                
+ 
+      &lt;!-- Copy the HelpBook JNI library  --&gt;
+      &lt;javafilelist dir="${basedir}/build" files="libHelpBookJNI.jnilib"/&gt;
+
+      &lt;!-- Copy the HelpBook contents --&gt;   
+      &lt;resourcefileset dir="${basedir}" includes="HelpBook/**/*.*/"/&gt;
+                     
+    &lt;/jarbundler&gt;
+    
+
+</pre>
+
+<h3>Troubleshooting the Help Viewer cache.</h3> 
+<p>During development the Help Viewer sometimes 
+refuses to update the contents of a Help Book which changed.  The Apple Developer Docs
+<a href="http://developer.apple.com/qa/qa2005/qa1409.html">suggest</a> to delete or 
+edit the file <tt>~/Library/Preferences/com.apple.help.plist</tt>.  This file
+contains the list of known Help Books.  If you double-click on this file the XML Property Editor
+applicaiton will be launched and re can 'delete' your bundle ID entry and "save" this file.  Deleting
+this file does no harm but is a less elegant way to deal with the problem.
+
+<p>This document also suggests deleting the
+folder <tt>~/Library/Caches/com.apple.helpui</tt> to help with refresh problem during development.
+
+<h3>Future Help Book development in JarBundler</h3>
+<p>This Help Book creation technique should work for 90% of the Java applications desiring Help 
+Book support.  The nested tag <tt>&lt;resourcefileset&gt;</tt> can be used to move localized
+Help Books into their proper 
+<a href="http://developer.apple.com/qa/qa2001/qa1022.html">location</a>.  
+At some point a <tt>&lt;helpbook&gt;</tt> task may be added to facilitate deploying 
+multilingual Help Books.
+
+
+
 <h2>Specifying the Java Launching Stub File</h2>
 
 <p>The stub file "<tt>JavaApplicationStub</tt>" is located inside of your application bundle in the 
@@ -730,6 +867,23 @@ a Mac OS X system and its location specified using the <tt>stubfile</tt> attribu
 
 
 <h2>Changes</h2>
+
+<h3>March 2006 (version 1.6)</h3>
+
+<p>Added <tt>&lt;resourcefileset&gt;</tt> and <tt>&lt;resourcefilelist&gt;</tt> nested elements,
+which mirror <tt>&lt;execfileset&gt;</tt> and <tt>&lt;execfilelist&gt;</tt>, and add files to 
+the <tt>Contents/Resources</tt> directory.
+
+<p>Added <tt>build</tt> attribute to <tt>jarbundler</tt> task. See also <tt>version</tt>
+and <tt>infostring</tt> for usage.
+<p>Added <tt>jar</tt> attribute to <tt>jarbundler</tt> task.
+<p>Added <tt>shortname</tt> attribute to <tt>jarbundler</tt> task. See also <tt>name</tt>
+for usage.
+<p>JarBundler is now a SourceForge <a href="http://sourceforge.net/projects/jarbundler">project</a>!
+<p>Changed task package to <tt>net.sourceforge.jarbundler</tt>
+
+
+
 
 <h3>February 2006 (version 1.5)</h3>
 

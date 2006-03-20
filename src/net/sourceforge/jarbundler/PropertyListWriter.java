@@ -148,10 +148,19 @@ public class PropertyListWriter {
             writeKey(1, "CFBundleSignature");
             writeString(1, bundleProperties.getCFBundleSignature());
 
-
-
-            // CFBundleDocumentTypes, optional
-            
+            // CFBundleHelpBookFolder, optional
+            if (bundleProperties.getCFBundleHelpBookFolder() != null) {
+                writeKey(1, "CFBundleHelpBookFolder");
+                writeString(1, bundleProperties.getCFBundleHelpBookFolder());
+            }
+           
+            // CFBundleHelpBookName, optional
+            if (bundleProperties.getCFBundleHelpBookName() != null) {
+                writeKey(1, "CFBundleHelpBookName");
+                writeString(1, bundleProperties.getCFBundleHelpBookName());
+            }
+                             
+            // CFBundleDocumentTypes, optional           
             List documentTypes = bundleProperties.getDocumentTypes();
             
             if (documentTypes.size() > 0) {

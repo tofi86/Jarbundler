@@ -260,12 +260,14 @@ public class JarBundler extends MatchingTask {
     private File mAppIcon;
 
     private File mRootDir;
-
+    
     private final List mJarFileSets = new ArrayList();
 
     private final List mExecFileSets = new ArrayList();
 
     private final List mResourceFileSets = new ArrayList();
+    
+    private final List mJavaFileSets = new ArrayList();
 
     private final List mExtraClassPathFileSets = new ArrayList();
 
@@ -274,6 +276,8 @@ public class JarBundler extends MatchingTask {
     private final List mExecFileLists = new ArrayList();
 
     private final List mResourceFileLists = new ArrayList();
+    
+    private final List mJavaFileLists = new ArrayList();
 
     private final List mExtraClassPathFileLists = new ArrayList();
 
@@ -576,6 +580,15 @@ public class JarBundler extends MatchingTask {
         bundleProperties.setCFBundleShortVersionString(s);
     }
 
+    public void setHelpBookFolder(String s) {
+        bundleProperties.setCFBundleHelpBookFolder(s);
+    }
+    
+    public void setHelpBookName(String s) {
+        bundleProperties.setCFBundleHelpBookName(s);
+    }
+    
+    
     /**
      * Setter for the "jars" attribute (required if no "jarfileset" is present)
      */
@@ -661,6 +674,14 @@ public class JarBundler extends MatchingTask {
         mResourceFileLists.add(fl);
     }
 
+    public void addJavafileset(FileSet fs) {
+        mJavaFileSets.add(fs);
+    }
+
+    public void addJavafilelist(FileList fl) {
+        mJavaFileLists.add(fl);
+    }
+
     public void addExtraclasspathfileset(FileSet fs) {
         mExtraClassPathFileSets.add(fs);
     }
@@ -700,7 +721,7 @@ public class JarBundler extends MatchingTask {
         bundleProperties.addDocumentType(documentType);
     }
 
-
+    
 
     /***************************************************************************
      * Execute the task
@@ -842,8 +863,7 @@ public class JarBundler extends MatchingTask {
                 throw new BuildException("Cannot copy icon file: " + ex);
             }
         }
-
-
+           
         // Copy document type icons, if any, to the resource dir
         try {            
             Iterator itor = bundleProperties.getDocumentTypes().iterator();
@@ -858,6 +878,7 @@ public class JarBundler extends MatchingTask {
            throw new BuildException("Cannot copy document icon file: " + ex);
         }
 
+              
         // Copy application jar(s) from the "jars" attribute (if any)
         processJarAttrs();
 
@@ -879,8 +900,14 @@ public class JarBundler extends MatchingTask {
         // Copy resource(s) from the nested resourcefileset element(s)
         processResourceFileSets();
 
+        // Copy resource(s) from the nested javafileset element(s)
+        processJavaFileSets();
+
         // Copy resource(s) from the nested resourcefilelist element(s)
         processResourceFileLists();
+
+        // Copy resource(s) from the nested javafilelist element(s)
+        processJavaFileLists();
 
         // Add external classpath references from the extraclasspath attributes
         processExtraClassPathAttrs();
@@ -1130,16 +1157,24 @@ public class JarBundler extends MatchingTask {
         }
     }
 
+    // Methods for copying FileSets into the application bundle ///////////////////////////////
+    
+    // Files for the Contents/MacOS directory
     private void processExecFileSets() {
         processCopyingFileSets(mExecFileSets, mMacOsDir, true);
     }
-
+    
+    // Files for the Contents/Resources directory
     private void processResourceFileSets() {
         processCopyingFileSets(mResourceFileSets, mResourcesDir, false);
     }
 
-    private void processCopyingFileSets(List fileSets, File targetdir,
-            boolean setExec) {
+    // Files for the Contents/Resources/Java directory
+    private void processJavaFileSets() {
+        processCopyingFileSets(mJavaFileSets, mJavaDir, false);
+    }
+
+    private void processCopyingFileSets(List fileSets, File targetdir, boolean setExec) {
 
         for (Iterator execIter = fileSets.iterator(); execIter.hasNext();) {
             FileSet fs = (FileSet) execIter.next();
@@ -1178,13 +1213,21 @@ public class JarBundler extends MatchingTask {
         }
     }
 
+    // Methods for copying FileLists into the application bundle /////////////////////////////
+    
+    // Files for the Contents/MacOS directory
     private void processExecFileLists() throws BuildException {
-
         processCopyingFileLists(mExecFileLists, mMacOsDir, true);
     }
 
+    // Files for the Contents/Resources directory
     private void processResourceFileLists() throws BuildException {
         processCopyingFileLists(mResourceFileLists, mResourcesDir, false);
+    }
+
+    // Files for the Contents/Resources/Java directory
+    private void processJavaFileLists() throws BuildException {
+        processCopyingFileLists(mJavaFileLists, mJavaDir, false);
     }
 
     private void processCopyingFileLists(List fileLists, File targetDir,
@@ -1223,6 +1266,8 @@ public class JarBundler extends MatchingTask {
         }
     }
 
+    // Copy the application stub into the bundle /////////////////////////////////////////////
+    
     private void copyApplicationStub() throws BuildException {
 
         if (mVerbose) 
@@ -1250,6 +1295,8 @@ public class JarBundler extends MatchingTask {
         listWriter.writeFile(infoPlist);
     }
 
+    // Write the PkgInfo file into the application bundle ////////////////////////////////////
+    
     private void writePkgInfo() throws BuildException {
         File pkgInfo = new File(mContentsDir, "PkgInfo");
         PrintWriter pkgWriter = null;

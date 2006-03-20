@@ -48,6 +48,13 @@ public class AppBundleProperties {
     // Build number, optional
     private String mCFBundleVersion = null;
 
+    // Help Book folder, optional
+    private String mCFHelpBookFolder = null;
+
+    // Help Book name, optional
+    private String mCFHelpBookName = null;
+  
+    
     // Explicit default: false
     private boolean mCFBundleAllowMixedLocalizations = false;
 
@@ -62,7 +69,7 @@ public class AppBundleProperties {
 
     // Explicit default: ????
     private String mCFBundleSignature = "????";
-
+    
     // Explicit default: 1.3+
     private String mJVMVersion = "1.3+";
 
@@ -81,12 +88,12 @@ public class AppBundleProperties {
     private List mClassPath = new ArrayList();
     private List mExtraClassPath = new ArrayList();
 
-    // Document types
-    private List mDocumentTypes = new LinkedList();
-
 
     // Java properties
     private Hashtable mJavaProperties = new Hashtable();
+
+    // Document types
+    private List mDocumentTypes = new LinkedList();
 
     //================================================================================
     
@@ -114,6 +121,7 @@ public class AppBundleProperties {
     public List getExtraClassPath() {
         return mExtraClassPath;
     }
+ 
     
     public DocumentType createDocumentType() {
         return new DocumentType();
@@ -129,7 +137,8 @@ public class AppBundleProperties {
     public void addDocumentType(DocumentType documentType) {
         mDocumentTypes.add(documentType);
     }
- 
+    
+     
     
     //================================================================================
     
@@ -253,6 +262,23 @@ public class AppBundleProperties {
         return mCFBundleSignature;
     }
 
+    public void setCFBundleHelpBookFolder(String s) {
+        mCFHelpBookFolder = s;
+    }
+
+    public String getCFBundleHelpBookFolder() {
+        return mCFHelpBookFolder;
+    }
+
+    public void setCFBundleHelpBookName(String s) {
+        mCFHelpBookName = s;
+    }
+
+    public String getCFBundleHelpBookName() {
+        return mCFHelpBookName;
+    }
+
+    
     public void setMainClass(String s) {
         mMainClass = s;
     }
