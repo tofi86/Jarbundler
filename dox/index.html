@@ -7,9 +7,10 @@
 h1 {text-align:center;}
 h2 {margin-top:2em;}
 h3.datatype {margin-top:2em; margin-bottom:0.5em; font-family:monospace;}
-tt {font-family:monospace;}
+tt {font-family:monospace; font-size:1.15em;font-weight:bold;}
+td tt {font-family:monospace; font-size:1em;font-weight:normal;}
 li {margin-top:1em;}
-pre {margin-bottom:3em;}
+pre {margin-bottom:3em;background-color:#eee;padding:5px;border:1px solid black;}
 td div {margin-top:0.5em;}
 .attribute {vertical-align:top; text-align:left; font-family:monospace; width:200px;}
 .description {vertical-align:top; text-align:left;}
@@ -22,7 +23,7 @@ td div {margin-top:0.5em;}
 <body style="margin:1.5em; margin-right:3em;">
 
 
-<h1>JarBundler Ant Task</h1>
+<h1>JarBundler Ant Tasks</h1>
 <h1>Version 1.7</h1>
 
 <p>How many times has this happened to you?  You've written a little
@@ -33,7 +34,7 @@ create Mac OS X application bundle for easy distribution.
 but you're forced to go run the Apple Jar Bundler and tweak all the
 settings manually every time you build.</p>
 
-<p>Well no more!  JarBundler is a feature-rich ant task which will
+<p>Well no more!  JarBundler is a feature-rich Ant task which will
 create a Mac OS X application bundle from a list of Jar files and a
 main class name.  You can add an Icon resource, set various Mac OS X
 native look-and-feel bells and whistles, and maintain your application
@@ -47,29 +48,29 @@ at <a href="http://loomcom.com/jarbundler/">http://loomcom.com/jarbundler/</a>
 
 <ul>
 
-<li>Added <tt>&lt;documenttype&gt;</tt> nested task so that file association can be set up
+<li>Added <tt>&lt;documenttype&gt;</tt> nested task so that file associations can be set up
 for the application</li>
 
-<p>Added <tt>&lt;javafileset&gt;</tt> and <tt>&lt;javafilelist&gt;</tt> nested task,
-which mirror <tt>&lt;resourcefileset&gt;</tt> and <tt>&lt;resourcefilelist&gt;</tt>, and adds files to 
-the <tt>Contents/Resources/Java</tt> directory.
+<li>Added <tt>&lt;javafileset&gt;</tt> and <tt>&lt;javafilelist&gt;</tt> nested tasks,
+which mirror <tt>&lt;resourcefileset&gt;</tt> and <tt>&lt;resourcefilelist&gt;</tt>, in 
+order to add files to the <tt>Contents/Resources/Java</tt> directory</li>
 
 <li>Added Apple Help Book support by...
 
   <ul>
    <li>Adding <tt>helpbookfolder</tt> attribute to the <tt>jarbundler</tt> task</li>
    <li>Adding <tt>helpbookname</tt> attribute to the <tt>jarbundler</tt> task</li>
-   <li>Adding <tt>javafilelist</tt> nested task to assist in moving HelpBook hook JNI  
+   <li>Adding <tt>javafilelist</tt> nested task to assist in moving the Help Book JNI  
        library to the correct location. (see above)
-   <li>Creating a new example "Hello, World" which uses a Help Book</li>
-   <li>Example showing usage of existing <tt>&lt;resourcefileset&gt;</tt> task to copy 
-        Help Book HTML files into place.
   </ul>
+</li>
 
-<li>Split off a complex version of the  "Hello, World" example which associates
-document types and uses a Help Book</li>
+<li>Split the "Hello, World" example into a complex build which associates
+document types and uses a Help Book, and a simple minimal build</li>
+
 <li>Reorganize 'example' source directory to include Objective-C JNI code and use
-package structure for "Hello, World" application rather than the default package.
+package structure for "Hello, World" application rather than putting everything
+in the default package
 </ul>
 
 <h2>Download</h2>
@@ -87,32 +88,34 @@ package structure for "Hello, World" application rather than the default package
 
 <h2>Installation</h2>
 
-<p>Put the file <tt>jarbundler-1.7.jar</tt> into <tt>/Developer/Java/Ant/lib</tt> or 
+<p>Move the file <tt>jarbundler-1.7.jar</tt> 
+into <tt>/Developer/Java/Ant/lib</tt> or 
 into your local ANT lib directory.  Remove any older versions at this time.
 
 
 
-<h2>Running</h2>
+<h2>Using in the Build file</h2>
 
 <p>To use the Jar Bundler Ant Task, create a task definition in your
 ANT <tt>build.xml</tt> file like this:</p>
 
-<pre>
+<pre style="padding-left:2em;">
 &lt;taskdef name="jarbundler" 
          classname="net.sourceforge.jarbundler.JarBundler" /&gt;
 </pre>
 
 
 
-<p>Now, from any target, you can call the "jarbundler" task.</p>
+<p>Now, from a target, you can add the "jarbundler" task.</p>
 
-<pre>
-  &lt;jarbundler dir="release"
-              name="MyApp 1.0"
-              mainclass="org.foo.myapp.Main" 
-              jar="myapp.jar" /&gt;
+<pre style="padding-left:2em;">
+&lt;jarbundler dir="release"
+            name="MyApp"
+            mainclass="org.foo.myapp.Main" 
+            jar="myapp.jar" /&gt;
 </pre>
 
+<!-- Task Attributes, required =============================================================-->
 
 
 <h2>Task Attributes, required</h2>
@@ -120,8 +123,8 @@ ANT <tt>build.xml</tt> file like this:</p>
 <table border="1" cellpadding="4" cellspacing="0" width="90%" style="font-size: 10pt;">
 
   <tr>
-    <th><b>Attribute</b></td>
-    <th><b>Description</b></td>
+    <th>Attribute</td>
+    <th>Description</td>
   </tr>
 
   <tr>
@@ -139,7 +142,7 @@ ANT <tt>build.xml</tt> file like this:</p>
     <td class="description">The name of the main class to run when the application bundle is launched.
     <div>
     The corresponding bundle variable is <a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaDictionaryInfo.plistKeys.html">
-     <tt>MainClass</tt></a>
+     MainClass</a>
     </div>
     </td>
   </tr>
@@ -148,31 +151,11 @@ ANT <tt>build.xml</tt> file like this:</p>
     <td class="attribute">jar</td>
     <td class="description">A single jar file to be used in your application.
         <div><strong>Not Required</strong> if there are nested <tt>&lt;jarfileset&gt;</tt> or 
-        <tt>&lt;jarfilelist&gt;</tt> elements or if the <tt>jars</tt> attribute is used.
+        <tt>&lt;jarfilelist&gt;</tt> nested tasks.
         </div>
         <div>
-        Can be used with nested <tt>&lt;jarfileset&gt;</tt> and/or <tt>&lt;jarfilelist&gt; elements
-        and/or the <tt>jars</tt> attribute.
-        </div>
-        </td>
-  </tr>
-
-
-  <tr>
-    <td class="attribute">jars</td>
-    <td class="description">
-        A list of jar files or patternsets (space or comma seperated) to be used in your application.
-        
-        <div>
-        <strong>Not Required</strong> if there are nested <tt>&lt;jarfileset&gt;</tt> or 
-        <tt>&lt;jarfilelist&gt;</tt> elements or if the <tt>jar</tt> attribute is used.
-        </div>
-        
-        <div>
-        <strong>Usage Warning:</strong> Filenames and directory paths can sometimes contain spaces and 
-        commas.  If these characters are present the build will fail mysteriously when using this
-        attribute.  Multiple JAR files are better handled by using nested 
-        <tt>&lt;jarfileset&gt;</tt> and/or <tt>&lt;jarfilelist&gt;</tt> elements.
+        Can be used with nested <tt>&lt;jarfileset&gt;</tt> and/or <tt>&lt;jarfilelist&gt;</tt>
+        tasks i.e. all jar files will be added to the class path.
         </div>
         </td>
   </tr>
@@ -180,13 +163,16 @@ ANT <tt>build.xml</tt> file like this:</p>
 </table>
 </div>
 
+<!-- Task Attributes, optional =============================================================-->
+
+
 <h2>Task Attributes, optional</h2>
 <div align="center">
 <table border="1" cellpadding="4" cellspacing="0" width="90%" style="font-size: 10pt;">
 
   <tr>
-    <th class="attribute"><b>Attribute</b></td>
-    <th class="description"><b>Description</b></td>
+    <th>Attribute</td>
+    <th><b>Description</td>
   </tr>
 
   <tr>
@@ -194,7 +180,7 @@ ANT <tt>build.xml</tt> file like this:</p>
     <td class="description">Extra command-line arguments for the Java application.
     <div>
     The corresponding bundle variable is <a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaDictionaryInfo.plistKeys.html">
-    <tt>Arguments</tt></a>
+    Arguments</a>
     </div>
     </td>
   </tr>
@@ -203,7 +189,7 @@ ANT <tt>build.xml</tt> file like this:</p>
   <tr>
     <td class="attribute">build</td>
     <td class="description">Application build number. This string is used in the default 
-    "About..." box along with the 'version' number. This default format is "version (build)" i.e.
+    "About..." box along with the 'version' number. This default About Box format is "version (build)" i.e.
     "4.3.1 (231)".  Also see <tt>version</tt> and <tt>infostring</tt> attributes.
     
     <div>
@@ -256,12 +242,6 @@ ANT <tt>build.xml</tt> file like this:</p>
   </tr>
 
   <tr>
-    <td class="attribute">execs</td>
-    <td class="description">A list of files or patternsets (space- or comma-seperated) to
-        place into the "Resources/MacOS" directory and set executable.</td>
-  </tr>
-
-  <tr>
     <td class="attribute">extraclasspath</td>
     <td class="description">A list of files or patternsets (space or comma seperated) to
         add to the bundle's classpath.  The files referenced by this property will
@@ -289,7 +269,7 @@ ANT <tt>build.xml</tt> file like this:</p>
     <td class="description">Specify the name of the Help Book.  This is string is also used
     as the META tag to designate the initial HTML file to be loaded into the Help Viewer application.
     <div style="margin-left:3em;">
-    <tt>&lt;meta name="AppleTitle" content="Hello World Help"/&gt;</tt>
+    <tt style="font-size:1em;">&lt;meta name="AppleTitle" content="Hello World Help"/&gt;</tt>
     </div>
     
     <div>
@@ -304,10 +284,6 @@ ANT <tt>build.xml</tt> file like this:</p>
        
     </td>
   </tr>
-
-
-
-
 
 
   <tr>
@@ -340,7 +316,7 @@ ANT <tt>build.xml</tt> file like this:</p>
 
     <div>
     The corresponding bundle variable is <a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaDictionaryInfo.plistKeys.html">
-    <tt>JVMVersion</tt></a>
+    JVMVersion</a>
     </div>
 
 
@@ -434,7 +410,7 @@ ANT <tt>build.xml</tt> file like this:</p>
     <td class="description">Command line options to pass the JVM at startup.
     <div>
     The corresponding bundle variable is <a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaDictionaryInfo.plistKeys.html">
-    <tt>VMOptions</tt></a>
+    VMOptions</a>
     </div>
     </td>
   </tr>
@@ -444,7 +420,7 @@ ANT <tt>build.xml</tt> file like this:</p>
     <td class="description">The working directory for the Java application.
     <div>
     The corresponding bundle variable is <a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaDictionaryInfo.plistKeys.html">
-    <tt>WorkingDirectory</tt></a>
+    WorkingDirectory</a>
     </div>
     </td>
   </tr>
@@ -453,6 +429,8 @@ ANT <tt>build.xml</tt> file like this:</p>
 
 </table>
 </div>
+
+<!-- Deprecated attributes ================================================================-->
 
 <h2>Task Attributes, deprecated</h2>
 <div align="center">
@@ -489,6 +467,22 @@ ANT <tt>build.xml</tt> file like this:</p>
   </tr>
 
   <tr>
+    <td class="attribute">execs</td>
+    <td class="description">A list of files or patternsets (space or comma seperated) to
+        place into the "Resources/MacOS" directory and set executable.
+        
+        <div>
+        <strong>Usage Warning:</strong> Filenames and directory paths can sometimes contain spaces and 
+        commas.  If these characters are present the build will fail mysteriously when using this
+        attribute.
+        </div>  
+    <div>
+    Use <tt>&lt;execfileset/&gt;</tt> or <tt>&lt;execfilelist/&gt;</tt> nested tasks instead.
+    </div>
+   </td>
+  </tr>
+
+  <tr>
     <td class="attribute">growbox</td>
     <td class="description">Show the Aqua resize (grow) box. 
     <div>
@@ -502,6 +496,23 @@ ANT <tt>build.xml</tt> file like this:</p>
     <td class="description">Resizable window's growbox (resize control) intrudes
        into AWT content. If turned off, the bottom of the window is 
        pushed down 15 pixels. <i>(Deprecated under JVM 1.4.1)</i></td>
+  </tr>
+
+  <tr>
+    <td class="attribute">jars</td>
+    <td class="description">
+        A list of jar files or patternsets (space or comma seperated) to be used in your application.
+        
+        <div>
+        <strong>Usage Warning:</strong> Filenames and directory paths can sometimes contain spaces and 
+        commas.  If these characters are present the build will fail mysteriously when using this
+        attribute.  
+        </div>
+        
+        <div>
+        Use <tt>&lt;jarfileset&gt;</tt> and/or <tt>&lt;jarfilelist&gt;</tt> nested tasks instead.
+        </div>
+        </td>
   </tr>
 
   <tr>
@@ -546,8 +557,9 @@ ANT <tt>build.xml</tt> file like this:</p>
 </div>
 
 
+<!-- Nested Tasks =========================================================================-->
 
-<h2>Nested DataTypes</h2>
+<h2>Nested DataType Task</h2>
 
 <h3 class="datatype">&lt;jarfileset&gt;</h3>
 <p>The nested <tt>jarfileset</tt> element specifies a 
@@ -564,22 +576,21 @@ files included in this filelist will be included in the application
 bundle and added to the app bundle classpath.  Only required if the
 <tt>jars</tt> attribute is not set.</p>
 
+
 <h3 class="datatype">&lt;javaproperty ...&gt;</h3>
 <p>This ANT DataType element allows developers to specify java properties
 for the info.plist.  This DataType repalces many <tt>jarbundler</tt> tag attributes. However, if
-a deprecated attribute is used it will take precedent over a javaproperty.  This was done
-to maintain backward compatibility with earlier versions of jarbundler.
+a deprecated attribute is used it will take precedent over a <tt>javaproperty</tt>.  This was done
+to maintain backward compatibility with earlier versions of <tt>jarbundler</tt>.
 
-<p>This elements takes the form:
-<pre style="margin-left:5em; margin-bottom:0em;">
+<p>This task takes name/value pairs:
+<pre style="padding-left:5em; margin-bottom:0em;">
 &lt;javaproperty name="apple.awt.showGrowBox" value="true"/&gt;
 </pre>
 
 <p>Additional Java Properites can be found in the Apple Developer Connection document: &nbsp;
 <a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaSystemProperties.html">
 Apple Java Properties for JDK 1.4+</a>
-
-
 
 <h3 class="datatype">&lt;execfileset&gt;</h3>
 <p>The nested <tt>execfileset</tt> element specifies a 
@@ -592,8 +603,6 @@ bundle's "Contents/MacOS" directory and set executable.  Optional.</p>
 <a href="http://ant.apache.org/manual/CoreTypes/filelist.html">FileList</a>.  All
 files included in this filelist will be added to the application
 bundle's "Contents/MacOS" directory and set executable.  Optional.</p>
-
-
 
 
 <h3 class="datatype">&lt;resourcefileset&gt;</h3>
@@ -609,8 +618,6 @@ files included in this filelist will be added to the application
 bundle's "Contents/Resources" directory.  Optional.</p>
 
 
-
-
 <h3 class="datatype">&lt;javafileset&gt;</h3>
 <p>The nested <tt>javafileset</tt> element specifies a 
 <a href="http://ant.apache.org/manual/CoreTypes/fileset.html">FileSet</a>.  All
@@ -622,9 +629,6 @@ bundle's "Contents/Resources/Java" directory.  Optional.</p>
 <a href="http://ant.apache.org/manual/CoreTypes/filelist.html">FileList</a>.  All
 files included in this filelist will be added to the application
 bundle's "Contents/Resources/Java" directory.  Optional.</p>
-
-
-
 
 <h3 class="datatype">&lt;extraclasspathfileset&gt;</h3>
 <p>The nested <tt>extraclasspathfileset</tt> element specifies
@@ -644,46 +648,143 @@ copied into the bundle itself.  This allows you to specify external
 system classpath dependencies without bundling the resources.  Resources
 can be files or directories. Optional.</p>
 
+
 <h3>Note on FileList and FileSet target locations</h3>
 <p>Note that in fact the files are installed in locations which have the same relation 
 to either <tt>Contents/MacOS</tt> or <tt>Contents/Resources</tt> directories as the 
 files in the FileSet or FileList have to the '<tt>dir</tt>' attribute.  Thus in the case:
 
-<pre style="margin-left:3em; margin-bottom:0em;">
+<pre style="padding-left:3em; margin-bottom:0em;">
  &lt;resourcefileset dir="builddir/architectures" includes="ppc/*.jnilib"/&gt;
 </pre>
 
 <p>the <tt>*.jnilib</tt> files will be installed in <tt>Contents/Resources/ppc</tt>
 
 
+<!-- DocumentType Task ======================================================================-->
+
+
+<h2>Associating Documents with your Application</h2>
+
+<h3><tt>&lt;documenttype&gt;</tt> Task</h3>
+<p>The nested <tt>documenttype</tt> task adds the appropriate elements to the <tt>Info.plist</tt>
+file to associate a set of document file types with the application.  This association  means
+that this application:
+
+<ul>
+  <li>will be included in the documents control-click "Open with.." list
+  <li>will be selected if this document is dragged over it
+  <li>can be selected as the default application for opening this document type
+</ul>
+
+<p>It is important to note that these association are done by the operation system, your
+application must supply to proper code to handle the open document requires.
+
+<p> Also see Apple Developer Documentation on the
+<a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html#//apple_ref/doc/uid/20001431-101685">CFBundleDocumentTypes</a>
+key.
+
+<p><strong>NB: </strong> You must use at least one of the attributes "<tt>extensions</tt>" 
+or "<tt>ostypes</tt>".  Both may, of course, be used.
+
+
+<h3><tt>&lt;documenttype&gt;</tt> Task Attributes</h3>
+<div align="center">
+<table border="1" cellpadding="4" cellspacing="0" width="90%" style="font-size: 10pt;">
+
+  <tr>
+    <th>Attribute</td>
+    <th>Description</td>
+  </tr>
+
+  <tr>
+    <td class="attribute">name</td>
+    <td class="description">
+    An application's unique name for this document type.  For example, "<tt>Text Document</tt>" or
+    "<tt>Raw Data Document</tt>"
+    
+    <div><strong>NB: </strong>Required attribute</div>
+    </td>
+  </tr>
+
+  <tr>
+    <td class="attribute">extensions</td>
+    <td class="description">
+    A comma or space delimited string of filename extensions.
+    Do not specify the leading period. To open documents with 
+    any extension, specify an extension with a single asterisk "<tt>*</tt>".    </td>
+  </tr>
+
+  <tr>
+    <td class="attribute">ostypes</td>
+    <td class="description">
+     A comma or space delimited string of Mac OS types. Each value contains a four-letter type.
+     To open documents of any type, 
+     include four asterisk characters "<tt>****</tt>" as the type code. These codes are equivalent 
+     to the legacy type codes used by Mac OS 9.  Currently, OS Types with leading or trainling
+     spaces or comma cannot be processed.
+    </td>
+  </tr>
+
+  <tr>
+    <td class="attribute">icontype</td>
+    <td class="description">
+     Specifies the name of an icon file used to associate with this document type.  This icon
+     file is copied into the application bundle.  These icons will be used for the document
+     look if this application is associated as the default application for this document type
+     use the Finder "Get info" command with the document.
+  </td>
+  </tr>
+
+  <tr>
+    <td class="attribute">role</td>
+    <td class="description">
+    This key specifies the application's role with respect to the type. The value can be
+    <tt>Editor</tt>, <tt>Viewer</tt>, <tt>Shell</tt>, or <tt>None</tt>. See 
+    <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/ConfigApplications.html#//apple_ref/doc/uid/20002094-98566">
+    "Document Configuration"</a>
+    for descriptions of these values. 
+    
+    <div><strong>NB: </strong>Required attribute</div>
+    </td>
+  </tr>
+
+</table>
+</div>
+
+
+
+
+<!--Examples ================================================================================-->
+
+
 <h2>Examples</h2>
 
 <p>A minimal example might look like this</p>
 
-<pre>
-        &lt;jarbundler dir="release"
-                    name="MyApp 1.0"
-                    mainclass="org.foo.myapp.Main"
-                    jar="${bin}/myapp.jar" /&gt;
+<pre style="padding-left:3em; margin-bottom:0em;">
+ &lt;jarbundler dir="release"
+             name="MyApp"
+             mainclass="org.foo.myapp.Main"
+             jar="build/myapp.jar" /&gt;
 </pre>
 
-<p>This will create a Mac OS X application bundle called "MyApp 1.0.app" in
-the directory "release".</p>
+<p>This will create a Mac OS X application bundle called "MyApp.app" in
+the directory "release" using a JAR file which was created in the "build" directory.</p>
 
-<p>You can use FileSets or FileLists instead of the <tt>jars</tt> and <tt>execs</tt>
-attributes, for more complex builds.  For example:</p>
+<p>You can use FileSets or FileLists for more complex builds.  For example:</p>
 
-<pre>
-        &lt;jarbundler dir="release"
-                    name="MyApp 1.0"
-                    mainclass="org.foo.myapp.Main" &gt;
+<pre style="padding-left:3em; margin-bottom:0em;">
+&lt;jarbundler dir="release"
+            name="MyApp 1.0"
+            mainclass="org.foo.myapp.Main" &gt;
 
-          &lt;jarfileset dir="${bin}"&gt;
-            &lt;include name="**/*.jar" /&gt;
-            &lt;exclude name="**/CVS" /&gt;
-          &lt;/jarfileset&gt;
+  &lt;jarfileset dir="${bin}"&gt;
+    &lt;include name="**/*.jar" /&gt;
+    &lt;exclude name="**/CVS" /&gt;
+  &lt;/jarfileset&gt;
 
-        &lt;/jarbundler&gt;
+&lt;/jarbundler&gt;
 </pre>
 
 
@@ -691,105 +792,129 @@ attributes, for more complex builds.  For example:</p>
 copy in the appropriate Icon resource, and specify that the application
 requires JVM version 1.4 or the highest JVM available.</p>
 
-
-<pre>
-
-   &lt;target name="mac" depends="jar, rsrc" description="Build Mac OS X application"&gt;
-
-      &lt;delete dir="${release}/${name}.app"/&gt;
-
-      &lt;taskdef name="jarbundler" classname="net.sourceforge.jarbundler.JarBundler" /&gt;
-
-      &lt;jarbundler dir="${release}"
-                  name="Sequence Analysis"
-                  shortname="Seq. Anal."
-                  mainclass="com.informagen.sa.SequenceAnalysis"
-                  icon="icons/SA.icns"
-                  version="${version}"
-                  build="${version}_${buildnumber}"
-                  infostring="${version}, Informagen, Inc."
-                  bundleid="com.informagen.SA"
-                  signature="_SA_"
-                  jvmversion="1.4+"
-                  vmoptions="-Xms512m -Xmx1024m"&gt;
-                  
-          &lt;!-- Native Environment Integration --&gt;
-          &lt;javaproperty name="apple.laf.useScreenMenuBar"         value="true"/&gt;
-          &lt;javaproperty name="apple.awt.brushMetalLook"           value="false"/&gt;
-          &lt;javaproperty name="apple.awt.brushMetalRounded"        value="false"/&gt;
-          &lt;javaproperty name="apple.awt.fileDialogForDirectories" value="false"/&gt;
-          &lt;javaproperty name="apple.awt.antialiasing"             value="false"/&gt;
-          &lt;javaproperty name="apple.awt.showGrowBox"              value="true"/&gt;
-
-          &lt;!-- Rendering Hints --&gt;
-          &lt;javaproperty name="apple.awt.textantialiasing"         value="false"/&gt;
-          
-          &lt;!-- Specify the SAX parser --&gt;
-          &lt;javaproperty name="org.xml.sax.driver" 
-                        value="org.apache.xerces.parsers.SAXParser"/&gt;
-
-       
-          &lt;!-- Specify the JAR files --&gt;
-          &lt;jarfileset file="${SA.jar}"/&gt;
-          &lt;jarfileset file="${SA-rsrc.jar}"/&gt;
-          
-          &lt;jarfileset dir="${lib}"&gt;
-            &lt;include name="**/*.jar" /&gt;
-          &lt;/jarfileset&gt;
-          
-        &lt;/jarbundler&gt;
+<p><strong>NB:</strong> Currently you must delete any existing applicaiton bundler before 
+invoking the <tt>jarbundler</tt> task.  This requirement will be relased in a future release
+of JarBundler.
 
 
-   &lt;/target&gt;
+<pre style="padding-left:2em; margin-bottom:0em;">
+
+&lt;target name="complex" depends="jar, jni" description="Build an example application"&gt;
+
+  &lt;delete dir="release/Hello World.app"/&gt;
+
+  &lt;taskdef name="release/jarbundler"
+             classname="net.sourceforge.jarbundler.JarBundler"/&gt;
+
+  &lt;jarbundler dir="release"
+              name="Hello World"
+              shortname="Hello"
+              signature="Helo"
+              mainclass="net.sourceforge.jarbundler.example.HelloWorld"
+              jar="build/Hello World.jar"
+              icon="icons/Hello World.icns"
+              jvmversion="1.4+"
+              version="1.2"
+              infostring="Hello World, 2006 MyCompany"
+              build="213"
+              bundleid="net.sourceforge.jarbundler.example.HelloWorld"   
+              helpbookfolder="HelpBook"
+              helpbookname="Hello World Help" &gt; 
+                
+    &lt;!-- Adjust the look, feel and behavior --&gt;
+    &lt;javaproperty name="apple.laf.useScreenMenuBar" value="true"/&gt;
+    &lt;javaproperty name="apple.awt.brushMetal" value="true"/&gt;
+    &lt;javaproperty name="apple.awt.showGrowBox" value="false"/&gt;
+
+    &lt;!-- Associate document types with this application --&gt;
+    &lt;documenttype name="Hello World text document"
+                  extensions="txt text" 
+                  ostypes="TEXT sEXT ttro" 
+                  iconFile="icons/txt.icns"
+                  role="Editor"/&gt;
+                    
+    &lt;documenttype name="Hello World HTML document"
+                  extensions="html htm" 
+                  iconFile="icons/html.icns"
+                  role="Editor"/&gt;
+                     
+    &lt;documenttype name="Hello World RTF document"
+                  extensions="rtf" 
+                  role="Viewer"/&gt;
+
+    &lt;!-- Just proving we can include a file.  Might use it in the About box --&gt;                
+    &lt;resourcefilelist dir=".." files="LICENSE.TXT"/&gt;
+ 
+    &lt;!-- Copy the HelpBook JNI library  --&gt;
+    &lt;javafilelist dir="./build" files="libHelpBookJNI.jnilib"/&gt;
+
+    &lt;!-- Copy the HelpBook contents --&gt;   
+    &lt;resourcefileset dir="." includes="HelpBook/**/*.*/"/&gt;
+                     
+  &lt;/jarbundler&gt;
+    
+</target>
 
 </pre>
 
 <h2>Including an Apple Help Book</h2>
 
-<p>Apple Help Book support can be found <a href="http://developer.apple.com/qa/qa2001/qa1022.html">here</a>.
+<p>Documentation for creating Apple Help Book support can be found 
+<a href="http://developer.apple.com/qa/qa2001/qa1022.html">here</a>.
 Basically one needs to specify both the HelpBook directory name and the Help Book name. The application
-must also have a unique Bundle ID so that the Help Viewer can reference the application.
+<strong>must</strong> also have a unique Bundle ID so that the Help Viewer can reference the application.
 
 The Help Book itself consists of pure HTML files, images, and optional CSS styling. This is easy
-to create and develop out side of the application.  The "Hello, World" example can be used as a
-starter.  The Help Book viewer does not automatcially open the file named <tt>index.html</tt>
-as would a web server.  The root file <strong>must</strong> contain a META tag specifing the 
-name <tt>AppleTitle</tt>.  This META tag is used to both designate the root HTML file and its
-content is used by the Help Viewer in its "Library" listing.
+to create and develop outside of the application.  The "Hello, World" Help Book HTML can be used as a
+starter or checkout any application exiting Help Book folder now that you know where to find it.
 
-<div style="margin-left:3em;">
-<tt>&lt;meta name="AppleTitle" content="Hello World Help"/&gt;</tt>
-</div>
+<p>The Help Book viewer does <strong>not</strong> automatcially open the file named <tt>index.html</tt>
+as does a web server.  The root file <strong>must</strong> contain a META tag specifing the 
+name <tt>AppleTitle</tt>. The content of this tag must match the value specified in the 
+<tt>helpbookname</tt> attributer of the <tt>jarbundler</tt> task.
+This META tag is used to both designate the root HTML file and its
+content is used by the Help Viewer in its "Library" listing.</p>
+
+<pre>
+&lt;html&gt;
+  &lt;head&gt;
+         .
+         .
+     &lt;meta name="AppleTitle" content="Hello World Help"/&gt;
+         .
+         .
+  &lt;/head&gt;
+
+</pre>
 
 <p>Finally, one needs a JNI library to communicate between the "Help" menu item and the "Help Book 
-Viewer".  This is a very simple file and usage is demonstrated in the "Hello, World" example.
+Viewer" or whichever application is being used to render Help Book help.  
+This is a very simple file and usage is demonstrated in the "Hello, World" example.
 Windows and Linux users will not be able to generate the JNI library on their platforms.
 I have any idea at this point how to generate a univeral binary for this library using 
 command line.  
 Feedback is welcome -- a technique using XCode is described 
 <A href="http://developer.apple.com/qa/qa2005/qa1295.html">here</a>.
 
-<pre>
-
-    &lt;jarbundler dir="${basedir}"
-                name="${ant.project.name}"
-                          .
-                          .
-                          .
-                bundleid="net.sourceforge.jarbundler.example.HelloWorld"   
-                helpbookfolder="HelpBook"
-                helpbookname="Hello World Help" &gt; 
+<pre style="padding-left:3em; margin-bottom:0em;">
+&lt;jarbundler dir="${basedir}"
+            name="${ant.project.name}"
+                      .
+                      .
+                      .
+            bundleid="net.sourceforge.jarbundler.example.HelloWorld"   
+            helpbookfolder="HelpBook"
+            helpbookname="Hello World Help" &gt; 
                 
  
-      &lt;!-- Copy the HelpBook JNI library  --&gt;
-      &lt;javafilelist dir="${basedir}/build" files="libHelpBookJNI.jnilib"/&gt;
+  &lt;!-- Copy the HelpBook JNI library  --&gt;
+  &lt;javafilelist dir="${basedir}/build" files="libHelpBookJNI.jnilib"/&gt;
 
-      &lt;!-- Copy the HelpBook contents --&gt;   
-      &lt;resourcefileset dir="${basedir}" includes="HelpBook/**/*.*/"/&gt;
+  &lt;!-- Copy the HelpBook contents --&gt;   
+  &lt;resourcefileset dir="${basedir}" includes="HelpBook/**/*.*/"/&gt;
                      
-    &lt;/jarbundler&gt;
+&lt;/jarbundler&gt;
     
-
 </pre>
 
 <h3>Troubleshooting the Help Viewer cache.</h3> 
@@ -812,7 +937,7 @@ Help Books into their proper
 At some point a <tt>&lt;helpbook&gt;</tt> task may be added to facilitate deploying 
 multilingual Help Books.
 
-
+<!-- Stub File =============================================================================-->
 
 <h2>Specifying the Java Launching Stub File</h2>
 
@@ -826,11 +951,17 @@ who first created the application bundle as directory and then released their ap
 replacing the JAR files within the bundle and not replacing "<tt>JavaApplicationStub</tt>" with a more current
 copy.
 
-<p>When run on OS X system, the JarBundler ANT task uses the current copy of the "<tt>JavaApplicationStub</tt>"
-from the developer's disk. 
+<p>When run on OS X system, the JarBundler ANT task uses the current copy of the <tt>JavaApplicationStub</tt>
+from the developer's disk.  
 
-<p>Both of these methods could lead to a future situation where the "<tt>JavaApplicationStub</tt>" file
-could become obsolete with a future OS X update.  Under Mac OS X one
+
+<h3>Java Launching Stub as a Symbolic Link</h3>
+
+<p>Creating a bundle with the your current copy of Java Launching Stub
+could lead to a future situation where the <tt>JavaApplicationStub</tt> file
+could become incompatible with a future OS X update.  
+
+<p>Under Mac OS X one
 could replace the "<tt>JavaApplicationStub</tt>" file with a symbolic link to the user's current
 copy.  This <em>should</em> guarentee that
 the end user would always be using a current copy of the stub file.  I have used this technique on
@@ -841,29 +972,30 @@ of ANT code after building the bundle. <strong>NB:</strong> This will not work w
 Windows and is untested under Linux .
 
 
-<pre>
-         .
-         .
-         .
-        &lt;/jarbundler&gt;
+<pre style="padding-left:3em;">
+ .
+ .
+ .
+&lt;/jarbundler&gt;
         
-        &lt;!-- Delete my JavaApplicationStub and replace it with a symbolic link --&gt;
-        &lt;!--   which should work on older and future versions of OS X          --&gt;
+&lt;!-- Delete the JavaApplicationStub and replace it with a symbolic link --&gt;
+&lt;!--   which should work on older and future versions of OS X           --&gt;
        
-        &lt;delete file="${release}/${name}.app/Contents/MacOS/JavaApplicationStub"/&gt;
-        &lt;exec executable="ln"&gt;
-          &lt;arg line="-s /System/Library/Frameworks/JavaVM.framework/Resources/MacOS/JavaApplicationStub"/&gt;
-          &lt;arg value="${release}/${name}.app/Contents/MacOS/JavaApplicationStub"/&gt;
-        &lt;/exec&gt;
+&lt;delete file="${release}/${name}.app/Contents/MacOS/JavaApplicationStub"/&gt;
+&lt;exec executable="ln"&gt;
+ &lt;arg line="-s /System/Library/Frameworks/JavaVM.framework/Resources/MacOS/JavaApplicationStub"/&gt;
+ &lt;arg value="${release}/${name}.app/Contents/MacOS/JavaApplicationStub"/&gt;
+&lt;/exec&gt;
 
-   &lt;/target&gt;
+&lt;/target&gt;
        
 </pre>
 
 <h3>Running JarBundler under Linux and Windows</h3>
 
-<p>If run under Windows or Linux a copy of "<tt>JavaApplicationStub</tt>" must be obtained from 
-a Mac OS X system and its location specified using the <tt>stubfile</tt> attribute.
+<p>Windows and Linux users of this Ant task should obtain a copy
+the <tt>JavaApplicationStub</tt> file from a Mac OS X system and use the <tt>stubfile</tt> attribute
+in the <tt>jarbundler</tt> task.
 
 
 <h2>Changes</h2>
@@ -946,7 +1078,7 @@ for usage.
 
 <h2>Contact</h2>
 
-<p>Please contact me if you have bugs to report, patches to the code,
+<p>Please contact Will Gilbert if you have bugs to report, patches to the code,
 ideas for enhancements, or any other suggestions!  I can be reached
 at <a href="mailto:gilbert@informagen.com">gilbert@informagen.com</a></p>
 

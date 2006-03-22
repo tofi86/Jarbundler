@@ -11,10 +11,6 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
   <property name="buildnumber" value="213"/>
   <property name="copyright" value="(c)2006  Informagen, Inc."/>
 
-    <taskdef name="jarbundler"
-             classpath="${jarbundler.jar}" 
-             classname="net.sourceforge.jarbundler.JarBundler"/>
-
    
   <target name="compile" description="Compile the classes">
     <mkdir dir="classes"/>
@@ -57,6 +53,10 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
 
     <delete dir="${ant.project.name}.app"/>
 
+    <taskdef name="jarbundler"
+             classpath="${jarbundler.jar}" 
+             classname="net.sourceforge.jarbundler.JarBundler"/>
+
     <jarbundler dir="${basedir}"
                 name="${ant.project.name}"
                 mainclass="net.sourceforge.jarbundler.example.HelloWorld"
@@ -77,6 +77,10 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
   <target name="complex" depends="jar, jni" description="Build an example application">
 
     <delete dir="${ant.project.name}.app"/>
+
+    <taskdef name="jarbundler"
+             classpath="${jarbundler.jar}" 
+             classname="net.sourceforge.jarbundler.JarBundler"/>
 
     <jarbundler dir="${basedir}"
                 name="${ant.project.name}"
@@ -115,7 +119,7 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
                     role="Viewer"/>
 
       <!-- Just proving we can included these files.  Might use them in About boxes -->                
-      <resourcefilelist dir=".." files="README.TXT, LICENSE.TXT"/>
+      <resourcefilelist dir=".." files="LICENSE.TXT"/>
  
       <!-- Copy the HelpBook JNI library  -->
       <javafilelist dir="${basedir}/build" files="libHelpBookJNI.jnilib"/>

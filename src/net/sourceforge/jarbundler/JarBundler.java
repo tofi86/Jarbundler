@@ -712,7 +712,7 @@ public class JarBundler extends MatchingTask {
 
         if ((name == null) || (role == null))
             throw new BuildException(
-                 "'<documenttype>' must have both 'name' and 'role' attibutes");
+                 "'<documenttype>' must have both a 'name' and a 'role' attibute");
                  
         if ((osTypes == null) && (extensions == null))
             throw new BuildException(

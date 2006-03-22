@@ -5,11 +5,11 @@ import java.io.File;
 
 
   public class DocumentType {
-    public String name;
-    public String[] extensions;
-    public String[] osTypes;
-    public File iconFile;
-    public String role;
+    public String name = null;
+    public String[] extensions = null;
+    public String[] osTypes = null;
+    public File iconFile = null;
+    public String role = null;
 
     public void setName(String name) {
       this.name = name;

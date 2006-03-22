@@ -1,6 +1,6 @@
 <project name="jarbundler" default="jar" basedir=".">
 
-  <property name="version" value="1.7.0"/>
+  <property name="version" value="1.7"/>
   <property name="description" value="ANT task for creating Mac OS X application bundles"/>    
 
 
@@ -18,21 +18,19 @@
   <target name="compile" description="Compile the classes">
     
     <mkdir dir="classes"/>
-    <mkdir dir="bin"/>
         
-    <javac srcdir="src" 
-           debug="false"
-           classpath="${ant.jar}"
-           destdir="classes"
-           source="1.4"/>
+    <javac srcdir="src" destdir="classes" source="1.4"
+           classpath="${ant.jar}"/>
   </target>
 
 
   <target name="jar" depends="compile" description="Create JAR file">
 
+    <mkdir dir="build"/>
+
     <tstamp/>  
 
-    <jar jarfile="bin/${jarbundler.jar}" basedir="classes">
+    <jar jarfile="build/${jarbundler.jar}" basedir="classes">
         <manifest>
           <attribute name="Version"     value="${version}"/>
           <attribute name="Description" value="${description}"/>
@@ -46,9 +44,9 @@
 
   <target name="javadocs" depends="compile" description="Create JarBundler API">
 
-    <mkdir dir="docs"/>
+    <mkdir dir="javadoc"/>
 
-    <javadoc destdir="docs" classpath="${ant.jar}">
+    <javadoc destdir="javadoc" classpath="${ant.jar}">
       <package name="net.sourceforge.jarbundler.*"/>
       <sourcepath location="src"/>
     </javadoc>
@@ -63,32 +61,36 @@
     <mkdir dir="release"/>
     <mkdir dir="release/dist"/>
     
-    <copy file="JarBundler.html" tofile="release/index.html"/>
-    <copy todir="release/docs">
-        <fileset dir="docs"/>
+    <copy todir="release">
+       <fileset dir="dox"/>
     </copy>
+    
+    <copy todir="release/javadoc">
+        <fileset dir="javadoc"/>
+    </copy>
+
+    <!-- Make this file easy to find in the distribution -->
+    <move file="build/${jarbundler.jar}" tofile="${jarbundler.jar}"/>
     
     <zip destfile="release/dist/${release.zip}">
       <zipfileset prefix="${ant.project.name}-${version}/" dir="${basedir}" excludes="CVS">
         <include name="LICENSE.TXT"/>
-        <include name="README.TXT"/>
-        <include name="JarBundler.html"/>
+        <include name="dox/**"/>
         <include name="build.xml"/>
         <include name="src/**"/>
         <include name="example/**"/>
-        <include name="bin/${jarbundler.jar}"/> 
+        <include name="${jarbundler.jar}"/> 
       </zipfileset>
     </zip>
 
     <tar destfile="release/dist/${release.tar}">
       <tarfileset prefix="${ant.project.name}-${version}/" dir="${basedir}" excludes="CVS">
         <include name="LICENSE.TXT"/>
-        <include name="README.TXT"/>
-        <include name="JarBundler.html"/>
+        <include name="dox/**"/>
         <include name="build.xml"/>
         <include name="src/**"/>
         <include name="example/**"/>
-        <include name="bin/${jarbundler.jar}"/> 
+        <include name="${jarbundler.jar}"/> 
       </tarfileset>	
     </tar>
 
@@ -97,32 +99,34 @@
 
     <!-- Remove the intermediate tar -->
     <delete quiet="true" file="release/dist/${release.tar}" />
-  </target>
 
+    <!-- Move the product back -->
+    <move file="${jarbundler.jar}" tofile="build/${jarbundler.jar}"/>
+
+
+  </target>
 
 
   <target name="simple" depends="jar" description="Build an example application">
 	<ant dir="./example" target="simple" inheritAll="false">
-      <property name="jarbundler.jar" value="${basedir}/bin/${jarbundler.jar}" />
+      <property name="jarbundler.jar" value="${basedir}/build/${jarbundler.jar}" />
 	</ant>
   </target>
+
 
   <target name="complex" depends="jar" description="Build an example application">
 	<ant dir="./example" target="complex" inheritAll="false">
-      <property name="jarbundler.jar" value="${basedir}/bin/${jarbundler.jar}" />
+      <property name="jarbundler.jar" value="${basedir}/build/${jarbundler.jar}" />
 	</ant>
   </target>
-
 
 
   <target name="clean" description="Clean up">
     <delete dir="classes"/> 
-    <delete dir="bin"/> 
-    <delete dir="docs"/>
+    <delete dir="build"/> 
+    <delete dir="javadoc"/>
     <delete dir="release"/> 
 	<ant dir="example" target="clean" inheritAll="false"/>
   </target>
-
-
 
 </project>
