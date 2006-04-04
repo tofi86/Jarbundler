@@ -41,15 +41,16 @@ native look-and-feel bells and whistles, and maintain your application
 bundles as part of your normal build and release cycle.  It is free
 software licensed under the GNU General Public License.</p>
 
-<p>This release is based on the earlier work of Seth Morabito's JarBundler 1.4 found
-at <a href="http://loomcom.com/jarbundler/">http://loomcom.com/jarbundler/</a>
+<p>This release is based on the earlier work of
+<a href="http://loomcom.com/jarbundler/">Seth Morabito</a>.
 
 <h2>What's New</h2>
 
 <ul>
 
 <li>Added <tt>&lt;documenttype&gt;</tt> nested task so that file associations can be set up
-for the application</li>
+for the application.
+<br/>(Thanks to Dan Stowell a sample "<tt>Info.plist</tt>" file)</li>
 
 <li>Added <tt>&lt;javafileset&gt;</tt> and <tt>&lt;javafilelist&gt;</tt> nested tasks,
 which mirror <tt>&lt;resourcefileset&gt;</tt> and <tt>&lt;resourcefilelist&gt;</tt>, in 
@@ -63,6 +64,7 @@ order to add files to the <tt>Contents/Resources/Java</tt> directory</li>
    <li>Adding <tt>javafilelist</tt> nested task to assist in moving the Help Book JNI  
        library to the correct location. (see above)
   </ul>
+   <br/>(Thanks to Will Lowe for an example Help Book project with JNI code)
 </li>
 
 <li>Split the "Hello, World" example into a complex build which associates
@@ -727,7 +729,7 @@ or "<tt>ostypes</tt>".  Both may, of course, be used.
   </tr>
 
   <tr>
-    <td class="attribute">icontype</td>
+    <td class="attribute">iconfile</td>
     <td class="description">
      Specifies the name of an icon file used to associate with this document type.  This icon
      file is copied into the application bundle.  These icons will be used for the document
@@ -830,12 +832,12 @@ of JarBundler.
     &lt;documenttype name="Hello World text document"
                   extensions="txt text" 
                   ostypes="TEXT sEXT ttro" 
-                  iconFile="icons/txt.icns"
+                  iconfile="icons/txt.icns"
                   role="Editor"/&gt;
                     
     &lt;documenttype name="Hello World HTML document"
                   extensions="html htm" 
-                  iconFile="icons/html.icns"
+                  iconfile="icons/html.icns"
                   role="Editor"/&gt;
                      
     &lt;documenttype name="Hello World RTF document"
@@ -891,10 +893,10 @@ content is used by the Help Viewer in its "Library" listing.</p>
 Viewer" or whichever application is being used to render Help Book help.  
 This is a very simple file and usage is demonstrated in the "Hello, World" example.
 Windows and Linux users will not be able to generate the JNI library on their platforms.
-I have any idea at this point how to generate a univeral binary for this library using 
-command line.  
-Feedback is welcome -- a technique using XCode is described 
-<A href="http://developer.apple.com/qa/qa2005/qa1295.html">here</a>.
+In order to generate a univeral binary JNI you can use Xcode and the tutorial found
+<a href="http://developer.apple.com/java/jniuniversal.html">here</a>. 
+
+
 
 <pre style="padding-left:3em; margin-bottom:0em;">
 &lt;jarbundler dir="${basedir}"
@@ -1083,9 +1085,19 @@ ideas for enhancements, or any other suggestions!  I can be reached
 at <a href="mailto:gilbert@informagen.com">gilbert@informagen.com</a></p>
 
 
+<h2>Acknowledgments</h2>
+
+<p>Thanks to Dan Stowell for suggesting the "<tt>documenttype</tt>" task and supplying
+and example <tt>Info.plist</tt> file.
+
+<p>Thanks to Will Lowe for providing an example project which implemented "Apple
+Help Book" support for Java.
+
+
+
 <h2>License</h2>
 
-<p>The Jar Bundler Ant Task is Copyright &copy; 2002 - 2004, Seth J. Morabito. All rights reserved.
+<p>The Jar Bundler Ant Task is Copyright &copy; 2002 - 2006, Seth J. Morabito. All rights reserved.
 
 <p>This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
