@@ -45,348 +45,345 @@ import java.lang.Double;
 import java.lang.String;
 import java.lang.System;
 
-
 /**
- * Write out a Java application bundle property list file.
- * For descriptions of the property list keys, see 
- *    <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html" >Apple docs</a>.
+ * Write out a Java application bundle property list file. For descriptions of
+ * the property list keys, see <a
+ * href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html"
+ * >Apple docs</a>.
  */
 public class PropertyListWriter {
 
-    private PrintWriter mOut;// Where to write
-    private AppBundleProperties bundleProperties;// Our app bundle properties
+	private PrintWriter mOut;// Where to write
+	private AppBundleProperties bundleProperties;// Our app bundle properties
 
-    private double version = 1.3;
+	private double version = 1.3;
 
-    /**
-     * Create a new Property List writer.
-     */
-    public PropertyListWriter(AppBundleProperties p) {
-        bundleProperties = p;
-        setJavaVersion(bundleProperties.getJVMVersion());
-    }
+	/**
+	 * Create a new Property List writer.
+	 */
+	public PropertyListWriter(AppBundleProperties p) {
+		bundleProperties = p;
+		setJavaVersion(bundleProperties.getJVMVersion());
+	}
 
-    private void setJavaVersion(String version) {
+	private void setJavaVersion(String version) {
 
-        if (version == null)
-            return;
+		if (version == null)
+			return;
 
-        this.version = Double.valueOf(version.substring(0, 3)).doubleValue();
-    }
+		this.version = Double.valueOf(version.substring(0, 3)).doubleValue();
+	}
 
+	public void writeFile(File fileName) throws BuildException {
 
-    public void writeFile(File fileName) throws BuildException {
+		try {
+			mOut = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
+		} catch (IOException ex) {
+			throw new BuildException("Unable to open " + fileName
+					+ " for writing.");
+		}
 
-        try {
-            mOut = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
-        } catch (IOException ex) {
-            throw new BuildException("Unable to open " + fileName + " for writing.");
-        }
+		try {
 
-        try {
+			// Begin Plist
+			mOut.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+			mOut.println("<!DOCTYPE plist PUBLIC "
+					+ "\"-//Apple Computer//DTD PLIST 1.0//EN\""
+					+ "\"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">");
 
-            // Begin Plist
-            mOut.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-            mOut.println("<!DOCTYPE plist PUBLIC " + "\"-//Apple Computer//DTD PLIST 1.0//EN\"" +
-                "\"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">");
+			mOut.println("<plist version=\"1.0\">");
 
-            mOut.println("<plist version=\"1.0\">");
+			// Begin contents
+			openDict(0);
 
-            // Begin contents
-            openDict(0);
-                  
-            // Application short name ie About menu name
-             writeKey(1, "CFBundleName");
-             writeString(1, bundleProperties.getCFBundleName());
-             
-             // Finder 'Version' label, defaults to "1.0"
-             writeKey(1, "CFBundleShortVersionString");
-             writeString(1, bundleProperties.getCFBundleShortVersionString());
+			// Application short name ie About menu name
+			writeKey(1, "CFBundleName");
+			writeString(1, bundleProperties.getCFBundleName());
 
-             // Finder "Get Info" label
-             writeKey(1, "CFBundleGetInfoString");
-             writeString(1, bundleProperties.getCFBundleGetInfoString());
+			// Finder 'Version' label, defaults to "1.0"
+			writeKey(1, "CFBundleShortVersionString");
+			writeString(1, bundleProperties.getCFBundleShortVersionString());
 
-            // Application build number, optional
-            if (bundleProperties.getCFBundleVersion() != null) {
-                writeKey(1, "CFBundleVersion");
-                writeString(1, bundleProperties.getCFBundleVersion());
-            }
+			// Finder "Get Info" label
+			writeKey(1, "CFBundleGetInfoString");
+			writeString(1, bundleProperties.getCFBundleGetInfoString());
 
-            // Optional key
-            if (bundleProperties.getCFBundleIconFile() != null) {
-                writeKey(1, "CFBundleIconFile");
-                writeString(1, bundleProperties.getCFBundleIconFile());
-            }
+			// Application build number, optional
+			if (bundleProperties.getCFBundleVersion() != null) {
+				writeKey(1, "CFBundleVersion");
+				writeString(1, bundleProperties.getCFBundleVersion());
+			}
 
-            // Required Key
-            writeKey(1, "CFBundleAllowMixedLocalizations");
-            writeString(1, new Boolean(bundleProperties.getCFBundleAllowMixedLocalizations()).toString());
+			// Optional key
+			if (bundleProperties.getCFBundleIconFile() != null) {
+				writeKey(1, "CFBundleIconFile");
+				writeString(1, bundleProperties.getCFBundleIconFile());
+			}
 
-            writeKey(1, "CFBundleInfoDictionaryVersion");
-            writeString(1, bundleProperties.getCFBundleInfoDictionaryVersion());
+			// Required Key
+			writeKey(1, "CFBundleAllowMixedLocalizations");
+			writeString(1, new Boolean(bundleProperties
+					.getCFBundleAllowMixedLocalizations()).toString());
 
-            // Optional key
-            if (bundleProperties.getCFBundleIdentifier() != null) {
-                writeKey(1, "CFBundleIdentifier");
-                writeString(1, bundleProperties.getCFBundleIdentifier());
-            }
+			writeKey(1, "CFBundleInfoDictionaryVersion");
+			writeString(1, bundleProperties.getCFBundleInfoDictionaryVersion());
 
-            // Required key
-            writeKey(1, "CFBundleExecutable");
-            writeString(1, bundleProperties.getCFBundleExecutable());
+			// Optional key
+			if (bundleProperties.getCFBundleIdentifier() != null) {
+				writeKey(1, "CFBundleIdentifier");
+				writeString(1, bundleProperties.getCFBundleIdentifier());
+			}
 
-            // Required key
-            writeKey(1, "CFBundleDevelopmentRegion");
-            writeString(1, bundleProperties.getCFBundleDevelopmentRegion());
+			// Required key
+			writeKey(1, "CFBundleExecutable");
+			writeString(1, bundleProperties.getCFBundleExecutable());
 
-            // Required key
-            writeKey(1, "CFBundlePackageType");
-            writeString(1, bundleProperties.getCFBundlePackageType());
+			// Required key
+			writeKey(1, "CFBundleDevelopmentRegion");
+			writeString(1, bundleProperties.getCFBundleDevelopmentRegion());
 
-            // Required key
-            writeKey(1, "CFBundleSignature");
-            writeString(1, bundleProperties.getCFBundleSignature());
+			// Required key
+			writeKey(1, "CFBundlePackageType");
+			writeString(1, bundleProperties.getCFBundlePackageType());
 
-            // CFBundleHelpBookFolder, optional
-            if (bundleProperties.getCFBundleHelpBookFolder() != null) {
-                writeKey(1, "CFBundleHelpBookFolder");
-                writeString(1, bundleProperties.getCFBundleHelpBookFolder());
-            }
-           
-            // CFBundleHelpBookName, optional
-            if (bundleProperties.getCFBundleHelpBookName() != null) {
-                writeKey(1, "CFBundleHelpBookName");
-                writeString(1, bundleProperties.getCFBundleHelpBookName());
-            }
-                             
-            // CFBundleDocumentTypes, optional           
-            List documentTypes = bundleProperties.getDocumentTypes();
-            
-            if (documentTypes.size() > 0) {
-                        
-                writeKey(1, "CFBundleDocumentTypes");
-                openArray(1);
-                
-                Iterator itor = documentTypes.iterator();
-                
-                while(itor.hasNext()) {
-                
-					DocumentType documentType = (DocumentType)itor.next();
+			// Required key
+			writeKey(1, "CFBundleSignature");
+			writeString(1, bundleProperties.getCFBundleSignature());
+
+			// CFBundleHelpBookFolder, optional
+			if (bundleProperties.getCFBundleHelpBookFolder() != null) {
+				writeKey(1, "CFBundleHelpBookFolder");
+				writeString(1, bundleProperties.getCFBundleHelpBookFolder());
+			}
+
+			// CFBundleHelpBookName, optional
+			if (bundleProperties.getCFBundleHelpBookName() != null) {
+				writeKey(1, "CFBundleHelpBookName");
+				writeString(1, bundleProperties.getCFBundleHelpBookName());
+			}
+
+			// CFBundleDocumentTypes, optional
+			List documentTypes = bundleProperties.getDocumentTypes();
+
+			if (documentTypes.size() > 0) {
+
+				writeKey(1, "CFBundleDocumentTypes");
+				openArray(1);
+
+				Iterator itor = documentTypes.iterator();
+
+				while (itor.hasNext()) {
+
+					DocumentType documentType = (DocumentType) itor.next();
 					openDict(2);
-								   
+
 					String name = documentType.getName();
 					if (name != null) {
 						writeKey(3, "CFBundleTypeName");
 						writeString(3, name);
 					}
-	
+
 					String role = documentType.getRole();
 					if (role != null) {
 						writeKey(3, "CFBundleTypeRole");
 						writeString(3, role);
 					}
-	
+
 					File iconFile = documentType.getIconFile();
-	
+
 					if (iconFile != null) {
 						writeKey(3, "CFBundleTypeIconFile");
 						writeString(3, iconFile.getName());
 					}
-	
-					
+
 					List extensions = documentType.getExtensions();
-					
+
 					if (extensions.isEmpty() == false) {
 						writeKey(3, "CFBundleTypeExtensions");
 						openArray(3);
 						writeArray(4, extensions);
 						closeArray(3);
 					}
-	
-	
+
 					List osTypes = documentType.getOSTypes();
-					
+
 					if (osTypes.isEmpty() == false) {
 						writeKey(3, "CFBundleTypeOSTypes");
 						openArray(3);
 						writeArray(4, osTypes);
 						closeArray(3);
-					 }
-	
+					}
+
 					List mimeTypes = documentType.getMimeTypes();
-					
+
 					if (mimeTypes.isEmpty() == false) {
 						writeKey(3, "CFBundleTypeMIMETypes");
 						openArray(3);
 						writeArray(4, mimeTypes);
 						closeArray(3);
 					}
-	
-	
-	
-					if (documentType.isBundle() ) {
-							writeKey(3, "LSTypeIsPackage");
-							writeString(3, String.valueOf(documentType.isBundle()));
+
+					if (documentType.isBundle()) {
+						writeKey(3, "LSTypeIsPackage");
+						writeString(3, String.valueOf(documentType.isBundle()));
 					}
-	
-	
+
 					closeDict(2);
-                
-                }
-                closeArray(1);
-           	}
 
+				}
+				closeArray(1);
+			}
 
-            // Required key
-            writeKey(1, "Java");
+			// Required key
+			writeKey(1, "Java");
 
-            // Open the "Java" dictionary
-            openDict(1);
+			// Open the "Java" dictionary
+			openDict(1);
 
-            // Required key
-            writeKey(2, "MainClass");
-            writeString(2, bundleProperties.getMainClass());
+			// Required key
+			writeKey(2, "MainClass");
+			writeString(2, bundleProperties.getMainClass());
 
-            // Recommended key
-            if (bundleProperties.getJVMVersion() != null) {
-                writeKey(2, "JVMVersion");
-                writeString(2, bundleProperties.getJVMVersion());
-            }
+			// Recommended key
+			if (bundleProperties.getJVMVersion() != null) {
+				writeKey(2, "JVMVersion");
+				writeString(2, bundleProperties.getJVMVersion());
+			}
 
-            // Classpath is composed of two types.
-            // 1: Jars bundled into the JAVA_ROOT of the application
-            // 2: External directories or files with an absolute path
+			// Classpath is composed of two types.
+			// 1: Jars bundled into the JAVA_ROOT of the application
+			// 2: External directories or files with an absolute path
 
-            List classPath = bundleProperties.getClassPath();
-            List extraClassPath = bundleProperties.getExtraClassPath();
+			List classPath = bundleProperties.getClassPath();
+			List extraClassPath = bundleProperties.getExtraClassPath();
 
-            if ((classPath.size() > 0) || (extraClassPath.size() > 0)) {
-                writeKey(2, "ClassPath");
-                openArray(2);
-                writeArray(3, classPath);
-                writeArray(3, extraClassPath);
-                closeArray(2);
-            }
+			if ((classPath.size() > 0) || (extraClassPath.size() > 0)) {
+				writeKey(2, "ClassPath");
+				openArray(2);
+				writeArray(3, classPath);
+				writeArray(3, extraClassPath);
+				closeArray(2);
+			}
 
-            // Optional key
-            if (bundleProperties.getVMOptions() != null) {
-                writeKey(2, "VMOptions");
-                writeString(2, bundleProperties.getVMOptions());
-            }
+			// Optional key
+			if (bundleProperties.getVMOptions() != null) {
+				writeKey(2, "VMOptions");
+				writeString(2, bundleProperties.getVMOptions());
+			}
 
-            // Optional key
-            if (bundleProperties.getWorkingDirectory() != null) {
-                writeKey(2, "WorkingDirectory");
-                writeString(2, bundleProperties.getWorkingDirectory());
-            }
+			// Optional key
+			if (bundleProperties.getWorkingDirectory() != null) {
+				writeKey(2, "WorkingDirectory");
+				writeString(2, bundleProperties.getWorkingDirectory());
+			}
 
-            // Optional key
-            if (bundleProperties.getArguments() != null) {
-                writeKey(2, "Arguments");
-                writeString(2, bundleProperties.getArguments());
-            }
+			// Optional key
+			if (bundleProperties.getArguments() != null) {
+				writeKey(2, "Arguments");
+				writeString(2, bundleProperties.getArguments());
+			}
 
-            // Write out user Java properties (optional)
-            Hashtable javaProperties = bundleProperties.getJavaProperties();
+			// Write out user Java properties (optional)
+			Hashtable javaProperties = bundleProperties.getJavaProperties();
 
-            if (javaProperties != null) {
-                writeKey(2, "Properties");
-                openDict(2);
+			if (javaProperties != null) {
+				writeKey(2, "Properties");
+				openDict(2);
 
-                for (Iterator i = javaProperties.keySet().iterator(); i.hasNext();) {
-                    String key = (String) i.next();
+				for (Iterator i = javaProperties.keySet().iterator(); i
+						.hasNext();) {
+					String key = (String) i.next();
 
-                    if (key.startsWith("com.apple.") && (version >= 1.4)) {
-                        System.out.println("Deprecated as of 1.4: " + key);
+					if (key.startsWith("com.apple.") && (version >= 1.4)) {
+						System.out.println("Deprecated as of 1.4: " + key);
 
-                        continue;
-                    }
+						continue;
+					}
 
-                    writeKey(3, key);
-                    writeString(3, (String) javaProperties.get(key));
-                }
+					writeKey(3, key);
+					writeString(3, (String) javaProperties.get(key));
+				}
 
-                closeDict(2);
-            }
+				closeDict(2);
+			}
 
-            // Close the "Java" dictionary
-            closeDict(1);
+			// Close the "Java" dictionary
+			closeDict(1);
 
-            // End contents
-            closeDict(0);
+			// End contents
+			closeDict(0);
 
-            // End Plist
-            mOut.println("</plist>");
-            mOut.flush();
+			// End Plist
+			mOut.println("</plist>");
+			mOut.flush();
 
-        } finally {
+		} finally {
 
-            if (mOut != null)
-                mOut.close();
-        }
-    }
+			if (mOut != null)
+				mOut.close();
+		}
+	}
 
-    private void openDict(int lvl) {
+	private void openDict(int lvl) {
 
-        for (int i = 0; i < lvl; i++)
-            mOut.print("    ");
+		for (int i = 0; i < lvl; i++)
+			mOut.print("    ");
 
-        mOut.println("<dict>");
-    }
+		mOut.println("<dict>");
+	}
 
-    private void closeDict(int lvl) {
+	private void closeDict(int lvl) {
 
-        for (int i = 0; i < lvl; i++)
-            mOut.print("    ");
+		for (int i = 0; i < lvl; i++)
+			mOut.print("    ");
 
-        mOut.println("</dict>");
-    }
+		mOut.println("</dict>");
+	}
 
-    private void openArray(int lvl) {
+	private void openArray(int lvl) {
 
-        for (int i = 0; i < lvl; i++)
-            mOut.print("    ");
+		for (int i = 0; i < lvl; i++)
+			mOut.print("    ");
 
-        mOut.println("<array>");
-    }
+		mOut.println("<array>");
+	}
 
-    private void closeArray(int lvl) {
+	private void closeArray(int lvl) {
 
-        for (int i = 0; i < lvl; i++)
-            mOut.print("    ");
+		for (int i = 0; i < lvl; i++)
+			mOut.print("    ");
 
-        mOut.println("</array>");
-    }
+		mOut.println("</array>");
+	}
 
-    private void writeArray(int lvl, List stringList) {
+	private void writeArray(int lvl, List stringList) {
 
-        for (Iterator it = stringList.iterator(); it.hasNext();) {
+		for (Iterator it = stringList.iterator(); it.hasNext();) {
 
-            try {
-                writeString(lvl, (String) it.next());
-            } catch (ClassCastException ex) {
+			try {
+				writeString(lvl, (String) it.next());
+			} catch (ClassCastException ex) {
 
-                // Poorly handled exception, but at least we
-                // won't exit.
-                continue;
-            }
-        }
-    }
+				// Poorly handled exception, but at least we
+				// won't exit.
+				continue;
+			}
+		}
+	}
 
-    private void writeKey(int lvl, String s) {
+	private void writeKey(int lvl, String s) {
 
-        for (int i = 0; i < lvl; i++)
-            mOut.print("    ");
+		for (int i = 0; i < lvl; i++)
+			mOut.print("    ");
 
-        mOut.println("<key>" + s + "</key>");
-    }
+		mOut.println("<key>" + s + "</key>");
+	}
 
-    private void writeString(int lvl, String s) {
+	private void writeString(int lvl, String s) {
 
-        for (int i = 0; i < lvl; i++)
-            mOut.print("    ");
+		for (int i = 0; i < lvl; i++)
+			mOut.print("    ");
 
-        mOut.println("<string>" + s + "</string>");
-    }
+		mOut.println("<string>" + s + "</string>");
+	}
 }

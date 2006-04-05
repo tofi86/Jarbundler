@@ -120,7 +120,7 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
                     mimetypes="image/jpeg image/png" 
                     role="Viewer"/>
 
-      <documenttype name="Hello project directory"
+      <documenttype name="Hello project document"
                     extensions="hello"
                     iconFile="icons/Hello Document.icns"
                     bundle="true"

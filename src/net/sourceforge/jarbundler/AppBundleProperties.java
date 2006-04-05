@@ -29,299 +29,290 @@ import java.util.LinkedList;
 // Java language imports
 import java.lang.String;
 
-
 public class AppBundleProperties {
 
-    // Required
-    private String mApplicationName;
-    private String mMainClass;
-    
-    // Application short name
-    private String mCFBundleName = null;
+	// Required
+	private String mApplicationName;
+	private String mMainClass;
 
-    // Finder version, with default
-    private String mCFBundleShortVersionString = "1.0";
-    
-    // Get Info string, optional
-    private String mCFBundleGetInfoString = null;
-    
-    // Build number, optional
-    private String mCFBundleVersion = null;
+	// Application short name
+	private String mCFBundleName = null;
 
-    // Help Book folder, optional
-    private String mCFHelpBookFolder = null;
+	// Finder version, with default
+	private String mCFBundleShortVersionString = "1.0";
 
-    // Help Book name, optional
-    private String mCFHelpBookName = null;
-  
-    
-    // Explicit default: false
-    private boolean mCFBundleAllowMixedLocalizations = false;
+	// Get Info string, optional
+	private String mCFBundleGetInfoString = null;
 
-    // Explicit default: JavaApplicationStub
-    private String mCFBundleExecutable = "JavaApplicationStub";
+	// Build number, optional
+	private String mCFBundleVersion = null;
 
-    // Explicit default: English
-    private String mCFBundleDevelopmentRegion = "English";
+	// Help Book folder, optional
+	private String mCFHelpBookFolder = null;
 
-    // Explicit default: APPL
-    private final String mCFBundlePackageType = "APPL";
+	// Help Book name, optional
+	private String mCFHelpBookName = null;
 
-    // Explicit default: ????
-    private String mCFBundleSignature = "????";
-    
-    // Explicit default: 1.3+
-    private String mJVMVersion = "1.3+";
+	// Explicit default: false
+	private boolean mCFBundleAllowMixedLocalizations = false;
 
-    // Explicit default: 6.0
-    private final String mCFBundleInfoDictionaryVersion = "6.0";
+	// Explicit default: JavaApplicationStub
+	private String mCFBundleExecutable = "JavaApplicationStub";
 
-    // Optional keys, with no defaults.
+	// Explicit default: English
+	private String mCFBundleDevelopmentRegion = "English";
 
-    private String mCFBundleIconFile = null;
-    private String mCFBundleIdentifier = null;
-    private String mVMOptions = null;           // Java VM options
-    private String mWorkingDirectory = null;    // Java Working Dir
-    private String mArguments = null;           // Java command line arguments
+	// Explicit default: APPL
+	private final String mCFBundlePackageType = "APPL";
 
-    // Class path and extra class path elements
-    private List mClassPath = new ArrayList();
-    private List mExtraClassPath = new ArrayList();
+	// Explicit default: ????
+	private String mCFBundleSignature = "????";
 
+	// Explicit default: 1.3+
+	private String mJVMVersion = "1.3+";
 
-    // Java properties
-    private Hashtable mJavaProperties = new Hashtable();
+	// Explicit default: 6.0
+	private final String mCFBundleInfoDictionaryVersion = "6.0";
 
-    // Document types
-    private List mDocumentTypes = new LinkedList();
+	// Optional keys, with no defaults.
 
-    //================================================================================
-    
-    /**
-     * Add a Java runtime property to the properties hashtable.
-     */
-    
-    public void addJavaProperty(String prop, String val) {
-        mJavaProperties.put(prop, val);
-    }
- 
-    
-    public Hashtable getJavaProperties() {
-        return mJavaProperties;
-    }
+	private String mCFBundleIconFile = null;
+	private String mCFBundleIdentifier = null;
+	private String mVMOptions = null; // Java VM options
+	private String mWorkingDirectory = null; // Java Working Dir
+	private String mArguments = null; // Java command line arguments
 
-    public void addToClassPath(String s) {
-        mClassPath.add("$JAVAROOT/" + s);
-    }
+	// Class path and extra class path elements
+	private List mClassPath = new ArrayList();
+	private List mExtraClassPath = new ArrayList();
 
-    public void addToExtraClassPath(String s) {
-        mExtraClassPath.add(s);
-    }
+	// Java properties
+	private Hashtable mJavaProperties = new Hashtable();
 
-    public List getExtraClassPath() {
-        return mExtraClassPath;
-    }
- 
-    
-    public DocumentType createDocumentType() {
-        return new DocumentType();
-    }
+	// Document types
+	private List mDocumentTypes = new LinkedList();
 
-    public List getDocumentTypes() {
-        return mDocumentTypes;
-    }
+	// ================================================================================
 
-    /**
-     * Add a document type to the document type list.
-    */
-    public void addDocumentType(DocumentType documentType) {
-        mDocumentTypes.add(documentType);
-    }
-    
-     
-    
-    //================================================================================
-    
-    public void setApplicationName(String s) {
-        mApplicationName = s;
-    }
+	/**
+	 * Add a Java runtime property to the properties hashtable.
+	 */
 
-    public String getApplicationName() {
-        return mApplicationName;
-    } 
-  
-    //================================================================================
-    //
-    // Bundle setters and getters
-    //
- 
-    public void setCFBundleName(String s) {
-        
-        if (s.length() > 16)
-            System.err.println("WARNING: 'shortname' is recommeded to be no more than 16 " +
-                               "charaters long. See usage notes.");
-        mCFBundleName = s;
-    }
-    
-    public String getCFBundleName() {
-        if (mCFBundleName == null)
-            return getApplicationName();
-        
-        return mCFBundleName;
-    }
+	public void addJavaProperty(String prop, String val) {
+		mJavaProperties.put(prop, val);
+	}
 
-    public void setCFBundleVersion(String s) {
-        mCFBundleVersion = s;
-    }
+	public Hashtable getJavaProperties() {
+		return mJavaProperties;
+	}
 
-    public String getCFBundleVersion() {
-        return mCFBundleVersion;
-    }
+	public void addToClassPath(String s) {
+		mClassPath.add("$JAVAROOT/" + s);
+	}
 
-    public void setCFBundleInfoDictionaryVersion(String s) {
-        //mCFBundleInfoDictionaryVersion = s;
-    }
+	public void addToExtraClassPath(String s) {
+		mExtraClassPath.add(s);
+	}
 
-    public String getCFBundleInfoDictionaryVersion() {
-        return mCFBundleInfoDictionaryVersion;
-    }
+	public List getExtraClassPath() {
+		return mExtraClassPath;
+	}
 
-    public void setCFBundleIdentifier(String s) {
-        mCFBundleIdentifier = s;
-    }
+	public DocumentType createDocumentType() {
+		return new DocumentType();
+	}
 
-    public String getCFBundleIdentifier() {
-        return mCFBundleIdentifier;
-    }
+	public List getDocumentTypes() {
+		return mDocumentTypes;
+	}
 
+	/**
+	 * Add a document type to the document type list.
+	 */
+	public void addDocumentType(DocumentType documentType) {
+		mDocumentTypes.add(documentType);
+	}
 
-    public void setCFBundleGetInfoString(String s) {        
-       mCFBundleGetInfoString = s;
-    }
+	// ================================================================================
 
-    public String getCFBundleGetInfoString() {
-        if (mCFBundleGetInfoString == null)
-            return getCFBundleShortVersionString();
+	public void setApplicationName(String s) {
+		mApplicationName = s;
+	}
 
-        return mCFBundleGetInfoString;
-    }
+	public String getApplicationName() {
+		return mApplicationName;
+	}
 
-    public void setCFBundleShortVersionString(String s) {
-        mCFBundleShortVersionString = s;
-    }
+	// ================================================================================
+	//
+	// Bundle setters and getters
+	//
 
-    public String getCFBundleShortVersionString() {
-        return mCFBundleShortVersionString;
-    }
+	public void setCFBundleName(String s) {
 
-    public void setCFBundleIconFile(String s) {
-        mCFBundleIconFile = s;
-    }
+		if (s.length() > 16)
+			System.err
+					.println("WARNING: 'shortname' is recommeded to be no more than 16 "
+							+ "charaters long. See usage notes.");
+		mCFBundleName = s;
+	}
 
-    public String getCFBundleIconFile() {
-        return mCFBundleIconFile;
-    }
+	public String getCFBundleName() {
+		if (mCFBundleName == null)
+			return getApplicationName();
 
-    public void setCFBundleAllowMixedLocalizations(boolean b) {
-        mCFBundleAllowMixedLocalizations = b;
-    }
+		return mCFBundleName;
+	}
 
-    public boolean getCFBundleAllowMixedLocalizations() {
-        return mCFBundleAllowMixedLocalizations;
-    }
+	public void setCFBundleVersion(String s) {
+		mCFBundleVersion = s;
+	}
 
-    public void setCFBundleExecutable(String s) {
-        mCFBundleExecutable = s;
-    }
+	public String getCFBundleVersion() {
+		return mCFBundleVersion;
+	}
 
-    public String getCFBundleExecutable() {
-        return mCFBundleExecutable;
-    }
+	public void setCFBundleInfoDictionaryVersion(String s) {
+		// mCFBundleInfoDictionaryVersion = s;
+	}
 
-    public void setCFBundleDevelopmentRegion(String s) {
-        mCFBundleDevelopmentRegion = s;
-    }
+	public String getCFBundleInfoDictionaryVersion() {
+		return mCFBundleInfoDictionaryVersion;
+	}
 
-    public String getCFBundleDevelopmentRegion() {
-        return mCFBundleDevelopmentRegion;
-    }
+	public void setCFBundleIdentifier(String s) {
+		mCFBundleIdentifier = s;
+	}
 
-    public void setCFBundlePackageType(String s) {
-        //mCFBundlePackageType = s;
-    }
+	public String getCFBundleIdentifier() {
+		return mCFBundleIdentifier;
+	}
 
-    public String getCFBundlePackageType() {
-        return mCFBundlePackageType;
-    }
+	public void setCFBundleGetInfoString(String s) {
+		mCFBundleGetInfoString = s;
+	}
 
-    public void setCFBundleSignature(String s) {
-        mCFBundleSignature = s;
-    }
+	public String getCFBundleGetInfoString() {
+		if (mCFBundleGetInfoString == null)
+			return getCFBundleShortVersionString();
 
-    public String getCFBundleSignature() {
-        return mCFBundleSignature;
-    }
+		return mCFBundleGetInfoString;
+	}
 
-    public void setCFBundleHelpBookFolder(String s) {
-        mCFHelpBookFolder = s;
-    }
+	public void setCFBundleShortVersionString(String s) {
+		mCFBundleShortVersionString = s;
+	}
 
-    public String getCFBundleHelpBookFolder() {
-        return mCFHelpBookFolder;
-    }
+	public String getCFBundleShortVersionString() {
+		return mCFBundleShortVersionString;
+	}
 
-    public void setCFBundleHelpBookName(String s) {
-        mCFHelpBookName = s;
-    }
+	public void setCFBundleIconFile(String s) {
+		mCFBundleIconFile = s;
+	}
 
-    public String getCFBundleHelpBookName() {
-        return mCFHelpBookName;
-    }
+	public String getCFBundleIconFile() {
+		return mCFBundleIconFile;
+	}
 
-    
-    public void setMainClass(String s) {
-        mMainClass = s;
-    }
+	public void setCFBundleAllowMixedLocalizations(boolean b) {
+		mCFBundleAllowMixedLocalizations = b;
+	}
 
-    public String getMainClass() {
-        return mMainClass;
-    }
+	public boolean getCFBundleAllowMixedLocalizations() {
+		return mCFBundleAllowMixedLocalizations;
+	}
 
-    public void setJVMVersion(String s) {
-        mJVMVersion = s;
-    }
+	public void setCFBundleExecutable(String s) {
+		mCFBundleExecutable = s;
+	}
 
-    public String getJVMVersion() {
-        return mJVMVersion;
-    }
+	public String getCFBundleExecutable() {
+		return mCFBundleExecutable;
+	}
 
- 
-    public void setVMOptions(String s) {
-        mVMOptions = s;
-    }
+	public void setCFBundleDevelopmentRegion(String s) {
+		mCFBundleDevelopmentRegion = s;
+	}
 
-    public String getVMOptions() {
-        return mVMOptions;
-    }
+	public String getCFBundleDevelopmentRegion() {
+		return mCFBundleDevelopmentRegion;
+	}
 
-    public void setWorkingDirectory(String s) {
-        mWorkingDirectory = s;
-    }
+	public void setCFBundlePackageType(String s) {
+		// mCFBundlePackageType = s;
+	}
 
-    public String getWorkingDirectory() {
-        return mWorkingDirectory;
-    }
+	public String getCFBundlePackageType() {
+		return mCFBundlePackageType;
+	}
 
-    public void setArguments(String s) {
-        mArguments = s;
-    }
+	public void setCFBundleSignature(String s) {
+		mCFBundleSignature = s;
+	}
 
-    public String getArguments() {
-        return mArguments;
-    }
+	public String getCFBundleSignature() {
+		return mCFBundleSignature;
+	}
 
-     public List getClassPath() {
-        return mClassPath;
-    }
+	public void setCFBundleHelpBookFolder(String s) {
+		mCFHelpBookFolder = s;
+	}
+
+	public String getCFBundleHelpBookFolder() {
+		return mCFHelpBookFolder;
+	}
+
+	public void setCFBundleHelpBookName(String s) {
+		mCFHelpBookName = s;
+	}
+
+	public String getCFBundleHelpBookName() {
+		return mCFHelpBookName;
+	}
+
+	public void setMainClass(String s) {
+		mMainClass = s;
+	}
+
+	public String getMainClass() {
+		return mMainClass;
+	}
+
+	public void setJVMVersion(String s) {
+		mJVMVersion = s;
+	}
+
+	public String getJVMVersion() {
+		return mJVMVersion;
+	}
+
+	public void setVMOptions(String s) {
+		mVMOptions = s;
+	}
+
+	public String getVMOptions() {
+		return mVMOptions;
+	}
+
+	public void setWorkingDirectory(String s) {
+		mWorkingDirectory = s;
+	}
+
+	public String getWorkingDirectory() {
+		return mWorkingDirectory;
+	}
+
+	public void setArguments(String s) {
+		mArguments = s;
+	}
+
+	public String getArguments() {
+		return mArguments;
+	}
+
+	public List getClassPath() {
+		return mClassPath;
+	}
 
 }

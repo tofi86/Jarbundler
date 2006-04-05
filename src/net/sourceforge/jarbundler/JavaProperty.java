@@ -1,65 +1,64 @@
-
 package net.sourceforge.jarbundler;
 
 public class JavaProperty {
 
-    /** The JavaProperties' name and value */
+	/** The JavaProperties' name and value */
 
-    private String name = null;
-    private String value = null;
+	private String name = null;
+	private String value = null;
 
+	/**
+	 * Construct an empty JavaProperty
+	 */
 
-    /**
-     * Construct an empty JavaProperty */
+	public JavaProperty() {
+	}
 
-    public JavaProperty() {
-    }
+	/**
+	 * Set the JavaProperties's name; required
+	 * 
+	 * @param name
+	 *            the JavaProperties' name
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
+	/**
+	 * Get the JavaProperties' name
+	 * 
+	 * @return the JavaProperties' name.
+	 */
+	public String getName() {
 
-    /**
-     * Set the JavaProperties's name; required
-     *
-     * @param name the JavaProperties' name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+		if (this.name == null)
+			return null;
 
-    /**
-     * Get the JavaProperties' name
-     *
-     * @return the JavaProperties' name.
-     */
-    public String getName() {
+		return this.name.trim();
+	}
 
-        if (this.name == null)
-            return null;
+	/**
+	 * Set the JavaProperties' value; required
+	 * 
+	 * @param value
+	 *            the JavaProperties' value
+	 */
 
-        return this.name.trim();
-    }
+	public void setValue(String value) {
+		this.value = value;
+	}
 
-    /**
-     * Set the JavaProperties' value; required
-     *
-     * @param value the JavaProperties' value
-     */
+	/**
+	 * Get the JavaProperties' value.
+	 * 
+	 * @return the JavaProperties' value.
+	 */
+	public String getValue() {
 
-    public void setValue(String value) {
-        this.value = value;
-    }
+		if (this.value == null)
+			return null;
 
-    /**
-     * Get the JavaProperties' value.
-     *
-     * @return the JavaProperties' value.
-     */
-    public String getValue() {
-
-        if (this.value == null)
-            return null;
-
-        return this.value.trim();
-    }
-
+		return this.value.trim();
+	}
 
 }
