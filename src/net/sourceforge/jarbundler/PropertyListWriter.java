@@ -217,6 +217,12 @@ public class PropertyListWriter {
                     closeArray(3);
                  }
 
+                if (documentType.isBundle() ) {
+                		writeKey(3, "LSTypeIsPackage");
+                		writeString(3, String.valueOf(documentType.isBundle()));
+                }
+
+
                 closeDict(2);
                 
                 }

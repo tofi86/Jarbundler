@@ -350,7 +350,8 @@ public class JarBundler extends MatchingTask {
      *            the path to the stub file
      */
     public void setStubFile(File file) {
-        mStubFile = file;
+        mStubFile = (file.exists()) ? file : new File(DEFAULT_STUB);
+        bundleProperties.setCFBundleExecutable(file.getName());
     }
 
     /**
@@ -733,14 +734,23 @@ public class JarBundler extends MatchingTask {
 
     public void execute() throws BuildException {
 
-        // Validate
+		// Delete any existing Application bundle directory structure
+
+
+        File bundleDir = new File(mRootDir, bundleProperties.getApplicationName() + ".app");
+
+        if (bundleDir.exists())
+			removeDir(bundleDir);
+
+
+        // Validate - look for required attributes ///////////////////////////////////////////
 
         if (mRootDir == null)
             throw new BuildException("Required attribute \"dir\" is not set.");
 
         if (mJarAttrs.isEmpty() && mJarFileSets.isEmpty()
                 && mJarFileLists.isEmpty())
-            throw new BuildException("Either the attribute \"jars\" must "
+            throw new BuildException("Either the attribute \"jar\" must "
                     + "be set, or one or more jarfilelists or "
                     + "jarfilesets must be added.");
 
@@ -757,6 +767,8 @@ public class JarBundler extends MatchingTask {
             throw new BuildException(
                     "Required attribute \"mainclass\" is not set.");
 
+
+		///////////////////////////////////////////////////////////////////////////////////////
 
         // Set up some Java properties
 
@@ -812,15 +824,12 @@ public class JarBundler extends MatchingTask {
                     "Destination directory specified by \"dir\" "
                             + "attribute must already exist.");
 
-        File bundleDir = new File(mRootDir, bundleProperties
-                .getApplicationName()
-                + ".app");
 
         if (bundleDir.exists())
-            throw new BuildException("The App Bundle " + bundleDir.getName()
-                    + " already exists, cannot continue.");
+            throw new BuildException("The directory/bundle \"" + bundleDir.getName()
+                    + "\" already exists, cannot continue.");
 
-        // Status
+        // Status message
         System.out.println("Creating application bundle: " + bundleDir);
 
         if (!bundleDir.mkdir())
@@ -921,8 +930,7 @@ public class JarBundler extends MatchingTask {
         processExtraClassPathFileLists();
 
         // Copy the JavaApplicationStub file from the Java system directory to
-        // the MacOS
-        // directory
+        // the MacOS directory
         copyApplicationStub();
 
         // Create the Info.plist file
@@ -1271,17 +1279,20 @@ public class JarBundler extends MatchingTask {
     private void copyApplicationStub() throws BuildException {
 
         if (mVerbose) 
-            System.out.println("Copying JavaApplicationStub...");
+            System.out.println("Copying Java Application Stub...");
 
-        File newStubFile = new File(mMacOsDir, "JavaApplicationStub");
+
+        File newStubFile = new File(mMacOsDir, bundleProperties.getCFBundleExecutable());
 
         try {
             mFileUtils.copyFile(mStubFile, newStubFile);
         } catch (IOException ex) {
-            throw new BuildException("Cannot copy JavaApplicationStub: " + ex);
+            throw new BuildException("Cannot copy Java Application Stub: " + ex);
         }
 
+
         // Tweak the permissions on the stub file to set it executable
+        
         try {
             setExecutable(newStubFile);
         } catch (IOException ex) {
@@ -1315,5 +1326,79 @@ public class JarBundler extends MatchingTask {
                 pkgWriter.close();
         }
     }
+
+    private void removeDir(File directory) {
+    
+        String[] list = directory.list();
+        
+        if (list == null) 
+            list = new String[0];
+        
+        
+        for (int i = 0; i < list.length; i++) {
+        
+            File file = new File(directory, list[i]);
+                        
+            // Recursion if the 'file' is a directory
+            
+            if (file.isDirectory()) 
+                removeDir(file);
+            else {
+                if ( file.delete() == false)  {
+                    String message = "Unable to delete file \"" + file.getAbsolutePath() + "\"";
+                    throw new BuildException(message);
+                }
+            }
+        }
+        
+        // Finally, delete the, now empty, top level directory
+        
+        if ( directory.delete() == false) {
+            String message = "Unable to delete directory \"" + directory.getAbsolutePath() + "\"";
+            throw new BuildException(message);
+        } 
+    }
+	
+
+
+
+
+/*
+   private void deleteDirContents (File pDir ) {
+   
+       boolean pRecursive = true;
+   
+       if ( pDir == null ) {
+          System.err.println(pDir.filename() + "No such directory" );
+          return;
+       }
+
+       // Empty child subdirs files before we get rid of
+       // immediate files of this dir.
+
+       if ( pRecursive ) {
+   
+          String[] allDirs = pDir.list();
+          if ( allDirs != null ) {
+
+             for ( String subDir : allDirs ) {
+                deleteDirContents( new File( pDir, subDir ));
+             }
+          }
+       }
+      
+      
+       // delete all files and subdirs in this dir
+   
+   
+       String[] allFilesAndDirsInThisDir = pDir.list();
+   
+       if ( allFilesAndDirsInThisDir != null ) {
+          for ( String fileToDelete : allFilesAndDirsInThisDir )  {
+             deleteFile( new File( pDir, fileToDelete ) );
+          }
+       }
+   } 
+*/
 
 }

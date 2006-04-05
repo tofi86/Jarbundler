@@ -51,8 +51,6 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
   
   <target name="simple" depends="jar" description="Build an example application">
 
-    <delete dir="${ant.project.name}.app"/>
-
     <taskdef name="jarbundler"
              classpath="${jarbundler.jar}" 
              classname="net.sourceforge.jarbundler.JarBundler"/>
@@ -71,12 +69,11 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
   <!-- 
      Create a complex application which:
          - Recognizes text and html document types
+         - Has a bundle document type, extension '.hello'
          - Includes a Help Book 
    -->
 
   <target name="complex" depends="jar, jni" description="Build an example application">
-
-    <delete dir="${ant.project.name}.app"/>
 
     <taskdef name="jarbundler"
              classpath="${jarbundler.jar}" 
@@ -86,6 +83,7 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
                 name="${ant.project.name}"
                 shortname="Hello"
                 signature="Helo"
+                stubfile="Hello World"
                 mainclass="net.sourceforge.jarbundler.example.HelloWorld"
                 jar="build/${ant.project.name}.jar"
                 icon="icons/${ant.project.name}.icns"
@@ -117,6 +115,12 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
       <documenttype name="Hello World RTF document"
                     extensions="rtf" 
                     role="Viewer"/>
+
+      <documenttype name="Hello project directory"
+                    extensions="hello"
+                    iconFile="icons/Hello Document.icns"
+                    bundle="true"
+                    role="Editor"/>
 
       <!-- Just proving we can included these files.  Might use them in About boxes -->                
       <resourcefilelist dir=".." files="LICENSE.TXT"/>

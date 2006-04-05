@@ -24,7 +24,7 @@ td div {margin-top:0.5em;}
 
 
 <h1>JarBundler Ant Tasks</h1>
-<h1>Version 1.7</h1>
+<h1>Version 1.8</h1>
 
 <p>How many times has this happened to you?  You've written a little
 Java utility, or maybe even a more complex application, and you want to
@@ -48,31 +48,18 @@ software licensed under the GNU General Public License.</p>
 
 <ul>
 
-<li>Added <tt>&lt;documenttype&gt;</tt> nested task so that file associations can be set up
-for the application.
-<br/>(Thanks to Dan Stowell a sample "<tt>Info.plist</tt>" file)</li>
+<li>Added <tt>bundle</tt> attribute to <tt>documenttype</tt> task in order to specify
+documents which are in reality directory trees, yet treated a single entity by the Finder.</li>
 
-<li>Added <tt>&lt;javafileset&gt;</tt> and <tt>&lt;javafilelist&gt;</tt> nested tasks,
-which mirror <tt>&lt;resourcefileset&gt;</tt> and <tt>&lt;resourcefilelist&gt;</tt>, in 
-order to add files to the <tt>Contents/Resources/Java</tt> directory</li>
+<li>No longer required to delete the existing application bundle, i.e. <tt>.app</tt> directory, 
+before invoking the <tt>jarbundler</tt> task.  This is now done by the task itself.</li>
 
-<li>Added Apple Help Book support by...
+<li>The filename of the <tt>stubfile</tt> attribute will be used as the Java Application Stub filename 
+within the bundle and for the value of the <tt>CFBundleExecutable</tt> key in the <tt>Info.plist</tt>.  
+This usage provides a way for each Java application to have a uniquely named executable 
+filename. This is useful when using the UNIX 'top' command to distinguish applications.</li>
+ 
 
-  <ul>
-   <li>Adding <tt>helpbookfolder</tt> attribute to the <tt>jarbundler</tt> task</li>
-   <li>Adding <tt>helpbookname</tt> attribute to the <tt>jarbundler</tt> task</li>
-   <li>Adding <tt>javafilelist</tt> nested task to assist in moving the Help Book JNI  
-       library to the correct location. (see above)
-  </ul>
-   <br/>(Thanks to Will Lowe for an example Help Book project with JNI code)
-</li>
-
-<li>Split the "Hello, World" example into a complex build which associates
-document types and uses a Help Book, and a simple minimal build</li>
-
-<li>Reorganize 'example' source directory to include Objective-C JNI code and use
-package structure for "Hello, World" application rather than putting everything
-in the default package
 </ul>
 
 <h2>Download</h2>
@@ -90,7 +77,7 @@ in the default package
 
 <h2>Installation</h2>
 
-<p>Move the file <tt>jarbundler-1.7.jar</tt> 
+<p>Move the file <tt>jarbundler-1.8.jar</tt> 
 into <tt>/Developer/Java/Ant/lib</tt> or 
 into your local ANT lib directory.  Remove any older versions at this time.
 
@@ -373,9 +360,16 @@ ANT <tt>build.xml</tt> file like this:</p>
 
   <tr>
     <td class="attribute">stubfile</td>
-    <td class="description">If set, the location of the Mac OS X Java Application Stub file
-        to use for this app bundle. See the section "<em>Specifying the Java Launching 
-        Stub File</em>" below. <div><strong>Required</strong> for Windows or Linux</div></td>
+    <td class="description">If set, the location of a Mac OS X Java Application Stub file
+        to use for this application bundle.  See the section "<em>Specifying the Java Launching 
+        Stub File</em>" below. <div><strong>Required</strong> for Windows or Linux</div>
+        <div>
+        Under MacOS, if the referenced file does <strong>not</strong> exist, then the file 
+        name will be used in the bundle to reference a copy of the <tt>JavaApplicationStub</tt>.
+        This usage provides a way for each Java application to have a uniquely named executable
+        file name. This is useful when using the UNIX 'top' command to distinguish applications.
+        </div>
+    </td>
   </tr>
 
   <tr>
@@ -751,6 +745,20 @@ or "<tt>ostypes</tt>".  Both may, of course, be used.
     </td>
   </tr>
 
+  <tr>
+    <td class="attribute">bundle</td>
+    <td class="description">
+    Used with extention and iconfile attributes to specify to Finder that a directory tree be 
+    treated and displayed as a single document. See  
+    <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html">
+    "Document Configuration"</a>,
+    look for the document type key <tt>LSTypeIsPackage</tt>. 
+    
+    <div><strong>NB: </strong>Boolean attribute, takes "true" or "false", default is "false"</div>
+    </td>
+  </tr>
+
+
 </table>
 </div>
 
@@ -794,16 +802,10 @@ the directory "release" using a JAR file which was created in the "build" direct
 copy in the appropriate Icon resource, and specify that the application
 requires JVM version 1.4 or the highest JVM available.</p>
 
-<p><strong>NB:</strong> Currently you must delete any existing applicaiton bundler before 
-invoking the <tt>jarbundler</tt> task.  This requirement will be relased in a future release
-of JarBundler.
-
 
 <pre style="padding-left:2em; margin-bottom:0em;">
 
 &lt;target name="complex" depends="jar, jni" description="Build an example application"&gt;
-
-  &lt;delete dir="release/Hello World.app"/&gt;
 
   &lt;taskdef name="release/jarbundler"
              classname="net.sourceforge.jarbundler.JarBundler"/&gt;
@@ -1001,6 +1003,40 @@ in the <tt>jarbundler</tt> task.
 
 
 <h2>Changes</h2>
+
+<h3>March 2006 (version 1.7)</h3>
+
+
+
+<p>Added <tt>&lt;documenttype&gt;</tt> nested task so that file associations can be set up
+for the application.  Thanks to Dan Stowell a sample "<tt>Info.plist</tt>" file containing 
+document type entries.</p>
+
+<p>Added <tt>&lt;javafileset&gt;</tt> and <tt>&lt;javafilelist&gt;</tt> nested tasks,
+which mirror <tt>&lt;resourcefileset&gt;</tt> and <tt>&lt;resourcefilelist&gt;</tt>, in 
+order to add files to the <tt>Contents/Resources/Java</tt> directory</p>
+
+<p>Added Apple Help Book support by...
+
+  <ul>
+   <li>Adding <tt>helpbookfolder</tt> attribute to the <tt>jarbundler</tt> task</li>
+   <li>Adding <tt>helpbookname</tt> attribute to the <tt>jarbundler</tt> task</li>
+   <li>Adding <tt>javafilelist</tt> nested task to assist in moving the Help Book JNI  
+       library to the correct location. (see above)
+  </ul>
+
+<p>Thanks to Will Lowe for an example Help Book project with JNI code.
+
+
+<p>Split the "Hello, World" example into a complex build which associates
+document types and uses a Help Book, and a simple minimal build</li>
+
+<p>Reorganize 'example' source directory to include Objective-C JNI code and use
+package structure for "Hello, World" application rather than putting everything
+
+
+
+
 
 <h3>March 2006 (version 1.6)</h3>
 
