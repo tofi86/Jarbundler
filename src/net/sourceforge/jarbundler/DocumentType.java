@@ -1,31 +1,41 @@
 package net.sourceforge.jarbundler;
 
 import java.lang.String;
+
 import java.io.File;
 
+import java.util.List;
+import java.util.Arrays;
+import java.util.ArrayList;
+
+
 /**
- * Represents an Info.plist DocumentType used for associating a file with the 
- *   application bundle
+ * Represents an Info.plist DocumentType used for associating a document with the application 
  * 
  * The Document Types allows you to specify which documents your finished
- * product can handle. You should list the application's primary
- * document type first because the document controller uses that type by default
- * when the user requests a new document. Here is whats in the Document Types
- * table:
+ * product can handle. You should list the application's primary document
+ * type first because the document controller uses that type by default
+ * when the user requests a new document. 
  * 
  *    Name - The name of the document type.
- * 
+ *
+ *
  *    Extensions -  A list of the filename extensions for this document type. Don't
  *       include the period in the extension.
  *
  * 
  *    OS Types - A list of four-letter codes for the document. These codes are
  *       stored in the document's resources or information property list files.
- * 
+ *
+ *
+ *    MIME Types - A list of the Multipurpose Internet Mail Extensions (MIME) types
+ *       for the document. MIME types identify content types for Internet applications.
+ *
+ *
  *    Icon File - The name of the file that contains the document type's icon.
- * 
+ *
+ *
  *    Role - A description of how the application uses the documents of this type.
- *       You can choose from four values:
  * 
  * 		    Editor - The application can display, edit, and save documents of this type.
  * 
@@ -44,18 +54,22 @@ import java.io.File;
  *        such as the Finder.
  * 
  * 
- * <pre>
- *  &lt;documenttype 	
- *      name=&quot;Scan Project&quot;
- *      extensions=&quot;scansort scanproj&quot;
- *      ostypes=&quot;fold disk fdrp&quot;
- *      iconfile=&quot;document.icns&quot;
- *      role=&quot;editor&quot;
- *      bundle=&quot;true&quot; /&gt;
- * </pre>
+ *  <documenttype>
+ *      name="Scan Project"
+ *      extensions="scansort scanproj"
+ *      ostypes="fold disk fdrp"
+ *      iconfile="document.icns"
+ *      mimetypes="text/html image/jpeg"
+ *      role="editor"
+ *      bundle="true" 
+ *  />
+ * 
  */
 
   public class DocumentType {
+
+
+    private static final List EMPTYLIST = new ArrayList(0); 
 
 
     /** Name. The name of the document type. */
@@ -89,7 +103,6 @@ import java.io.File;
 	 * Icon File. The name of the file that contains the document types icon.
 	 */
 
-
     public File iconFile = null;
     /**
 	 * Role. A description of how the application uses the documents of this
@@ -109,7 +122,6 @@ import java.io.File;
 	 * role to declare types it can export but not read.
 	 */
 
-
     public String role = null;
 
 
@@ -119,11 +131,10 @@ import java.io.File;
 	 * applications, such as the Finder.
 	 */
 
-
     public boolean isBundle = false; 
 
 
-
+	// Document type name
     public void setName(String name) {
       this.name = name;
     }
@@ -132,25 +143,35 @@ import java.io.File;
       return name;
     }
 
-
+	// Extensions
     public void setExtensions(String extensions) {
       this.extensions = extensions.split("[\\s,]");
     }
     
-    public String[] getExtensions() {
-      return extensions;
+    public List getExtensions() {
+	  return (extensions == null) ? EMPTYLIST : Arrays.asList(extensions);
     }
 
-
+	// OS Types
     public void setOSTypes(String osTypes) {
       this.osTypes = osTypes.split("[\\s,]");
     }
     
-    public String[] getOSTypes() {
-      return osTypes;
+    public List getOSTypes() {
+	  return (osTypes == null) ? EMPTYLIST : Arrays.asList(osTypes);
     }
 
+    // mime-types
+	public void setMimeTypes(String mimeTypes) {
+	   this.mimeTypes = mimeTypes.split("[\\s,]");
+	}
+	
+	public List getMimeTypes() {
+	   return (mimeTypes == null) ? EMPTYLIST : Arrays.asList(this.mimeTypes);
+	}
 
+
+	// Document icon file
     public void setIconFile(File iconFile) {
       this.iconFile = iconFile;
     }
@@ -159,7 +180,7 @@ import java.io.File;
       return iconFile;
     }
 
-
+	// Document role
     public void setRole(String role) {
       this.role = role;
     }
@@ -169,14 +190,15 @@ import java.io.File;
     }
 
 
-    
+    // Is this document represented as a bundle
+	public void setBundle(boolean isBundle) {
+	   this.isBundle = isBundle;
+	}
+
 	public boolean isBundle() {
 	  return isBundle ;
 	}
 
-	public void setBundle(boolean isBundle) {
-	   this.isBundle = isBundle;
-	}
 
   	
 }

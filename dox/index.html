@@ -49,7 +49,12 @@ software licensed under the GNU General Public License.</p>
 <ul>
 
 <li>Added <tt>bundle</tt> attribute to <tt>documenttype</tt> task in order to specify
-documents which are in reality directory trees, yet treated a single entity by the Finder.</li>
+documents which are in reality directory trees, yet treated a single entity by the Finder.
+Thanks to Deerwood McCord Jr. for the implementation.</li>
+
+<li>Added <tt>mimetypes</tt> attribute to <tt>documenttype</tt> task in order to specify
+Multipurpose Internet Mail Extensions (MIME) types for the document.
+Thanks to Deerwood McCord Jr. for the implementation.</li>
 
 <li>No longer required to delete the existing application bundle, i.e. <tt>.app</tt> directory, 
 before invoking the <tt>jarbundler</tt> task.  This is now done by the task itself.</li>
@@ -57,9 +62,9 @@ before invoking the <tt>jarbundler</tt> task.  This is now done by the task itse
 <li>The filename of the <tt>stubfile</tt> attribute will be used as the Java Application Stub filename 
 within the bundle and for the value of the <tt>CFBundleExecutable</tt> key in the <tt>Info.plist</tt>.  
 This usage provides a way for each Java application to have a uniquely named executable 
-filename. This is useful when using the UNIX 'top' command to distinguish applications.</li>
+filename. This is useful when using the UNIX 'top' command to distinguish applications.
+Thanks to Deerwood McCord Jr. for the this idea.</li>
  
-
 </ul>
 
 <h2>Download</h2>
@@ -717,8 +722,15 @@ or "<tt>ostypes</tt>".  Both may, of course, be used.
      A comma or space delimited string of Mac OS types. Each value contains a four-letter type.
      To open documents of any type, 
      include four asterisk characters "<tt>****</tt>" as the type code. These codes are equivalent 
-     to the legacy type codes used by Mac OS 9.  Currently, OS Types with leading or trainling
-     spaces or comma cannot be processed.
+     to the legacy type codes used by Mac OS 9.  Currently, OS Types with leading or trailing
+     spaces or commas cannot be processed.
+    </td>
+  </tr>
+
+  <tr>
+    <td class="attribute">mimetypes</td>
+    <td class="description">
+     A comma or space delimited string of mime-types.
     </td>
   </tr>
 
@@ -751,7 +763,7 @@ or "<tt>ostypes</tt>".  Both may, of course, be used.
     Used with extention and iconfile attributes to specify to Finder that a directory tree be 
     treated and displayed as a single document. See  
     <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html">
-    "Document Configuration"</a>,
+    "Property List Key Reference"</a>,
     look for the document type key <tt>LSTypeIsPackage</tt>. 
     
     <div><strong>NB: </strong>Boolean attribute, takes "true" or "false", default is "false"</div>
@@ -831,21 +843,31 @@ requires JVM version 1.4 or the highest JVM available.</p>
     &lt;javaproperty name="apple.awt.showGrowBox" value="false"/&gt;
 
     &lt;!-- Associate document types with this application --&gt;
-    &lt;documenttype name="Hello World text document"
-                  extensions="txt text" 
-                  ostypes="TEXT sEXT ttro" 
-                  iconfile="icons/txt.icns"
-                  role="Editor"/&gt;
+      &lt;documenttype name="Hello World text document"
+                    extensions="txt text" 
+                    ostypes="TEXT sEXT ttro" 
+                    iconFile="icons/txt.icns"
+                    role="Editor"/>
                     
-    &lt;documenttype name="Hello World HTML document"
-                  extensions="html htm" 
-                  iconfile="icons/html.icns"
-                  role="Editor"/&gt;
+      &lt;documenttype name="Hello World HTML document"
+                    extensions="html htm" 
+                    iconFile="icons/html.icns"
+                    role="Editor"/&gt;
                      
-    &lt;documenttype name="Hello World RTF document"
-                  extensions="rtf" 
-                  role="Viewer"/&gt;
+      &lt;documenttype name="Hello World RTF document"
+                    extensions="rtf" 
+                    role="Viewer"/&gt;
 
+      &lt;documenttype name="Hello World images"
+                    mimetypes="image/jpeg image/png" 
+                    role="Viewer"/&gt;
+
+      &lt;documenttype name="Hello project directory"
+                    extensions="hello"
+                    iconFile="icons/Hello Document.icns"
+                    bundle="true"
+                    role="Editor"/&gt;
+                    
     &lt;!-- Just proving we can include a file.  Might use it in the About box --&gt;                
     &lt;resourcefilelist dir=".." files="LICENSE.TXT"/&gt;
  

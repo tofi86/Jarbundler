@@ -708,16 +708,18 @@ public class JarBundler extends MatchingTask {
 
         String name = documentType.getName();
         String role = documentType.getRole();
-        String[] osTypes = documentType.getOSTypes();
-        String[] extensions = documentType.getExtensions();
+        List osTypes = documentType.getOSTypes();
+        List extensions = documentType.getExtensions();
+        List mimeTypes = documentType.getMimeTypes();
 
         if ((name == null) || (role == null))
             throw new BuildException(
                  "'<documenttype>' must have both a 'name' and a 'role' attibute");
                  
-        if ((osTypes == null) && (extensions == null))
+        if ((osTypes.isEmpty()) && (extensions.isEmpty()) && (mimeTypes.isEmpty()))
             throw new BuildException(
-                 "'<documenttype>' must have either an 'osTypes' and an 'extensions' attibute");
+                 "'<documenttype>' of \"" + name + 
+                 "\" must have at least 'osTypes' or 'extensions' or 'mimeTypes'");
 
         bundleProperties.addDocumentType(documentType);
     }

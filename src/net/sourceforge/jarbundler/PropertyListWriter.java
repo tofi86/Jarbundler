@@ -172,66 +172,70 @@ public class PropertyListWriter {
                 
                 while(itor.hasNext()) {
                 
-                DocumentType documentType = (DocumentType)itor.next();
-                openDict(2);
-                               
-                String[] extensions = documentType.getExtensions();
-                
-                if (extensions != null) {
-                    writeKey(3, "CFBundleTypeExtensions");
-                    openArray(3);
-                
-                    for(int i=0; i<extensions.length; i++)
-                        writeString(4, extensions[i]);
-                        
-                    closeArray(3);
-                }
-
-
-                String name = documentType.getName();
-                if (name != null) {
-                    writeKey(3, "CFBundleTypeName");
-                    writeString(3, name);
-                }
-
-                String role = documentType.getRole();
-                if (role != null) {
-                    writeKey(3, "CFBundleTypeRole");
-                    writeString(3, role);
-                }
-
-				File iconFile = documentType.getIconFile();
-
-				if (iconFile != null) {
-                    writeKey(3, "CFBundleTypeIconFile");
-                    writeString(3, iconFile.getName());
-                }
-
-                String[] osTypes = documentType.getOSTypes();
-                
-                if (osTypes != null) {
-                    writeKey(3, "CFBundleTypeOSTypes");
-                    openArray(3);
-                    for(int i=0; i<osTypes.length; i++)
-                        writeString(4, osTypes[i]);
-                    closeArray(3);
-                 }
-
-                if (documentType.isBundle() ) {
-                		writeKey(3, "LSTypeIsPackage");
-                		writeString(3, String.valueOf(documentType.isBundle()));
-                }
-
-
-                closeDict(2);
+					DocumentType documentType = (DocumentType)itor.next();
+					openDict(2);
+								   
+					String name = documentType.getName();
+					if (name != null) {
+						writeKey(3, "CFBundleTypeName");
+						writeString(3, name);
+					}
+	
+					String role = documentType.getRole();
+					if (role != null) {
+						writeKey(3, "CFBundleTypeRole");
+						writeString(3, role);
+					}
+	
+					File iconFile = documentType.getIconFile();
+	
+					if (iconFile != null) {
+						writeKey(3, "CFBundleTypeIconFile");
+						writeString(3, iconFile.getName());
+					}
+	
+					
+					List extensions = documentType.getExtensions();
+					
+					if (extensions.isEmpty() == false) {
+						writeKey(3, "CFBundleTypeExtensions");
+						openArray(3);
+						writeArray(4, extensions);
+						closeArray(3);
+					}
+	
+	
+					List osTypes = documentType.getOSTypes();
+					
+					if (osTypes.isEmpty() == false) {
+						writeKey(3, "CFBundleTypeOSTypes");
+						openArray(3);
+						writeArray(4, osTypes);
+						closeArray(3);
+					 }
+	
+					List mimeTypes = documentType.getMimeTypes();
+					
+					if (mimeTypes.isEmpty() == false) {
+						writeKey(3, "CFBundleTypeMIMETypes");
+						openArray(3);
+						writeArray(4, mimeTypes);
+						closeArray(3);
+					}
+	
+	
+	
+					if (documentType.isBundle() ) {
+							writeKey(3, "LSTypeIsPackage");
+							writeString(3, String.valueOf(documentType.isBundle()));
+					}
+	
+	
+					closeDict(2);
                 
                 }
                 closeArray(1);
            	}
-
-
-
-
 
 
             // Required key
