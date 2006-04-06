@@ -61,6 +61,7 @@ import java.util.ArrayList;
  * 
  */
 
+
 public class DocumentType {
 
 	private static final List EMPTYLIST = new ArrayList(0);

@@ -49,7 +49,7 @@ software licensed under the GNU General Public License.</p>
 <ul>
 
 <li>Added <tt>bundle</tt> attribute to <tt>documenttype</tt> task in order to specify
-documents which are in reality directory trees, yet treated a single entity by the Finder.
+documents which are in reality directory trees, yet treated as a single entity by the Finder.
 Thanks to Deerwood McCord Jr. for the implementation.</li>
 
 <li>Added <tt>mimetypes</tt> attribute to <tt>documenttype</tt> task in order to specify
@@ -64,6 +64,12 @@ within the bundle and for the value of the <tt>CFBundleExecutable</tt> key in th
 This usage provides a way for each Java application to have a uniquely named executable 
 filename. This is useful when using the UNIX 'top' command to distinguish applications.
 Thanks to Deerwood McCord Jr. for the this idea.</li>
+
+<li><tt>Info.plist</tt> is built internally as a DOM tree instead of concatenating strings. This 
+resulting DOM tree is serialized into the file using indentation and one tag per line.
+
+<li>Improved readablity of the verbose output.  Verbose includes the contents of the 
+<tt>Info.plist</tt> file</li>
  
 </ul>
 
@@ -1026,9 +1032,7 @@ in the <tt>jarbundler</tt> task.
 
 <h2>Changes</h2>
 
-<h3>March 2006 (version 1.7)</h3>
-
-
+<h3>March 22, 2006 (version 1.7)</h3>
 
 <p>Added <tt>&lt;documenttype&gt;</tt> nested task so that file associations can be set up
 for the application.  Thanks to Dan Stowell a sample "<tt>Info.plist</tt>" file containing 
@@ -1060,7 +1064,7 @@ package structure for "Hello, World" application rather than putting everything
 
 
 
-<h3>March 2006 (version 1.6)</h3>
+<h3>March 2, 2006 (version 1.6)</h3>
 
 <p>Added <tt>&lt;resourcefileset&gt;</tt> and <tt>&lt;resourcefilelist&gt;</tt> nested elements,
 which mirror <tt>&lt;execfileset&gt;</tt> and <tt>&lt;execfilelist&gt;</tt>, and add files to 

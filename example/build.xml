@@ -60,6 +60,7 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
                 mainclass="net.sourceforge.jarbundler.example.HelloWorld"
                 jar="build/${ant.project.name}.jar"
                 icon="icons/${ant.project.name}.icns"
+                verbose="false"
                 version="${version}" />
     
   </target>
@@ -79,7 +80,7 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
              classpath="${jarbundler.jar}" 
              classname="net.sourceforge.jarbundler.JarBundler"/>
 
-    <jarbundler dir="${basedir}"
+    <jarbundler dir="${basedir}" verbose="true"
                 name="${ant.project.name}"
                 shortname="Hello"
                 signature="Helo"

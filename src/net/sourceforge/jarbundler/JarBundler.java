@@ -28,8 +28,10 @@ import net.sourceforge.jarbundler.PropertyListWriter;
 
 // Java I/O
 import java.io.BufferedWriter;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -305,6 +307,9 @@ public class JarBundler extends MatchingTask {
 
 	private Boolean mGrowboxIntrudes = null;
 
+	// The root of the application bundle
+	private File bundleDir;
+
 	// "Contents" directory
 	private File mContentsDir;
 
@@ -544,8 +549,8 @@ public class JarBundler extends MatchingTask {
 	/**
 	 * Setter for the "verbose" attribute (optional)
 	 */
-	public void setVerbose(boolean b) {
-		mVerbose = b;
+	public void setVerbose(boolean verbose) {
+		this.mVerbose = verbose;
 	}
 
 	/**
@@ -738,7 +743,7 @@ public class JarBundler extends MatchingTask {
 
 		// Delete any existing Application bundle directory structure
 
-		File bundleDir = new File(mRootDir, bundleProperties
+		bundleDir = new File(mRootDir, bundleProperties
 				.getApplicationName()
 				+ ".app");
 
@@ -870,10 +875,15 @@ public class JarBundler extends MatchingTask {
 		// is supplied, the default icon will be used.
 
 		if (mAppIcon != null) {
+		
 
 			try {
-				mFileUtils.copyFile(mAppIcon, new File(mResourcesDir, mAppIcon
-						.getName()));
+				File dest = new File(mResourcesDir, mAppIcon.getName());
+
+				if(mVerbose)
+					System.out.println("Copying icon file to \"" + bundlePath(dest) + "\"");
+
+				mFileUtils.copyFile(mAppIcon, dest);
 			} catch (IOException ex) {
 				throw new BuildException("Cannot copy icon file: " + ex);
 			}
@@ -886,9 +896,12 @@ public class JarBundler extends MatchingTask {
 			while (itor.hasNext()) {
 				DocumentType documentType = (DocumentType) itor.next();
 				File iconFile = documentType.getIconFile();
-				if (iconFile != null)
-					mFileUtils.copyFile(iconFile, new File(mResourcesDir,
-							iconFile.getName()));
+				if (iconFile != null) {
+					File dest = new File(mResourcesDir, iconFile.getName());
+					if(mVerbose)
+						System.out.println("Copying document icon file to \"" + bundlePath(dest) + "\"");
+					mFileUtils.copyFile(iconFile, dest);
+				}
 			}
 		} catch (IOException ex) {
 			throw new BuildException("Cannot copy document icon file: " + ex);
@@ -973,7 +986,7 @@ public class JarBundler extends MatchingTask {
 			return;
 
 		if (mVerbose)
-			System.out.println("Setting file " + f + " executable.");
+			System.out.println("Setting \"" + bundlePath(f) + "\" to executable");
 
 		Process p = Runtime.getRuntime().exec(
 				new String[]{mChmodCommand, "a+x", filePath});
@@ -1030,9 +1043,9 @@ public class JarBundler extends MatchingTask {
 				File src = (File) jarIter.next();
 				File dest = new File(mJavaDir, src.getName());
 
-				if (mVerbose) {
-					System.out.println("Copying from " + src + " to " + dest);
-				}
+				if (mVerbose) 
+					System.out.println("Copying jar to \"" + bundlePath(dest) + "\"");
+				
 
 				mFileUtils.copyFile(src, dest);
 				bundleProperties.addToClassPath(dest.getName());
@@ -1064,8 +1077,7 @@ public class JarBundler extends MatchingTask {
 					File dest = new File(mJavaDir, fileName);
 
 					if (mVerbose)
-						System.out.println("Copying from " + src + " to "
-								+ dest);
+						System.out.println("Copying jar to \"" + bundlePath(dest) + "\"");
 
 					mFileUtils.copyFile(src, dest);
 					bundleProperties.addToClassPath(fileName);
@@ -1092,10 +1104,9 @@ public class JarBundler extends MatchingTask {
 					File src = new File(srcDir, fileName);
 					File dest = new File(mJavaDir, fileName);
 
-					if (mVerbose) {
-						System.out.println("Copying from " + src + " to "
-								+ dest);
-					}
+					if (mVerbose) 
+						System.out.println("Copying jar to \"" + bundlePath(dest) + "\"");
+					
 
 					mFileUtils.copyFile(src, dest);
 					bundleProperties.addToClassPath(fileName);
@@ -1159,9 +1170,9 @@ public class JarBundler extends MatchingTask {
 				File src = (File) execIter.next();
 				File dest = new File(mMacOsDir, src.getName());
 
-				if (mVerbose) {
-					System.out.println("Copying from " + src + " to " + dest);
-				}
+				if (mVerbose) 
+					System.out.println("Copying file to \"" + bundlePath(dest) + "\"");
+				
 
 				mFileUtils.copyFile(src, dest);
 				setExecutable(dest);
@@ -1213,10 +1224,11 @@ public class JarBundler extends MatchingTask {
 						String fileName = files[i];
 						File src = new File(srcDir, fileName);
 						File dest = new File(targetdir, fileName);
+						
 						if (mVerbose) {
 							System.out.println("Copying "
 									+ (setExec ? "exec" : "resource")
-									+ " from " + src + " to " + dest);
+									+ " to \"" + bundlePath(dest) +"\"" );
 						}
 						mFileUtils.copyFile(src, dest);
 						if (setExec)
@@ -1247,8 +1259,7 @@ public class JarBundler extends MatchingTask {
 		processCopyingFileLists(mJavaFileLists, mJavaDir, false);
 	}
 
-	private void processCopyingFileLists(List fileLists, File targetDir,
-			boolean setExec) throws BuildException {
+	private void processCopyingFileLists(List fileLists, File targetDir, boolean setExec) throws BuildException {
 
 		for (Iterator execIter = fileLists.iterator(); execIter.hasNext();) {
 
@@ -1259,8 +1270,7 @@ public class JarBundler extends MatchingTask {
 
 			if (files.length == 0) {
 				// this is probably an error -- warn about it
-				System.err
-						.println("WARNING: filelist for copying from directory "
+				System.err.println("WARNING: filelist for copying from directory "
 								+ srcDir + ": no files found");
 			} else {
 				try {
@@ -1268,10 +1278,10 @@ public class JarBundler extends MatchingTask {
 						String fileName = files[i];
 						File src = new File(srcDir, fileName);
 						File dest = new File(targetDir, fileName);
-						if (mVerbose) {
-							System.out.println("Copying from " + src + " to "
-									+ dest);
-						}
+						
+						if (mVerbose) 
+							System.out.println("Copying file to \"" + bundlePath(dest) + "\"");
+						
 						mFileUtils.copyFile(src, dest);
 						if (setExec)
 							setExecutable(dest);
@@ -1288,11 +1298,10 @@ public class JarBundler extends MatchingTask {
 
 	private void copyApplicationStub() throws BuildException {
 
-		if (mVerbose)
-			System.out.println("Copying Java Application Stub...");
+		File newStubFile = new File(mMacOsDir, bundleProperties.getCFBundleExecutable());
 
-		File newStubFile = new File(mMacOsDir, bundleProperties
-				.getCFBundleExecutable());
+		if (mVerbose)
+			System.out.println("Copying Java application stub to \"" + bundlePath(newStubFile) + "\"");
 
 		try {
 			mFileUtils.copyFile(mStubFile, newStubFile);
@@ -1312,11 +1321,27 @@ public class JarBundler extends MatchingTask {
 	private void writeInfoPlist() throws BuildException {
 		PropertyListWriter listWriter = new PropertyListWriter(bundleProperties);
 		File infoPlist = new File(mContentsDir, "Info.plist");
+
 		listWriter.writeFile(infoPlist);
+		
+		if (mVerbose) {
+			System.out.println("Creating \"" + bundlePath(infoPlist) + "\"");
+			try {
+				BufferedReader in = new BufferedReader(new FileReader(infoPlist));
+				String str;
+				while ((str = in.readLine()) != null) 
+					System.out.println(str);
+				in.close();
+    		} catch (IOException e) {
+    			throw new BuildException(e);
+    		}			
+		}
 	}
 
+
+	//
 	// Write the PkgInfo file into the application bundle
-	// ////////////////////////////////////
+	//
 
 	private void writePkgInfo() throws BuildException {
 		File pkgInfo = new File(mContentsDir, "PkgInfo");
@@ -1370,30 +1395,12 @@ public class JarBundler extends MatchingTask {
 		}
 	}
 
-	/*
-	 * private void deleteDirContents (File pDir ) {
-	 * 
-	 * boolean pRecursive = true;
-	 * 
-	 * if ( pDir == null ) { System.err.println(pDir.filename() + "No such
-	 * directory" ); return; }
-	 *  // Empty child subdirs files before we get rid of // immediate files of
-	 * this dir.
-	 * 
-	 * if ( pRecursive ) {
-	 * 
-	 * String[] allDirs = pDir.list(); if ( allDirs != null ) {
-	 * 
-	 * for ( String subDir : allDirs ) { deleteDirContents( new File( pDir,
-	 * subDir )); } } }
-	 * 
-	 *  // delete all files and subdirs in this dir
-	 * 
-	 * 
-	 * String[] allFilesAndDirsInThisDir = pDir.list();
-	 * 
-	 * if ( allFilesAndDirsInThisDir != null ) { for ( String fileToDelete :
-	 * allFilesAndDirsInThisDir ) { deleteFile( new File( pDir, fileToDelete ) ); } } }
-	 */
-
+	private String bundlePath(File bundleFile) {
+	
+		String rootPath = bundleDir.getAbsolutePath();
+		String thisPath = bundleFile.getAbsolutePath();
+	
+		return thisPath.substring(rootPath.length());
+	
+	}
 }
