@@ -763,13 +763,8 @@ public class JarBundler extends MatchingTask {
 		if (name == null)
 			helpBook.setName(bundleProperties.getCFBundleHelpBookName());
 
-		// Validity check on 'locale'; the first character should be capitalized
-		//if (locale != null && Character.isLowerCase(locale.charAt(0))) 
-		//	helpBook.setLocale(Character.toUpperCase(locale.charAt(0)) + locale.substring(1));
-
 
 		// Make sure some file were selected...
-
 
 
 		mHelpBooks.add(helpBook);

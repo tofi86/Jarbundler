@@ -138,14 +138,12 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
       <!-- Copy the HelpBooks to the language specific directories  -->
       <helpbook locale="English">
       	<fileset dir="HelpBook/English" />
-      	<fileset dir="HelpBook/images" />
-      	<fileset dir="HelpBook/styles" />
+      	<fileset dir="HelpBook/common" />
       </helpbook>
       
       <helpbook foldername="Hilfebuch" name="Hallo Welt Hilfe" locale="German">
       	<fileset dir="HelpBook/German" />
-      	<fileset dir="HelpBook/images" />
-      	<fileset dir="HelpBook/styles" />
+      	<fileset dir="HelpBook/common" />
       </helpbook>
       
     </jarbundler>
