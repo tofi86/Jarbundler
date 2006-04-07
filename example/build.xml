@@ -55,12 +55,11 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
              classpath="${jarbundler.jar}" 
              classname="net.sourceforge.jarbundler.JarBundler"/>
 
-    <jarbundler dir="${basedir}"
+    <jarbundler dir="${basedir}" verbose="false"
                 name="${ant.project.name}"
                 mainclass="net.sourceforge.jarbundler.example.HelloWorld"
                 jar="build/${ant.project.name}.jar"
                 icon="icons/${ant.project.name}.icns"
-                verbose="false"
                 version="${version}" />
     
   </target>
@@ -80,7 +79,7 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
              classpath="${jarbundler.jar}" 
              classname="net.sourceforge.jarbundler.JarBundler"/>
 
-    <jarbundler dir="${basedir}" verbose="true"
+    <jarbundler dir="${basedir}" verbose="true" showPlist="false"
                 name="${ant.project.name}"
                 shortname="Hello"
                 signature="Helo"
@@ -92,10 +91,12 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
                 version="${version}"
                 infostring="${ant.project.name}, ${copyright}"
                 build="${buildnumber}"
-                bundleid="net.sourceforge.jarbundler.example.HelloWorld"   
+                bundleid="net.sourceforge.jarbundler.example.HelloWorld" 
                 helpbookfolder="HelpBook"
                 helpbookname="Hello World Help" > 
-                
+
+
+
       <!-- Adjust the look, feel and behavior -->
       <javaproperty name="apple.laf.useScreenMenuBar" value="true"/>
       <javaproperty name="apple.awt.brushMetal" value="true"/>
@@ -133,9 +134,20 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
       <!-- Copy the HelpBook JNI library  -->
       <javafilelist dir="${basedir}/build" files="libHelpBookJNI.jnilib"/>
 
-      <!-- Copy the HelpBook contents -->   
-      <resourcefileset dir="${basedir}" includes="HelpBook/**/*.*/"/>
-                     
+
+      <!-- Copy the HelpBooks to the language specific directories  -->
+      <helpbook locale="English">
+      	<fileset dir="HelpBook/English" />
+      	<fileset dir="HelpBook/images" />
+      	<fileset dir="HelpBook/styles" />
+      </helpbook>
+      
+      <helpbook foldername="Hilfebuch" name="Hallo Welt Hilfe" locale="German">
+      	<fileset dir="HelpBook/German" />
+      	<fileset dir="HelpBook/images" />
+      	<fileset dir="HelpBook/styles" />
+      </helpbook>
+      
     </jarbundler>
     
   </target>

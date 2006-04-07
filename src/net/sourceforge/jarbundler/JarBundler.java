@@ -263,33 +263,31 @@ public class JarBundler extends MatchingTask {
 
 	private File mRootDir;
 
+	private final List mJavaFileLists = new ArrayList();
 	private final List mJarFileSets = new ArrayList();
 
+	private final List mExecFileLists = new ArrayList();
 	private final List mExecFileSets = new ArrayList();
 
+	private final List mResourceFileLists = new ArrayList();
 	private final List mResourceFileSets = new ArrayList();
 
+	private final List mJarFileLists = new ArrayList();
 	private final List mJavaFileSets = new ArrayList();
 
-	private final List mExtraClassPathFileSets = new ArrayList();
-
-	private final List mJarFileLists = new ArrayList();
-
-	private final List mExecFileLists = new ArrayList();
-
-	private final List mResourceFileLists = new ArrayList();
-
-	private final List mJavaFileLists = new ArrayList();
-
 	private final List mExtraClassPathFileLists = new ArrayList();
+	private final List mExtraClassPathFileSets = new ArrayList();
 
 	private final List mJarAttrs = new ArrayList();
 
 	private final List mExecAttrs = new ArrayList();
 
 	private final List mExtraClassPathAttrs = new ArrayList();
+	
+	private final List mHelpBooks = new ArrayList();
 
 	private boolean mVerbose = false;
+	private boolean mShowPlist = false;
 
 	// Java properties used by Mac OS X Java applications
 
@@ -552,6 +550,12 @@ public class JarBundler extends MatchingTask {
 	public void setVerbose(boolean verbose) {
 		this.mVerbose = verbose;
 	}
+	public void setShowPlist(boolean showPlist) {
+		this.mShowPlist = showPlist;
+	}
+
+
+
 
 	/**
 	 * Setter for the "buildnumber" attribute (optional) This key specifies the
@@ -695,6 +699,11 @@ public class JarBundler extends MatchingTask {
 		mExtraClassPathFileLists.add(fl);
 	}
 
+
+
+
+
+
 	public void addConfiguredJavaProperty(JavaProperty javaProperty)
 			throws BuildException {
 
@@ -708,8 +717,7 @@ public class JarBundler extends MatchingTask {
 		bundleProperties.addJavaProperty(name, value);
 	}
 
-	public void addConfiguredDocumentType(DocumentType documentType)
-			throws BuildException {
+	public void addConfiguredDocumentType(DocumentType documentType) throws BuildException {
 
 		String name = documentType.getName();
 		String role = documentType.getRole();
@@ -721,15 +729,53 @@ public class JarBundler extends MatchingTask {
 			throw new BuildException(
 					"'<documenttype>' must have both a 'name' and a 'role' attibute");
 
-		if ((osTypes.isEmpty()) && (extensions.isEmpty())
-				&& (mimeTypes.isEmpty()))
+		if ((osTypes.isEmpty()) && (extensions.isEmpty()) && (mimeTypes.isEmpty()))
 			throw new BuildException(
 					"'<documenttype>' of \""
 							+ name
-							+ "\" must have at least 'osTypes' or 'extensions' or 'mimeTypes'");
+							+ "\" must have 'osTypes' or 'extensions' or 'mimeTypes'");
 
 		bundleProperties.addDocumentType(documentType);
 	}
+
+
+	public void addConfiguredHelpBook(HelpBook helpBook) throws BuildException {
+
+		String folderName = helpBook.getFolderName();
+		String name = helpBook.getName();
+		String locale = helpBook.getLocale();
+
+
+		// Validity check on 'foldername'
+		if( (folderName == null) && (bundleProperties.getCFBundleHelpBookFolder() == null))
+			throw new BuildException("Either the '<helpbook>' attribute 'foldername' or " +
+			                         "the '<jarbundler>' attribute 'helpbookfolder' must be defined");
+
+		if (folderName == null)
+			helpBook.setFolderName(bundleProperties.getCFBundleHelpBookFolder());
+
+
+		// Validity check on 'title'
+		if( (name == null) && (bundleProperties.getCFBundleHelpBookName() == null))
+			throw new BuildException("Either the '<helpbook>' attribute 'name' or " +
+			                         "the '<jarbundler>' attribute 'helpbookname' must be defined");
+
+		if (name == null)
+			helpBook.setName(bundleProperties.getCFBundleHelpBookName());
+
+		// Validity check on 'locale'; the first character should be capitalized
+		//if (locale != null && Character.isLowerCase(locale.charAt(0))) 
+		//	helpBook.setLocale(Character.toUpperCase(locale.charAt(0)) + locale.substring(1));
+
+
+		// Make sure some file were selected...
+
+
+
+		mHelpBooks.add(helpBook);
+	}
+
+
 
 	/***************************************************************************
 	 * Execute the task
@@ -947,6 +993,9 @@ public class JarBundler extends MatchingTask {
 		// Add external classpath references from the nested
 		// extraclasspathfilelist attributes
 		processExtraClassPathFileLists();
+
+		// Copy HelpBooks into place
+		copyHelpBooks();
 
 		// Copy the JavaApplicationStub file from the Java system directory to
 		// the MacOS directory
@@ -1293,6 +1342,81 @@ public class JarBundler extends MatchingTask {
 		}
 	}
 
+
+
+	private void copyHelpBooks() {
+
+		for (Iterator itor = mHelpBooks.iterator(); itor.hasNext();) {
+
+			HelpBook helpBook = (HelpBook)itor.next();
+			
+			String folderName = helpBook.getFolderName();
+			String name = helpBook.getName();
+			String locale = helpBook.getLocale();
+			
+			List fileLists = helpBook.getFileLists();
+			List fileSets = helpBook.getFileSets();
+
+
+			File helpBookDir = null;
+			
+			if (locale == null) {
+			
+				// Set the Bundle entries for a nonlocalized Help Book
+				if (folderName != null)
+					bundleProperties.setCFBundleHelpBookFolder(folderName);
+				
+				if (name != null)
+					bundleProperties.setCFBundleHelpBookName(name);
+				
+				// The non-localized Help Book is top level "/Resources"
+				helpBookDir = new File(mResourcesDir, folderName);
+				helpBookDir.mkdir();
+
+				if(mVerbose)
+					System.out.println("Creating Help Book at \"" + 
+					                    bundlePath(helpBookDir) + "\"" );
+
+				
+			} else {
+
+				// The localized Help Book is "/Resources/locale.lproj"
+
+				File lproj = new File(mResourcesDir, locale + ".lproj");
+				lproj.mkdir();
+				helpBookDir = new File(lproj, folderName);
+				helpBookDir.mkdir();
+
+				if(mVerbose)
+					System.out.println("Creating Help Book for \"" + locale +
+					                    "\" at \"" + bundlePath(helpBookDir)  + "\"" );
+
+				// Create a local file to override the Bundle settings
+				File infoPList = new File(lproj, "InfoPlist.strings");
+				PrintWriter out = null;
+				try {
+ 					out = new PrintWriter(new FileWriter(infoPList));
+       				out.println("CFBundleHelpBookFolder = \"" + folderName + "\";");
+       				out.println("CFBundleHelpBookName = \"" + name + "\";");
+       			} catch (IOException ioe) {
+       				throw new BuildException("IOException in writing Help Book locale: " + locale);
+       			} finally {
+       				if (out != null)
+		        		out.close();
+		        }
+			}
+
+
+
+			processCopyingFileSets(fileSets, helpBookDir, false);
+			processCopyingFileLists(fileLists, helpBookDir, false);
+
+		}
+	}
+
+
+
+
 	// Copy the application stub into the bundle
 	// /////////////////////////////////////////////
 
@@ -1324,8 +1448,11 @@ public class JarBundler extends MatchingTask {
 
 		listWriter.writeFile(infoPlist);
 		
-		if (mVerbose) {
+		if (mVerbose) 
 			System.out.println("Creating \"" + bundlePath(infoPlist) + "\"");
+
+
+		if (mShowPlist) {
 			try {
 				BufferedReader in = new BufferedReader(new FileReader(infoPlist));
 				String str;
