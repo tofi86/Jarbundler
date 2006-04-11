@@ -1,7 +1,7 @@
 /*
- * A Mac OS X Jar Bundler Ant Task.
+ * Write the application bundle file: Info.plist
  *
- * Copyright (c) 2003, Seth J. Morabito <sethm@loomcom.com> All rights reserved.
+ * Copyright (c) 2006, William A. Gilbert <gilbert@informagen.com> All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -28,15 +28,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.Writer;
 
 // Java Utility
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-
-// Apache Jakarta
-import org.apache.tools.ant.BuildException;
 
 // Java language imports
 import java.lang.Boolean;
@@ -45,338 +42,347 @@ import java.lang.Double;
 import java.lang.String;
 import java.lang.System;
 
+// Apache Ant
+import org.apache.tools.ant.BuildException;
+
+// Java XML DOM creation
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.ParserConfigurationException;
+
+// W3C DOM
+import org.w3c.dom.Document;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Node;
+import org.w3c.dom.Element;
+import org.w3c.dom.Attr;
+
+
+// Xerces serializer
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
+import org.apache.xml.serialize.LineSeparator;
+
+
 
 /**
- * Write out a Java application bundle property list file.
- * For descriptions of the property list keys, see 
- *    <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html" >Apple docs</a>.
+ * Write out a Java application bundle property list file. For descriptions of
+ * the property list keys, see <a
+ * href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html"
+ * >Apple docs</a>.
  */
+
+
 public class PropertyListWriter {
 
-    private PrintWriter mOut;// Where to write
-    private AppBundleProperties bundleProperties;// Our app bundle properties
-
-    private double version = 1.3;
-
-    /**
-     * Create a new Property List writer.
-     */
-    public PropertyListWriter(AppBundleProperties p) {
-        bundleProperties = p;
-        setJavaVersion(bundleProperties.getJVMVersion());
-    }
-
-    private void setJavaVersion(String version) {
-
-        if (version == null)
-            return;
-
-        this.version = Double.valueOf(version.substring(0, 3)).doubleValue();
-    }
-
-
-    public void writeFile(File fileName) throws BuildException {
-
-        try {
-            mOut = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
-        } catch (IOException ex) {
-            throw new BuildException("Unable to open " + fileName + " for writing.");
-        }
-
-        try {
-
-            // Begin Plist
-            mOut.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-            mOut.println("<!DOCTYPE plist PUBLIC " + "\"-//Apple Computer//DTD PLIST 1.0//EN\"" +
-                "\"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">");
-
-            mOut.println("<plist version=\"1.0\">");
-
-            // Begin contents
-            openDict(0);
-                  
-            // Application short name ie About menu name
-             writeKey(1, "CFBundleName");
-             writeString(1, bundleProperties.getCFBundleName());
-             
-             // Finder 'Version' label, defaults to "1.0"
-             writeKey(1, "CFBundleShortVersionString");
-             writeString(1, bundleProperties.getCFBundleShortVersionString());
-
-             // Finder "Get Info" label
-             writeKey(1, "CFBundleGetInfoString");
-             writeString(1, bundleProperties.getCFBundleGetInfoString());
-
-            // Application build number, optional
-            if (bundleProperties.getCFBundleVersion() != null) {
-                writeKey(1, "CFBundleVersion");
-                writeString(1, bundleProperties.getCFBundleVersion());
-            }
-
-            // Optional key
-            if (bundleProperties.getCFBundleIconFile() != null) {
-                writeKey(1, "CFBundleIconFile");
-                writeString(1, bundleProperties.getCFBundleIconFile());
-            }
-
-            // Required Key
-            writeKey(1, "CFBundleAllowMixedLocalizations");
-            writeString(1, new Boolean(bundleProperties.getCFBundleAllowMixedLocalizations()).toString());
-
-            writeKey(1, "CFBundleInfoDictionaryVersion");
-            writeString(1, bundleProperties.getCFBundleInfoDictionaryVersion());
-
-            // Optional key
-            if (bundleProperties.getCFBundleIdentifier() != null) {
-                writeKey(1, "CFBundleIdentifier");
-                writeString(1, bundleProperties.getCFBundleIdentifier());
-            }
-
-            // Required key
-            writeKey(1, "CFBundleExecutable");
-            writeString(1, bundleProperties.getCFBundleExecutable());
-
-            // Required key
-            writeKey(1, "CFBundleDevelopmentRegion");
-            writeString(1, bundleProperties.getCFBundleDevelopmentRegion());
-
-            // Required key
-            writeKey(1, "CFBundlePackageType");
-            writeString(1, bundleProperties.getCFBundlePackageType());
-
-            // Required key
-            writeKey(1, "CFBundleSignature");
-            writeString(1, bundleProperties.getCFBundleSignature());
-
-            // CFBundleHelpBookFolder, optional
-            if (bundleProperties.getCFBundleHelpBookFolder() != null) {
-                writeKey(1, "CFBundleHelpBookFolder");
-                writeString(1, bundleProperties.getCFBundleHelpBookFolder());
-            }
-           
-            // CFBundleHelpBookName, optional
-            if (bundleProperties.getCFBundleHelpBookName() != null) {
-                writeKey(1, "CFBundleHelpBookName");
-                writeString(1, bundleProperties.getCFBundleHelpBookName());
-            }
-                             
-            // CFBundleDocumentTypes, optional           
-            List documentTypes = bundleProperties.getDocumentTypes();
-            
-            if (documentTypes.size() > 0) {
-                        
-                writeKey(1, "CFBundleDocumentTypes");
-                openArray(1);
-                
-                Iterator itor = documentTypes.iterator();
-                
-                while(itor.hasNext()) {
-                
-                DocumentType documentType = (DocumentType)itor.next();
-                openDict(2);
-                               
-                String[] extensions = documentType.getExtensions();
-                
-                if (extensions != null) {
-                    writeKey(3, "CFBundleTypeExtensions");
-                    openArray(3);
-                
-                    for(int i=0; i<extensions.length; i++)
-                        writeString(4, extensions[i]);
-                        
-                    closeArray(3);
-                }
-
-
-                String name = documentType.getName();
-                if (name != null) {
-                    writeKey(3, "CFBundleTypeName");
-                    writeString(3, name);
-                }
-
-                String role = documentType.getRole();
-                if (role != null) {
-                    writeKey(3, "CFBundleTypeRole");
-                    writeString(3, role);
-                }
-
-				File iconFile = documentType.getIconFile();
-
-				if (iconFile != null) {
-                    writeKey(3, "CFBundleTypeIconFile");
-                    writeString(3, iconFile.getName());
-                }
-
-                String[] osTypes = documentType.getOSTypes();
-                
-                if (osTypes != null) {
-                    writeKey(3, "CFBundleTypeOSTypes");
-                    openArray(3);
-                    for(int i=0; i<osTypes.length; i++)
-                        writeString(4, osTypes[i]);
-                    closeArray(3);
-                 }
-
-                closeDict(2);
-                
-                }
-                closeArray(1);
-           	}
-
-
-
-
-
-
-            // Required key
-            writeKey(1, "Java");
-
-            // Open the "Java" dictionary
-            openDict(1);
-
-            // Required key
-            writeKey(2, "MainClass");
-            writeString(2, bundleProperties.getMainClass());
-
-            // Recommended key
-            if (bundleProperties.getJVMVersion() != null) {
-                writeKey(2, "JVMVersion");
-                writeString(2, bundleProperties.getJVMVersion());
-            }
-
-            // Classpath is composed of two types.
-            // 1: Jars bundled into the JAVA_ROOT of the application
-            // 2: External directories or files with an absolute path
-
-            List classPath = bundleProperties.getClassPath();
-            List extraClassPath = bundleProperties.getExtraClassPath();
-
-            if ((classPath.size() > 0) || (extraClassPath.size() > 0)) {
-                writeKey(2, "ClassPath");
-                openArray(2);
-                writeArray(3, classPath);
-                writeArray(3, extraClassPath);
-                closeArray(2);
-            }
-
-            // Optional key
-            if (bundleProperties.getVMOptions() != null) {
-                writeKey(2, "VMOptions");
-                writeString(2, bundleProperties.getVMOptions());
-            }
-
-            // Optional key
-            if (bundleProperties.getWorkingDirectory() != null) {
-                writeKey(2, "WorkingDirectory");
-                writeString(2, bundleProperties.getWorkingDirectory());
-            }
-
-            // Optional key
-            if (bundleProperties.getArguments() != null) {
-                writeKey(2, "Arguments");
-                writeString(2, bundleProperties.getArguments());
-            }
-
-            // Write out user Java properties (optional)
-            Hashtable javaProperties = bundleProperties.getJavaProperties();
-
-            if (javaProperties != null) {
-                writeKey(2, "Properties");
-                openDict(2);
-
-                for (Iterator i = javaProperties.keySet().iterator(); i.hasNext();) {
-                    String key = (String) i.next();
-
-                    if (key.startsWith("com.apple.") && (version >= 1.4)) {
-                        System.out.println("Deprecated as of 1.4: " + key);
-
-                        continue;
-                    }
-
-                    writeKey(3, key);
-                    writeString(3, (String) javaProperties.get(key));
-                }
-
-                closeDict(2);
-            }
-
-            // Close the "Java" dictionary
-            closeDict(1);
-
-            // End contents
-            closeDict(0);
-
-            // End Plist
-            mOut.println("</plist>");
-            mOut.flush();
-
-        } finally {
-
-            if (mOut != null)
-                mOut.close();
-        }
-    }
-
-    private void openDict(int lvl) {
-
-        for (int i = 0; i < lvl; i++)
-            mOut.print("    ");
-
-        mOut.println("<dict>");
-    }
-
-    private void closeDict(int lvl) {
-
-        for (int i = 0; i < lvl; i++)
-            mOut.print("    ");
-
-        mOut.println("</dict>");
-    }
-
-    private void openArray(int lvl) {
-
-        for (int i = 0; i < lvl; i++)
-            mOut.print("    ");
-
-        mOut.println("<array>");
-    }
-
-    private void closeArray(int lvl) {
-
-        for (int i = 0; i < lvl; i++)
-            mOut.print("    ");
-
-        mOut.println("</array>");
-    }
-
-    private void writeArray(int lvl, List stringList) {
-
-        for (Iterator it = stringList.iterator(); it.hasNext();) {
-
-            try {
-                writeString(lvl, (String) it.next());
-            } catch (ClassCastException ex) {
-
-                // Poorly handled exception, but at least we
-                // won't exit.
-                continue;
-            }
-        }
-    }
-
-    private void writeKey(int lvl, String s) {
-
-        for (int i = 0; i < lvl; i++)
-            mOut.print("    ");
-
-        mOut.println("<key>" + s + "</key>");
-    }
-
-    private void writeString(int lvl, String s) {
-
-        for (int i = 0; i < lvl; i++)
-            mOut.print("    ");
-
-        mOut.println("<string>" + s + "</string>");
-    }
+
+	// Our application bundle properties
+	private AppBundleProperties bundleProperties;
+
+	private double version = 1.3;
+
+	// DOM version of Info.plist file
+	private Document document = null;
+	
+	/**
+	 * Create a new Property List writer.
+	 */
+	public PropertyListWriter(AppBundleProperties bundleProperties) {
+		this.bundleProperties = bundleProperties;
+		setJavaVersion(bundleProperties.getJVMVersion());
+	}
+
+	private void setJavaVersion(String version) {
+
+		if (version == null)
+			return;
+
+		this.version = Double.valueOf(version.substring(0, 3)).doubleValue();
+	}
+
+
+	public void writeFile(File fileName) throws BuildException {
+
+		Writer writer = null;
+
+		try {
+
+			this.document = createDOM();
+			buildDOM();
+
+			// Serialize the DOM into the writer
+			writer = new BufferedWriter(new FileWriter(fileName));
+
+			// Prettify the XML Two space indenting, no line wrapping
+			OutputFormat outputFormat = new OutputFormat();
+			outputFormat.setMethod("xml");
+			outputFormat.setIndenting(true);
+			outputFormat.setIndent(2);
+			outputFormat.setLineWidth(0);             
+			
+			// Create a DOM serlializer and write the XML
+			XMLSerializer serializer = new XMLSerializer(writer, outputFormat);
+			serializer.asDOMSerializer();
+			serializer.serialize(this.document);
+
+		} catch (ParserConfigurationException pce) {
+			throw new BuildException(pce);
+		} catch (IOException ex) {
+			throw new BuildException("Unable to write  \"" + fileName + "\"");
+		} finally {
+			if (writer != null) {
+				try {
+					writer.close();
+				} catch (IOException ioe) {
+					throw new BuildException(ioe);
+				}
+			}
+		}
+
+
+	}
+
+	private Document createDOM() throws ParserConfigurationException {
+	
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder documentBuilder = factory.newDocumentBuilder();
+		DOMImplementation domImpl = documentBuilder.getDOMImplementation();
+
+		// We needed to reference using the full class name here because we already have 
+		//  a class named "DocumentType"
+		
+		org.w3c.dom.DocumentType doctype = domImpl.createDocumentType(
+		       "plist",
+		       "-/Apple Computer/DTD PLIST 1.0/EN",
+		       "http://www.apple.com/DTDs/PropertyList-1.0.dtd");
+
+		return domImpl.createDocument(null, "plist", doctype);
+	}
+
+
+	private void buildDOM()  {
+
+		Element plist = this.document.getDocumentElement();
+		plist.setAttribute("version","1.0");		
+
+		// Open the top level dictionary, <dict>
+		
+		Node dict = createNode("dict", plist);
+
+		// Application short name i.e. About menu name
+		writeKeyStringPair("CFBundleName", bundleProperties.getCFBundleName(), dict);
+
+		// Finder 'Version' label, defaults to "1.0"
+		writeKeyStringPair("CFBundleShortVersionString", bundleProperties.getCFBundleShortVersionString(), dict);
+		
+		// Finder 'Get Info'
+		writeKeyStringPair("CFBundleGetInfoString", bundleProperties.getCFBundleGetInfoString(), dict);
+		
+		// Mac OS X required key, defaults to "false"
+		writeKeyStringPair("CFBundleAllowMixedLocalizations", 
+		     (bundleProperties.getCFBundleAllowMixedLocalizations() ? "true" : "false"),  
+		     dict);
+
+		// Mac OS X required, defaults to "6.0"
+		writeKeyStringPair("CFBundleInfoDictionaryVersion", 
+		     bundleProperties.getCFBundleInfoDictionaryVersion(), dict);
+
+		// Bundle Executable name, required, defaults to "JavaApplicationStub"
+		writeKeyStringPair("CFBundleExecutable", bundleProperties.getCFBundleExecutable(), dict);
+
+		// Bundle Development Region, required, defaults to "English"
+		writeKeyStringPair("CFBundleDevelopmentRegion", bundleProperties.getCFBundleDevelopmentRegion(), dict);
+
+		// Bundle Package Type, required, defaults tp "APPL"
+		writeKeyStringPair("CFBundlePackageType", bundleProperties.getCFBundlePackageType(), dict);
+
+		// Bundle Signature, required, defaults tp "????"
+		writeKeyStringPair("CFBundleSignature", bundleProperties.getCFBundleSignature(), dict);
+
+		// Application build number, optional
+		if (bundleProperties.getCFBundleVersion() != null) 
+			writeKeyStringPair("CFBundleVersion", bundleProperties.getCFBundleVersion(), dict);
+		
+		// Application Icon file, optional
+		if (bundleProperties.getCFBundleIconFile() != null) 
+			writeKeyStringPair("CFBundleIconFile", bundleProperties.getCFBundleIconFile(), dict);
+
+		// Bundle Identifier, optional
+		if (bundleProperties.getCFBundleIdentifier() != null) 
+			writeKeyStringPair("CFBundleIdentifier", bundleProperties.getCFBundleIdentifier(), dict);
+
+		// Help Book Folder, optional
+		if (bundleProperties.getCFBundleHelpBookFolder() != null) 
+			writeKeyStringPair("CFBundleHelpBookFolder", bundleProperties.getCFBundleHelpBookFolder(), dict);
+
+		// Help Book Name, optional
+		if (bundleProperties.getCFBundleHelpBookName() != null) 
+			writeKeyStringPair("CFBundleHelpBookName", bundleProperties.getCFBundleHelpBookName(), dict);
+
+		// Document Types, optional
+		List documentTypes = bundleProperties.getDocumentTypes();
+
+		if (documentTypes.size() > 0) 
+ 			writeDocumentTypes(documentTypes, dict);
+
+		// Java entry in the plist dictionary
+		writeKey("Java", dict);
+		Node javaDict = createNode("dict", dict);
+
+		// Main class, required
+		writeKeyStringPair("MainClass", bundleProperties.getMainClass(), javaDict);
+
+		// Target JVM version, optional but recommended
+		if (bundleProperties.getJVMVersion() != null) 
+			writeKeyStringPair("JVMVersion", bundleProperties.getJVMVersion(), javaDict);
+
+
+		// Classpath is composed of two types, required
+		// 1: Jars bundled into the JAVA_ROOT of the application
+		// 2: External directories or files with an absolute path
+
+		List classPath = bundleProperties.getClassPath();
+		List extraClassPath = bundleProperties.getExtraClassPath();
+
+		if ((classPath.size() > 0) || (extraClassPath.size() > 0)) 
+			writeClasspath(classPath, extraClassPath, javaDict);
+		
+
+		// JVM options, optional
+		if (bundleProperties.getVMOptions() != null) 
+			writeKeyStringPair("VMOptions", bundleProperties.getVMOptions(), javaDict);
+
+		// Working directory, optional
+		if (bundleProperties.getWorkingDirectory() != null) 
+			writeKeyStringPair("WorkingDirectory", bundleProperties.getWorkingDirectory(), javaDict);
+
+		// Main class arguments, optional
+		if (bundleProperties.getArguments() != null) 
+			writeKeyStringPair("Arguments", bundleProperties.getArguments(), javaDict);
+
+		// Java properties, optional
+		Hashtable javaProperties = bundleProperties.getJavaProperties();
+
+		if (javaProperties.isEmpty() == false) 
+ 			writeJavaProperties(javaProperties, javaDict);
+	}
+
+
+	private void writeDocumentTypes(List documentTypes, Node appendTo) {
+
+		writeKey("CFBundleDocumentTypes", appendTo);
+		
+		Node array = createNode("array", appendTo);
+
+		Iterator itor = documentTypes.iterator();
+
+		while (itor.hasNext()) {
+
+			DocumentType documentType = (DocumentType) itor.next();
+
+			Node documentDict = createNode("dict", array);
+
+			writeKeyStringPair("CFBundleTypeName", documentType.getName(), documentDict);
+			writeKeyStringPair("CFBundleTypeRole", documentType.getRole(), documentDict);
+
+			File iconFile = documentType.getIconFile();
+
+			if (iconFile != null)
+				writeKeyStringPair("CFBundleTypeIconFile", iconFile.getName(), documentDict);
+
+
+			List extensions = documentType.getExtensions();
+
+			if (extensions.isEmpty() == false) {
+				writeKey("CFBundleTypeExtensions", documentDict);
+				writeArray(extensions, documentDict);
+			}
+
+			List osTypes = documentType.getOSTypes();
+
+			if (osTypes.isEmpty() == false) {
+				writeKey("CFBundleTypeOSTypes", documentDict);
+				writeArray(osTypes, documentDict);
+			}
+
+			
+			List mimeTypes = documentType.getMimeTypes();
+
+			if (mimeTypes.isEmpty() == false) {
+				writeKey("CFBundleTypeMIMETypes", documentDict);
+				writeArray(mimeTypes, documentDict);
+			}
+
+			// Only write this key if true
+			if (documentType.isBundle()) 
+				writeKeyStringPair("LSTypeIsPackage", "true", documentDict);
+
+		}
+	
+	}
+
+	private void writeClasspath(List classpath, List extraClasspath, Node appendTo) {
+		writeKey("ClassPath", appendTo);
+		classpath.addAll(extraClasspath);
+		writeArray(classpath, appendTo);
+	}
+
+
+	private void writeJavaProperties(Hashtable javaProperties, Node appendTo) {
+	
+		writeKey("Properties", appendTo);
+		
+		Node propertiesDict = createNode("dict", appendTo);
+
+		for (Iterator i = javaProperties.keySet().iterator(); i.hasNext();) {
+			String key = (String) i.next();
+
+			if (key.startsWith("com.apple.") && (version >= 1.4)) {
+				System.out.println("Deprecated as of 1.4: " + key);
+				continue;
+			}
+
+			writeKeyStringPair(key, (String)javaProperties.get(key), propertiesDict);
+		}
+	}
+
+	private Node createNode(String tag, Node appendTo) {
+		Node node = this.document.createElement(tag);
+		appendTo.appendChild(node);
+		return node;
+	}
+
+
+	private void writeKeyStringPair(String key, String string, Node appendTo) {
+	
+		if (string == null)
+			return;
+	
+		writeKey(key, appendTo);
+		writeString(string, appendTo);
+	}
+
+
+	private void writeKey(String key, Node appendTo) {
+		Element keyNode = this.document.createElement("key");
+		appendTo.appendChild(keyNode);
+		keyNode.appendChild(this.document.createTextNode(key));
+	}
+
+
+	private void writeString(String string, Node appendTo) {
+		Element stringNode = this.document.createElement("string");
+		stringNode.appendChild(this.document.createTextNode(string));
+		appendTo.appendChild(stringNode);
+	}
+
+	private void writeArray(List stringList, Node appendTo) {
+	
+		Node arrayNode = createNode("array", appendTo);	
+
+		for (Iterator it = stringList.iterator(); it.hasNext();) 
+			writeString((String)it.next(), arrayNode);
+		
+	}
+
 }
