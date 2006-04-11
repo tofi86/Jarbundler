@@ -1,15 +1,15 @@
-<!--
+<?xml version="1.0" encoding="iso-8859-1"?>
 
+<!-- ===========================================================================================
 Use this sample build in your own projects.  After putting the JarBundler-X.X.jar file in 
 your ANT library remove the 'classpath' attribute from the "taskdef" element.
-
--->
+============================================================================================ -->
 
 <project name="Hello World" default="simple" basedir=".">
 
   <property name="version" value="4.3.1"/>
   <property name="buildnumber" value="213"/>
-  <property name="copyright" value="(c)2006  Informagen, Inc."/>
+  <property name="copyright" value="Copyright 2006 Informagen, Inc."/>
 
    
   <target name="compile" description="Compile the classes">
@@ -55,7 +55,7 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
              classpath="${jarbundler.jar}" 
              classname="net.sourceforge.jarbundler.JarBundler"/>
 
-    <jarbundler dir="${basedir}" verbose="false"
+    <jarbundler dir="${basedir}" verbose="true"
                 name="${ant.project.name}"
                 mainclass="net.sourceforge.jarbundler.example.HelloWorld"
                 jar="build/${ant.project.name}.jar"
@@ -96,7 +96,6 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
                 helpbookname="Hello World Help" > 
 
 
-
       <!-- Adjust the look, feel and behavior -->
       <javaproperty name="apple.laf.useScreenMenuBar" value="true"/>
       <javaproperty name="apple.awt.brushMetal" value="true"/>
@@ -135,16 +134,26 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
       <javafilelist dir="${basedir}/build" files="libHelpBookJNI.jnilib"/>
 
 
-      <!-- Copy the HelpBooks to the language specific directories  -->
-      <helpbook locale="English">
+      <!-- Copy the HelpBooks to the language specific folders            -->
+      <!--  English will use the foldername and book name from the Bundle -->
+      <!--  German or 'de' will use the custom folder name and book name  -->
+      
+      <HelpBook locale="English">
       	<fileset dir="HelpBook/English" />
       	<fileset dir="HelpBook/common" />
-      </helpbook>
+      </HelpBook>
       
       <helpbook foldername="Hilfebuch" name="Hallo Welt Hilfe" locale="German">
       	<fileset dir="HelpBook/German" />
       	<fileset dir="HelpBook/common" />
       </helpbook>
+<!--
+      <helpbook name="Hjälp" locale="sv">
+      	<fileset dir="HelpBook/Swedish" />
+      	<fileset dir="HelpBook/common" />
+      </helpbook>
+-->
+
       
     </jarbundler>
     

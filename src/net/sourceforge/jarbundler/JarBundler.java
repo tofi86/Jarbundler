@@ -765,6 +765,12 @@ public class JarBundler extends MatchingTask {
 
 
 		// Make sure some file were selected...
+		List fileLists = helpBook.getFileLists();
+		List fileSets = helpBook.getFileSets();
+
+		if ( fileLists.isEmpty() && fileSets.isEmpty() )
+			throw new BuildException("The '<helpbook>' task must have either " +
+			                         "'<fileset>' or  '<filelist>' nested tags");
 
 
 		mHelpBooks.add(helpBook);
@@ -922,7 +928,7 @@ public class JarBundler extends MatchingTask {
 				File dest = new File(mResourcesDir, mAppIcon.getName());
 
 				if(mVerbose)
-					System.out.println("Copying icon file to \"" + bundlePath(dest) + "\"");
+					System.out.println("Copying application icon file to \"" + bundlePath(dest) + "\"");
 
 				mFileUtils.copyFile(mAppIcon, dest);
 			} catch (IOException ex) {
@@ -1088,7 +1094,7 @@ public class JarBundler extends MatchingTask {
 				File dest = new File(mJavaDir, src.getName());
 
 				if (mVerbose) 
-					System.out.println("Copying jar to \"" + bundlePath(dest) + "\"");
+					System.out.println("Copying JAR file to \"" + bundlePath(dest) + "\"");
 				
 
 				mFileUtils.copyFile(src, dest);
@@ -1121,7 +1127,7 @@ public class JarBundler extends MatchingTask {
 					File dest = new File(mJavaDir, fileName);
 
 					if (mVerbose)
-						System.out.println("Copying jar to \"" + bundlePath(dest) + "\"");
+						System.out.println("Copying JAR file to \"" + bundlePath(dest) + "\"");
 
 					mFileUtils.copyFile(src, dest);
 					bundleProperties.addToClassPath(fileName);
@@ -1149,7 +1155,7 @@ public class JarBundler extends MatchingTask {
 					File dest = new File(mJavaDir, fileName);
 
 					if (mVerbose) 
-						System.out.println("Copying jar to \"" + bundlePath(dest) + "\"");
+						System.out.println("Copying JAR file to \"" + bundlePath(dest) + "\"");
 					
 
 					mFileUtils.copyFile(src, dest);
@@ -1215,7 +1221,7 @@ public class JarBundler extends MatchingTask {
 				File dest = new File(mMacOsDir, src.getName());
 
 				if (mVerbose) 
-					System.out.println("Copying file to \"" + bundlePath(dest) + "\"");
+					System.out.println("Copying exec file to \"" + bundlePath(dest) + "\"");
 				
 
 				mFileUtils.copyFile(src, dest);
@@ -1226,8 +1232,7 @@ public class JarBundler extends MatchingTask {
 		}
 	}
 
-	// Methods for copying FileSets into the application bundle
-	// ///////////////////////////////
+	// Methods for copying FileSets into the application bundle ///////////////////////////////
 
 	// Files for the Contents/MacOS directory
 	private void processExecFileSets() {
@@ -1244,8 +1249,7 @@ public class JarBundler extends MatchingTask {
 		processCopyingFileSets(mJavaFileSets, mJavaDir, false);
 	}
 
-	private void processCopyingFileSets(List fileSets, File targetdir,
-			boolean setExec) {
+	private void processCopyingFileSets(List fileSets, File targetdir, boolean setExec) {
 
 		for (Iterator execIter = fileSets.iterator(); execIter.hasNext();) {
 			FileSet fs = (FileSet) execIter.next();
@@ -1269,11 +1273,11 @@ public class JarBundler extends MatchingTask {
 						File src = new File(srcDir, fileName);
 						File dest = new File(targetdir, fileName);
 						
-						if (mVerbose) {
+						if (mVerbose) 
 							System.out.println("Copying "
 									+ (setExec ? "exec" : "resource")
-									+ " to \"" + bundlePath(dest) +"\"" );
-						}
+									+ " file to \"" + bundlePath(dest) +"\"" );
+						
 						mFileUtils.copyFile(src, dest);
 						if (setExec)
 							setExecutable(dest);
@@ -1285,8 +1289,7 @@ public class JarBundler extends MatchingTask {
 		}
 	}
 
-	// Methods for copying FileLists into the application bundle
-	// /////////////////////////////
+	// Methods for copying FileLists into the application bundle /////////////////////////////
 
 	// Files for the Contents/MacOS directory
 	private void processExecFileLists() throws BuildException {
@@ -1324,7 +1327,9 @@ public class JarBundler extends MatchingTask {
 						File dest = new File(targetDir, fileName);
 						
 						if (mVerbose) 
-							System.out.println("Copying file to \"" + bundlePath(dest) + "\"");
+							System.out.println("Copying "
+									+ (setExec ? "exec" : "resource")
+									+ " file to \"" + bundlePath(dest) +"\"" );
 						
 						mFileUtils.copyFile(src, dest);
 						if (setExec)
@@ -1401,7 +1406,7 @@ public class JarBundler extends MatchingTask {
 		        }
 			}
 
-
+			// Write the Help Book source files into the bundle
 
 			processCopyingFileSets(fileSets, helpBookDir, false);
 			processCopyingFileLists(fileLists, helpBookDir, false);
@@ -1444,7 +1449,7 @@ public class JarBundler extends MatchingTask {
 		listWriter.writeFile(infoPlist);
 		
 		if (mVerbose) 
-			System.out.println("Creating \"" + bundlePath(infoPlist) + "\"");
+			System.out.println("Creating \"" + bundlePath(infoPlist) + "\" file");
 
 
 		if (mShowPlist) {

@@ -1,0 +1,70 @@
+<html>
+<head>
+  <title>Java Application Stub</title>
+  <meta http-equiv="Content-type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Language" content="en-us" />
+  <meta name="ROBOTS" content="ALL" />
+  <link href="styles.css" rel="stylesheet" media="all" type="text/css" />
+</head>
+
+<body>
+
+
+<h1>JarBundler - Java Application Stub</h1>
+
+
+<h2>Specifying the Java Launching Stub File</h2>
+
+<p>The stub file "<tt>JavaApplicationStub</tt>" is located inside of your application bundle in the 
+subdirectory "<tt>Contents/MacOS/</tt>".  It is used by the Mac OS X system to launch and the read the
+applications plist and launch the Java VM with the appropriate properties.  
+
+<p>In early 2006 an Apple upgrade to Quicktime (7.0.4) caused 
+older versions of "<tt>JavaApplicationStub</tt>" to fail to start up.  These old versions came from developers 
+who first created the application bundle as directory and then released their applications by 
+replacing the JAR files within the bundle and not replacing "<tt>JavaApplicationStub</tt>" with a more current
+copy.
+
+<p>When run on OS X system, the JarBundler ANT task uses the current copy of the <tt>JavaApplicationStub</tt>
+from the developer's disk.  
+
+
+<h3>Java Launching Stub as a Symbolic Link</h3>
+
+<p>Creating a bundle with the your current copy of Java Launching Stub
+could lead to a future situation where the <tt>JavaApplicationStub</tt> file
+could become incompatible with a future OS X update.  
+
+<p>Under Mac OS X one
+could replace the "<tt>JavaApplicationStub</tt>" file with a symbolic link to the user's current
+copy.  This <em>should</em> guarentee that
+the end user would always be using a current copy of the stub file.  I have used this technique on
+several versions of OS X and have not have had any reported problems with its use.
+
+<p>This is not yet an option of the JarBundler task but can be accomplished with the following lines
+of ANT code after building the bundle. <strong>NB:</strong> This will not work when building under
+Windows and is untested under Linux .
+
+
+<pre style="padding-left:3em;">
+ .
+ .
+ .
+&lt;/jarbundler&gt;
+        
+&lt;!-- Delete the JavaApplicationStub and replace it with a symbolic link --&gt;
+&lt;!--   which should work on older and future versions of OS X           --&gt;
+       
+&lt;delete file="${release}/${name}.app/Contents/MacOS/JavaApplicationStub"/&gt;
+&lt;exec executable="ln"&gt;
+ &lt;arg line="-s /System/Library/Frameworks/JavaVM.framework/Resources/MacOS/JavaApplicationStub"/&gt;
+ &lt;arg value="${release}/${name}.app/Contents/MacOS/JavaApplicationStub"/&gt;
+&lt;/exec&gt;
+
+&lt;/target&gt;
+       
+</pre>
+
+
+</body>
+</html>
