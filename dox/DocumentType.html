@@ -9,17 +9,10 @@
 
 <body>
 
-<h1>JarBundler - &lt;DocumentType...&gt; Nested Task</h1>
+<h2>JarBundler - Associating Files with your Application</h2>
 
 
-
-<!-- DocumentType Task ======================================================================-->
-
-
-<h2>Associating Documents with your Application</h2>
-
-<h3><tt>&lt;documenttype&gt;</tt> Task</h3>
-<p>The nested <tt>documenttype</tt> task adds the appropriate elements to the <tt>Info.plist</tt>
+<p>The nested <tt>&lt;documenttype&gt;</tt> task adds the appropriate elements to the <tt>Info.plist</tt>
 file to associate a set of document file types with the application.  This association  means
 that this application:
 
@@ -36,11 +29,11 @@ application must supply to proper code to handle the open document requires.
 <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html#//apple_ref/doc/uid/20001431-101685">CFBundleDocumentTypes</a>
 key.
 
-<p><strong>NB: </strong> You must use at least one of the attributes "<tt>extensions</tt>" 
-or "<tt>ostypes</tt>".  Both may, of course, be used.
+<p><strong>NB: </strong> You must use at least one of the attributes "<tt>extensions</tt>",
+<tt>mimetypes</tt> or "<tt>ostypes</tt>".  Any combination of these three may, of course, be used.
 
 
-<h3><tt>&lt;documenttype&gt;</tt> Task Attributes</h3>
+<h3><tt>DocumentType</tt> Task Attributes</h3>
 <div align="center">
 <table border="1" cellpadding="4" cellspacing="0" width="90%" style="font-size: 10pt;">
 
@@ -128,29 +121,44 @@ or "<tt>ostypes</tt>".  Both may, of course, be used.
 
 
 
-<!--Examples ================================================================================-->
+<!--Example ================================================================================-->
+
+<h3>Example</h3>
 
 
-<h2>Examples</h2>
 
+<p>The following example shows four document types being associated with a JarBundler built 
+Mac OS X application.  The first document type associates HTML files using the file extensions
+<tt>html</tt> and <tt>htm</tt>.  The application also provides a custom icon file which can be
+used by Finder to render files with these two extensions, if this application is chosen as the
+default application.
 
+<p>The second document type creates an association with files with the extension
+<tt>rtf</tt>. In this case these files will be rendered by the Finder using a system default
+icon or an icon set from another application. The application is also telling the Finder that
+<tt>rtf</tt> files can be viewed but not edited.
 
-<p>A longer example with all the optional goodies will set the various Mac OS X native look-and-feel bells and whistles,
-copy in the appropriate Icon resource, and specify that the application
-requires JVM version 1.4 or the highest JVM available.</p>
+<p>The third document type associates a <tt>mime-type</tt> for JPEG and PNG images. Again, the
+application is declaring that it can only view files of this <tt>mime-type</tt>.
+
+<p>The last document type is a bit interesting using the <tt>bundle</tt> attribute to
+designate a directory, which has an extension, as a document.  The application has an
+icon set which will be used by the Finder to render this directory.  The directory will 
+not be seen from the Finder as a folder and can be copied and renamed as a single unit. This
+structure can be very useful or creating complex associations of files which should be treated
+as a unit.  The content of the document bundle can be viewed using a control-click and
+choosing "Show Package Contents...".
+
+<p>A document bundle has proven very useful in my own development work bring UNIX applications
+onto to Mac OS X platform where the application would require several input file and create a
+myriad of small output files.
 
 
 <pre style="padding-left:2em; margin-bottom:0em;">
 
 
-  &lt;jarbundler dir="release"
-                     .
-                     .
-                     .
-              helpbookfolder="HelpBook"
-              helpbookname="Hello World Help" &gt; 
+  &lt;jarbundler dir="release"...&gt; 
                 
-                    
       &lt;documenttype name="Hello World HTML document"
                     extensions="html htm" 
                     iconFile="icons/html.icns"
@@ -164,19 +172,15 @@ requires JVM version 1.4 or the highest JVM available.</p>
                     mimetypes="image/jpeg image/png" 
                     role="Viewer"/&gt;
 
-      &lt;documenttype name="Hello project directory"
+      &lt;documenttype name="Hello Project document"
                     extensions="hello"
                     iconFile="icons/Hello Document.icns"
                     bundle="true"
                     role="Editor"/&gt;
                     
-                     
   &lt;/jarbundler&gt;
-    
-</target>
 
 </pre>
-
 
 
 </body>

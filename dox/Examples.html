@@ -9,19 +9,24 @@
 <body>
 
 
-<h1>JarBundler - Advanced Examples</h1>
+<h2>JarBundler - Advanced Example</h2>
 
 
 <!--Examples ================================================================================-->
 
 
-<h2>Advanced Examples</h2>
-
-
-<p>A longer example with all the optional goodies will set the various Mac OS X native look-and-feel bells and whistles,
-copy in the appropriate Icon resource, and specify that the application
-requires JVM version 1.4 or the highest JVM available.</p>
-
+<ul>
+<li>Native Mac OS X look and feel
+<li>Custom application icon file
+<li>Long application name, short name used in the menu
+<li>Requires minimum JVM of 1.4
+<li>Three strings to specify Finder version, Get Info copyright, and build number
+<li>Default Help Book folder and Help Book name
+<li>Five different document types
+<li>Bundle license agreement
+<li>Help Book JNI library
+<li>Two language Help Book support 
+</ul>
 
 <pre style="padding-left:2em; margin-bottom:0em;">
 
@@ -39,18 +44,20 @@ requires JVM version 1.4 or the highest JVM available.</p>
               icon="icons/Hello World.icns"
               jvmversion="1.4+"
               version="1.2"
-              infostring="Hello World, ©2006 MyCompany"
+              infostring="Hello World, copyright 2006"
               build="213"
               bundleid="net.sourceforge.jarbundler.example.HelloWorld"   
               helpbookfolder="HelpBook"
               helpbookname="Hello World Help" &gt; 
                 
     &lt;!-- Adjust the look, feel and behavior --&gt;
-    &lt;javaproperty name="apple.laf.useScreenMenuBar" value="true"/&gt;
-    &lt;javaproperty name="apple.awt.brushMetal" value="true"/&gt;
-    &lt;javaproperty name="apple.awt.showGrowBox" value="false"/&gt;
+    
+      &lt;javaproperty name="apple.laf.useScreenMenuBar" value="true"/&gt;
+      &lt;javaproperty name="apple.awt.brushMetal" value="true"/&gt;
+      &lt;javaproperty name="apple.awt.showGrowBox" value="false"/&gt;
 
     &lt;!-- Associate document types with this application --&gt;
+    
       &lt;documenttype name="Hello World text document"
                     extensions="txt text" 
                     ostypes="TEXT sEXT ttro" 
@@ -70,31 +77,33 @@ requires JVM version 1.4 or the highest JVM available.</p>
                     mimetypes="image/jpeg image/png" 
                     role="Viewer"/&gt;
 
-      &lt;documenttype name="Hello project directory"
+      &lt;documenttype name="Hello World Document"
                     extensions="hello"
                     iconFile="icons/Hello Document.icns"
                     bundle="true"
                     role="Editor"/&gt;
                     
-    &lt;!-- Just proving we can include a file.  Might use it in the About box --&gt;                
-    &lt;resourcefilelist dir=".." files="LICENSE.TXT"/&gt;
+    &lt;!-- Just proving we can include a file.  Might use it in the About box --&gt; 
+    
+      &lt;resourcefilelist dir=".." files="LICENSE.TXT"/&gt;
  
-    &lt;!-- Copy the HelpBook JNI library  --&gt;
-    &lt;javafilelist dir="./build" files="libHelpBookJNI.jnilib"/&gt;
+    &lt;!-- Copy the HelpBook JNI library into the Java directory --&gt;
+    
+      &lt;javafilelist dir="./build" files="libHelpBookJNI.jnilib"/&gt;
 
-      <!-- Copy the HelpBooks to the language specific folders            -->
-      <!--  English will use the foldername and book name from the Bundle -->
-      <!--  German or 'de' will use the custom folder name and book name  -->
+    &lt;!-- Copy the HelpBooks to the language specific folders            --&gt;
+    &lt;!--  English will use the foldername and book name from the Bundle --&gt;
+    &lt;!--  German or 'de' will use the custom folder name and book name  --&gt;
       
-    &lt;helpbook locale="English"&gt;
-      &lt;fileset dir="HelpBook/English" /&gt;
-      &lt;fileset dir="HelpBook/common" /&gt;
-    &lt;/helpbook&gt;
+      &lt;helpbook locale="English"&gt;
+        &lt;fileset dir="HelpBook/English" /&gt;
+        &lt;fileset dir="HelpBook/common" /&gt;
+      &lt;/helpbook&gt;
       
-    &lt;helpbook foldername="Hilfebuch" name="Hallo Welt Hilfe" locale="German"&gt;
-      &lt;fileset dir="HelpBook/German" /&gt;
-      &lt;fileset dir="HelpBook/common" /&gt;
-    &lt;/helpbook&gt;
+      &lt;helpbook foldername="Hilfebuch" name="Hallo Welt Hilfe" locale="German"&gt;
+        &lt;fileset dir="HelpBook/German" /&gt;
+        &lt;fileset dir="HelpBook/common" /&gt;
+      &lt;/helpbook&gt;
 
                      
   &lt;/jarbundler&gt;

@@ -54,7 +54,7 @@
 
 
 
-  <target name="release" depends="jar, javadocs" description="Create zip and tar.gz files">
+  <target name="release" depends="jar" description="Create zip and tar.gz files">
 
 	<ant dir="./example" target="clean" inheritAll="false"/>
 	
@@ -65,9 +65,6 @@
        <fileset dir="dox"/>
     </copy>
     
-    <copy todir="release/javadoc">
-        <fileset dir="javadoc"/>
-    </copy>
 
     <!-- Make this file easy to find in the distribution -->
     <move file="build/${jarbundler.jar}" tofile="${jarbundler.jar}"/>

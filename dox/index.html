@@ -428,6 +428,9 @@ ANT <tt>build.xml</tt> file like this:</p>
 <!-- Deprecated attributes ================================================================-->
 
 <h2>Task Attributes, deprecated</h2>
+
+<p>These attributes will be removed in version 2.0 of JarBundler.
+
 <div align="center">
 <table border="1" cellpadding="4" cellspacing="0" width="90%" style="font-size: 10pt;">
   <tr>
@@ -439,7 +442,11 @@ ANT <tt>build.xml</tt> file like this:</p>
   <tr>
     <td class="attribute">aboutmenuname</td>
     <td class="description">The string to display in the "About" menu of the
-        running application. <i>(Deprecated under JVM 1.4.1)</i></td>
+        running application. <i>(Deprecated under JVM 1.4.1)</i>
+        <div>
+        Use JarBunler attribute <tt>shortname</tt> instead
+        </div>
+    </td>
   </tr>
 
 
@@ -701,9 +708,9 @@ the directory "release" using a JAR file which was created in the "build" direct
 
 <p><a href="./HelpBook.html">Including an Apple Help Book</a></p>
 
-<p><a href="./StubFile.html">Specifying the Java Launching Stub File</a></p>
+<p><a href="./StubFile.html">Java Launching Stub File</a></p>
 
-<p><a href="./Examples.html">Advanced Examples</a></p>
+<p><a href="./Examples.html">Advanced Example</a></p>
 
 
 
