@@ -1398,6 +1398,7 @@ public class JarBundler extends MatchingTask {
  					out = new PrintWriter(new FileWriter(infoPList));
        				out.println("CFBundleHelpBookFolder = \"" + folderName + "\";");
        				out.println("CFBundleHelpBookName = \"" + name + "\";");
+       				out.println("CFBundleName = \"" + bundleProperties.getCFBundleName() + "\";");
        			} catch (IOException ioe) {
        				throw new BuildException("IOException in writing Help Book locale: " + locale);
        			} finally {

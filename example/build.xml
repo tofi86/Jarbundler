@@ -9,7 +9,7 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
 
   <property name="version" value="4.3.1"/>
   <property name="buildnumber" value="213"/>
-  <property name="copyright" value="Copyright 2006 Informagen, Inc."/>
+  <property name="copyright" value="Copyright &#xa9; 2006 Informagen, Inc."/>
 
    
   <target name="compile" description="Compile the classes">
@@ -137,17 +137,17 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
       <!-- Copy the HelpBooks to the language specific folders            -->
       <!--  English will use the foldername and book name from the Bundle -->
       <!--  German or 'de' will use the custom folder name and book name  -->
-      
+     
       <HelpBook locale="English">
       	<fileset dir="HelpBook/English" />
       	<fileset dir="HelpBook/common" />
       </HelpBook>
-      
+   
       <helpbook foldername="Hilfebuch" name="Hallo Welt Hilfe" locale="German">
       	<fileset dir="HelpBook/German" />
       	<fileset dir="HelpBook/common" />
       </helpbook>
-<!--
+<!-- 
       <helpbook name="Hjälp" locale="sv">
       	<fileset dir="HelpBook/Swedish" />
       	<fileset dir="HelpBook/common" />

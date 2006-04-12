@@ -26,8 +26,9 @@ import net.sourceforge.jarbundler.AppBundleProperties;
 // Java I/O
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 // Java Utility
@@ -111,8 +112,8 @@ public class PropertyListWriter {
 			buildDOM();
 
 			// Serialize the DOM into the writer
-			writer = new BufferedWriter(new FileWriter(fileName));
-
+			writer = new BufferedWriter(new OutputStreamWriter(
+			                            new FileOutputStream(fileName), "UTF-8"));
 			// Prettify the XML Two space indenting, no line wrapping
 			OutputFormat outputFormat = new OutputFormat();
 			outputFormat.setMethod("xml");
