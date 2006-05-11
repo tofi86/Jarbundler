@@ -574,7 +574,13 @@ ANT <tt>build.xml</tt> file like this:</p>
   <tr>
     <td class="attribute">screenmenu</td>
     <td class="description">If set to true, puts Swing menus 
-       in the Mac OS X menu bar if using the Aqua look and feel.</td>
+       in the Mac OS X menu bar if using the Aqua look and feel.
+       <div>Set the <code>apple.laf.useScreenMenuBar</code> property instead:
+       <code>&lt;javaproperty name="apple.laf.useScreenMenuBar" value="true"/&gt;</code></div></td>
+    <!-- This advice is correct as of 2006 May, though Apple have
+         changed the property name in the past.  See
+         http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaSystemProperties.html
+    -->
   </tr>
 
 
