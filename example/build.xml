@@ -14,7 +14,7 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
    
   <target name="compile" description="Compile the classes">
     <mkdir dir="classes"/>
-    <javac srcdir="src/java" destdir="classes" source="1.4"/>
+    <javac srcdir="src/java" destdir="classes" deprecation="on" source="1.4"/>
   </target>
 
 
@@ -55,13 +55,13 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
              classpath="${jarbundler.jar}" 
              classname="net.sourceforge.jarbundler.JarBundler"/>
 
-    <jarbundler dir="${basedir}" verbose="true"
+    <jarbundler dir="${basedir}" verbose="true" showPlist="true"
                 name="${ant.project.name}"
                 mainclass="net.sourceforge.jarbundler.example.HelloWorld"
                 jar="build/${ant.project.name}.jar"
                 icon="icons/${ant.project.name}.icns"
-                version="${version}" />
-    
+                version="${version}"/>
+
   </target>
 
 

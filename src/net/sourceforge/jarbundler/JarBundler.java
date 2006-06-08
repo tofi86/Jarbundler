@@ -38,18 +38,27 @@ import java.io.PrintWriter;
 
 // Java Utility
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 // Apache Jakarta
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.FileScanner;
 import org.apache.tools.ant.Project;
-import org.apache.tools.ant.taskdefs.MatchingTask;
+import org.apache.tools.ant.Task;
+
 import org.apache.tools.ant.types.FileList;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.PatternSet;
+
+import org.apache.tools.ant.taskdefs.MatchingTask;
+import org.apache.tools.ant.taskdefs.Chmod;
+import org.apache.tools.ant.taskdefs.Delete;
+
 import org.apache.tools.ant.util.FileUtils;
+
 
 // Java language imports
 import java.lang.Boolean;
@@ -236,17 +245,10 @@ import java.lang.System;
  *                jars=&quot;bin/foo.jar bin/bar.jar&quot;
  *                execs=&quot;exec/foobar&quot;
  *                signature=&quot;????&quot;
- *                aboutmenuname=&quot;Foo Project&quot;
  *                workingdirectory=&quot;temp&quot;
  *                icon=&quot;resources/foo.icns&quot;
  *                jvmversion=&quot;1.4.1+&quot;
- *                vmoptions=&quot;-Xmx256m&quot;
- *                smalltabs=&quot;false&quot;
- *                antialiasedgraphics=&quot;false&quot;
- *                antialiasedtext=&quot;false&quot;
- *                liveresize=&quot;false&quot;
- *                growbox=&quot;false&quot;
- *                screenmenu=&quot;true&quot;/&gt;
+ *                vmoptions=&quot;-Xmx256m&quot;/&gt;
  * </pre>
  * 
  * http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/
@@ -255,10 +257,8 @@ public class JarBundler extends MatchingTask {
 
 	private static final String DEFAULT_STUB = "/System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub";
 
-	private static final String DEFAULT_CHMOD = "/bin/chmod";
-
 	private static final String ABOUTMENU_KEY = "com.apple.mrj.application.apple.menu.about.name";
-
+	private static final Set menuItems = new HashSet();
 	private File mAppIcon;
 
 	private File mRootDir;
@@ -324,13 +324,12 @@ public class JarBundler extends MatchingTask {
 	// with the 'chmod' attribute. Won't cause any harm if
 	// not set, or if this executable doesn't exist.
 
-	private String mChmodCommand = DEFAULT_CHMOD;
 
 	private AppBundleProperties bundleProperties = new AppBundleProperties();
 
 	// Ant file utilities
 
-	private FileUtils mFileUtils = FileUtils.newFileUtils();
+	private FileUtils mFileUtils = FileUtils.getFileUtils();
 
 	/***************************************************************************
 	 * Retreive task attributes
@@ -652,11 +651,11 @@ public class JarBundler extends MatchingTask {
 	 * Set the 'chmod' executable.
 	 */
 	public void setChmod(String s) {
-		this.mChmodCommand = s;
+		log("The \"chmod\" attribute has deprecaited, using the ANT Chmod task internally");
 	}
 
 	/***************************************************************************
-	 * Nested tasks
+	 * Nested tasks - derived from FileList and FileSet
 	 **************************************************************************/
 
 	public void addJarfileset(FileSet fs) {
@@ -700,8 +699,9 @@ public class JarBundler extends MatchingTask {
 	}
 
 
-
-
+	/***************************************************************************
+	 * Nested tasks - new tasks with custom attributes
+	 **************************************************************************/
 
 
 	public void addConfiguredJavaProperty(JavaProperty javaProperty)
@@ -738,31 +738,57 @@ public class JarBundler extends MatchingTask {
 		bundleProperties.addDocumentType(documentType);
 	}
 
-
-	public void addConfiguredHelpBook(HelpBook helpBook) throws BuildException {
-
-		String folderName = helpBook.getFolderName();
-		String name = helpBook.getName();
-		String locale = helpBook.getLocale();
-
-
+	public void addConfiguredService(Service service) {
+	
+		//if (service.getPortName() == null)
+		//	throw new BuildException("\"<service>\" must have a \"portName\" attribute");
+		
+		if (service.getMessage() == null)
+			throw new BuildException("\"<service>\" must have a \"message\" attribute");
+		
+		String menuItem = service.getMenuItem();
+		if (menuItem == null)
+			throw new BuildException("\"<service>\" must have a \"menuItem\" attribute");
+		if (!menuItems.add(menuItem))
+			throw new BuildException("\"<service>\" \"menuItem\" value must be unique");
+		
+		if (service.getSendTypes().isEmpty() && service.getReturnTypes().isEmpty())
+			throw new BuildException("\"<service>\" must have either a \"sendTypes\" attribute, a \"returnTypes\" attribute or both");
+		
+		String keyEquivalent = service.getKeyEquivalent();
+		if ((keyEquivalent != null) && (1 != keyEquivalent.length()))
+			throw new BuildException("\"<service>\" \"keyEquivalent\" must be one character if present");
+		
+		String timeoutString = service.getTimeout();
+		if (timeoutString != null) {
+			long timeout = -1;
+			try {
+				timeout = Long.parseLong(timeoutString);
+			} catch (NumberFormatException nfe) {
+				throw new BuildException("\"<service>\" \"timeout\" must be a positive integral number");
+			}
+			if (timeout < 0)
+				throw new BuildException("\"<service>\" \"timeout\" must not be negative");
+		}
+		
+		bundleProperties.addService(service);
+	}
+	
+	public void addConfiguredHelpBook(HelpBook helpBook) {
+	
 		// Validity check on 'foldername'
-		if( (folderName == null) && (bundleProperties.getCFBundleHelpBookFolder() == null))
-			throw new BuildException("Either the '<helpbook>' attribute 'foldername' or " +
-			                         "the '<jarbundler>' attribute 'helpbookfolder' must be defined");
-
-		if (folderName == null)
+		if (helpBook.getFolderName() == null) {
+			if (bundleProperties.getCFBundleHelpBookFolder() == null)
+				throw new BuildException("Either the '<helpbook>' attribute 'foldername' or the '<jarbundler>' attribute 'helpbookfolder' must be defined");
 			helpBook.setFolderName(bundleProperties.getCFBundleHelpBookFolder());
-
+		}
 
 		// Validity check on 'title'
-		if( (name == null) && (bundleProperties.getCFBundleHelpBookName() == null))
-			throw new BuildException("Either the '<helpbook>' attribute 'name' or " +
-			                         "the '<jarbundler>' attribute 'helpbookname' must be defined");
-
-		if (name == null)
+		if (helpBook.getName() == null) {
+			if (bundleProperties.getCFBundleHelpBookName() == null)
+				throw new BuildException("Either the '<helpbook>' attribute 'name' or the '<jarbundler>' attribute 'helpbookname' must be defined");
 			helpBook.setName(bundleProperties.getCFBundleHelpBookName());
-
+		}
 
 		// Make sure some file were selected...
 		List fileLists = helpBook.getFileLists();
@@ -790,12 +816,14 @@ public class JarBundler extends MatchingTask {
 
 		// Delete any existing Application bundle directory structure
 
-		bundleDir = new File(mRootDir, bundleProperties
-				.getApplicationName()
-				+ ".app");
+		bundleDir = new File(mRootDir, bundleProperties.getApplicationName() + ".app");
 
-		if (bundleDir.exists())
-			removeDir(bundleDir);
+		if (bundleDir.exists()) {
+			Delete deleteTask = new Delete();
+            deleteTask.setProject(getProject());
+			deleteTask.setDir(bundleDir);
+			deleteTask.execute();
+		}
 
 		// Validate - look for required attributes
 		// ///////////////////////////////////////////
@@ -887,7 +915,7 @@ public class JarBundler extends MatchingTask {
 					+ "\" already exists, cannot continue.");
 
 		// Status message
-		System.out.println("Creating application bundle: " + bundleDir);
+		log("Creating application bundle: " + bundleDir);
 
 		if (!bundleDir.mkdir())
 			throw new BuildException("Unable to create bundle: " + bundleDir);
@@ -928,7 +956,7 @@ public class JarBundler extends MatchingTask {
 				File dest = new File(mResourcesDir, mAppIcon.getName());
 
 				if(mVerbose)
-					System.out.println("Copying application icon file to \"" + bundlePath(dest) + "\"");
+					log("Copying application icon file to \"" + bundlePath(dest) + "\"");
 
 				mFileUtils.copyFile(mAppIcon, dest);
 			} catch (IOException ex) {
@@ -946,7 +974,7 @@ public class JarBundler extends MatchingTask {
 				if (iconFile != null) {
 					File dest = new File(mResourcesDir, iconFile.getName());
 					if(mVerbose)
-						System.out.println("Copying document icon file to \"" + bundlePath(dest) + "\"");
+						log("Copying document icon file to \"" + bundlePath(dest) + "\"");
 					mFileUtils.copyFile(iconFile, dest);
 				}
 			}
@@ -1015,59 +1043,18 @@ public class JarBundler extends MatchingTask {
 	 * Private utility methods.
 	 **************************************************************************/
 
-	/**
-	 * A terrible hack: Set executable permissions on file f. This should work
-	 * on all versions of OS X, assuming /bin/chmod doesn't go away, which seems
-	 * like a safe bet. This method will simply return if /etc/chmod doesn't
-	 * exist.
-	 * 
-	 * TODO: Make this more platform-independant. I'm not sure what the correct
-	 * behavior should be if this is being run on Windows, for example.
-	 * 
-	 */
+	private void setExecutable(File f) {
 
-	private void setExecutable(File f) throws IOException {
-		String filePath = f.getAbsolutePath();
-
-		// See if the the chmod command is really present. If not, return.
-		File test = new File(mChmodCommand);
-
-		if (!test.exists())
-			return;
+		Chmod chmodTask = new Chmod();
+		chmodTask.setProject(getProject());
+		chmodTask.setFile(f);
+		chmodTask.setPerm("ugo+rx");
 
 		if (mVerbose)
-			System.out.println("Setting \"" + bundlePath(f) + "\" to executable");
+			log("Setting \"" + bundlePath(f) + "\" to executable");
 
-		Process p = Runtime.getRuntime().exec(
-				new String[]{mChmodCommand, "a+x", filePath});
+		chmodTask.execute();
 
-		// The process *may* block until all input and error
-		// is consumed. The command should not produce any output,
-		// however.
-		InputStream is = null;
-		InputStream es = null;
-
-		try {
-			is = p.getInputStream();
-			es = p.getErrorStream();
-
-			byte[] buf = new byte[1024];
-			int len = 0;
-
-			while ((len = is.read(buf)) != -1)
-				System.out.write(buf, 0, len);
-
-			while ((len = es.read(buf)) != -1)
-				System.out.write(buf, 0, len);
-
-		} finally {
-
-			if (is != null)
-				is.close();
-
-			if (es != null)
-				es.close();
-		}
 	}
 
 	/**
@@ -1094,7 +1081,7 @@ public class JarBundler extends MatchingTask {
 				File dest = new File(mJavaDir, src.getName());
 
 				if (mVerbose) 
-					System.out.println("Copying JAR file to \"" + bundlePath(dest) + "\"");
+					log("Copying JAR file to \"" + bundlePath(dest) + "\"");
 				
 
 				mFileUtils.copyFile(src, dest);
@@ -1127,7 +1114,7 @@ public class JarBundler extends MatchingTask {
 					File dest = new File(mJavaDir, fileName);
 
 					if (mVerbose)
-						System.out.println("Copying JAR file to \"" + bundlePath(dest) + "\"");
+						log("Copying JAR file to \"" + bundlePath(dest) + "\"");
 
 					mFileUtils.copyFile(src, dest);
 					bundleProperties.addToClassPath(fileName);
@@ -1155,7 +1142,7 @@ public class JarBundler extends MatchingTask {
 					File dest = new File(mJavaDir, fileName);
 
 					if (mVerbose) 
-						System.out.println("Copying JAR file to \"" + bundlePath(dest) + "\"");
+						log("Copying JAR file to \"" + bundlePath(dest) + "\"");
 					
 
 					mFileUtils.copyFile(src, dest);
@@ -1221,7 +1208,7 @@ public class JarBundler extends MatchingTask {
 				File dest = new File(mMacOsDir, src.getName());
 
 				if (mVerbose) 
-					System.out.println("Copying exec file to \"" + bundlePath(dest) + "\"");
+					log("Copying exec file to \"" + bundlePath(dest) + "\"");
 				
 
 				mFileUtils.copyFile(src, dest);
@@ -1274,9 +1261,9 @@ public class JarBundler extends MatchingTask {
 						File dest = new File(targetdir, fileName);
 						
 						if (mVerbose) 
-							System.out.println("Copying "
+							log("Copying "
 									+ (setExec ? "exec" : "resource")
-									+ " file to \"" + bundlePath(dest) +"\"" );
+									+ " file to \"" + bundlePath(dest) +"\"");
 						
 						mFileUtils.copyFile(src, dest);
 						if (setExec)
@@ -1327,9 +1314,9 @@ public class JarBundler extends MatchingTask {
 						File dest = new File(targetDir, fileName);
 						
 						if (mVerbose) 
-							System.out.println("Copying "
+							log("Copying "
 									+ (setExec ? "exec" : "resource")
-									+ " file to \"" + bundlePath(dest) +"\"" );
+									+ " file to \"" + bundlePath(dest) +"\"");
 						
 						mFileUtils.copyFile(src, dest);
 						if (setExec)
@@ -1374,8 +1361,8 @@ public class JarBundler extends MatchingTask {
 				helpBookDir.mkdir();
 
 				if(mVerbose)
-					System.out.println("Creating Help Book at \"" + 
-					                    bundlePath(helpBookDir) + "\"" );
+					log("Creating Help Book at \"" + 
+					                    bundlePath(helpBookDir) + "\"");
 
 				
 			} else {
@@ -1388,22 +1375,21 @@ public class JarBundler extends MatchingTask {
 				helpBookDir.mkdir();
 
 				if(mVerbose)
-					System.out.println("Creating Help Book for \"" + locale +
-					                    "\" at \"" + bundlePath(helpBookDir)  + "\"" );
+					log("Creating Help Book for \"" + locale +
+					                    "\" at \"" + bundlePath(helpBookDir)  + "\"");
 
 				// Create a local file to override the Bundle settings
 				File infoPList = new File(lproj, "InfoPlist.strings");
-				PrintWriter out = null;
+				PrintWriter writer = null;
 				try {
- 					out = new PrintWriter(new FileWriter(infoPList));
-       				out.println("CFBundleHelpBookFolder = \"" + folderName + "\";");
-       				out.println("CFBundleHelpBookName = \"" + name + "\";");
-       				out.println("CFBundleName = \"" + bundleProperties.getCFBundleName() + "\";");
+ 					writer = new PrintWriter(new FileWriter(infoPList));
+       				writer.println("CFBundleHelpBookFolder = \"" + folderName + "\";");
+       				writer.println("CFBundleHelpBookName = \"" + name + "\";");
+       				writer.println("CFBundleName = \"" + bundleProperties.getCFBundleName() + "\";");
        			} catch (IOException ioe) {
        				throw new BuildException("IOException in writing Help Book locale: " + locale);
        			} finally {
-       				if (out != null)
-		        		out.close();
+		        	mFileUtils.close(writer);
 		        }
 			}
 
@@ -1426,7 +1412,7 @@ public class JarBundler extends MatchingTask {
 		File newStubFile = new File(mMacOsDir, bundleProperties.getCFBundleExecutable());
 
 		if (mVerbose)
-			System.out.println("Copying Java application stub to \"" + bundlePath(newStubFile) + "\"");
+			log("Copying Java application stub to \"" + bundlePath(newStubFile) + "\"");
 
 		try {
 			mFileUtils.copyFile(mStubFile, newStubFile);
@@ -1434,13 +1420,9 @@ public class JarBundler extends MatchingTask {
 			throw new BuildException("Cannot copy Java Application Stub: " + ex);
 		}
 
-		// Tweak the permissions on the stub file to set it executable
+		// Set the permissions on the stub file to executable
 
-		try {
-			setExecutable(newStubFile);
-		} catch (IOException ex) {
-			throw new BuildException("Cannot set executable bit: " + ex);
-		}
+		setExecutable(newStubFile);
 	}
 
 	private void writeInfoPlist() throws BuildException {
@@ -1450,7 +1432,7 @@ public class JarBundler extends MatchingTask {
 		listWriter.writeFile(infoPlist);
 		
 		if (mVerbose) 
-			System.out.println("Creating \"" + bundlePath(infoPlist) + "\" file");
+			log("Creating \"" + bundlePath(infoPlist) + "\" file");
 
 
 		if (mShowPlist) {
@@ -1458,7 +1440,7 @@ public class JarBundler extends MatchingTask {
 				BufferedReader in = new BufferedReader(new FileReader(infoPlist));
 				String str;
 				while ((str = in.readLine()) != null) 
-					System.out.println(str);
+					log(str);
 				in.close();
     		} catch (IOException e) {
     			throw new BuildException(e);
@@ -1473,53 +1455,17 @@ public class JarBundler extends MatchingTask {
 
 	private void writePkgInfo() throws BuildException {
 		File pkgInfo = new File(mContentsDir, "PkgInfo");
-		PrintWriter pkgWriter = null;
+		PrintWriter writer = null;
 
 		try {
-			pkgWriter = new PrintWriter(new BufferedWriter(new FileWriter(
-					pkgInfo)));
-			pkgWriter.println(bundleProperties.getCFBundlePackageType()
-					+ bundleProperties.getCFBundleSignature());
-			pkgWriter.flush();
+			writer = new PrintWriter(new BufferedWriter(new FileWriter(pkgInfo)));
+			writer.print(bundleProperties.getCFBundlePackageType());
+			writer.println(bundleProperties.getCFBundleSignature());
+			writer.flush();
 		} catch (IOException ex) {
 			throw new BuildException("Cannot create PkgInfo file: " + ex);
 		} finally {
-
-			if (pkgWriter != null)
-				pkgWriter.close();
-		}
-	}
-
-	private void removeDir(File directory) {
-
-		String[] list = directory.list();
-
-		if (list == null)
-			list = new String[0];
-
-		for (int i = 0; i < list.length; i++) {
-
-			File file = new File(directory, list[i]);
-
-			// Recursion if the 'file' is a directory
-
-			if (file.isDirectory())
-				removeDir(file);
-			else {
-				if (file.delete() == false) {
-					String message = "Unable to delete file \""
-							+ file.getAbsolutePath() + "\"";
-					throw new BuildException(message);
-				}
-			}
-		}
-
-		// Finally, delete the, now empty, top level directory
-
-		if (directory.delete() == false) {
-			String message = "Unable to delete directory \""
-					+ directory.getAbsolutePath() + "\"";
-			throw new BuildException(message);
+			mFileUtils.close(writer);
 		}
 	}
 

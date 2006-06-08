@@ -93,6 +93,9 @@ public class AppBundleProperties {
 	// Document types
 	private List mDocumentTypes = new LinkedList();
 
+	// Services
+	private List mServices = new LinkedList();
+	
 	// ================================================================================
 
 	/**
@@ -134,6 +137,21 @@ public class AppBundleProperties {
 		mDocumentTypes.add(documentType);
 	}
 
+	public Service createService() {
+		return new Service();
+	}
+	
+	public List getServices() {
+		return mServices;
+	}
+	
+	/**
+	 * Add a service to the services list.
+	 */
+	public void addService(Service service) {
+		mServices.add(service);
+	}
+	
 	// ================================================================================
 
 	public void setApplicationName(String s) {

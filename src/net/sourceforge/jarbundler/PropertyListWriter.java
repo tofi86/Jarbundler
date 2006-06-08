@@ -45,6 +45,7 @@ import java.lang.System;
 
 // Apache Ant
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.util.FileUtils;
 
 // Java XML DOM creation
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -84,6 +85,9 @@ public class PropertyListWriter {
 
 	// DOM version of Info.plist file
 	private Document document = null;
+
+
+	private FileUtils fileUtils = FileUtils.getFileUtils();
 	
 	/**
 	 * Create a new Property List writer.
@@ -131,13 +135,7 @@ public class PropertyListWriter {
 		} catch (IOException ex) {
 			throw new BuildException("Unable to write  \"" + fileName + "\"");
 		} finally {
-			if (writer != null) {
-				try {
-					writer.close();
-				} catch (IOException ioe) {
-					throw new BuildException(ioe);
-				}
-			}
+			fileUtils.close(writer);
 		}
 
 
@@ -154,7 +152,7 @@ public class PropertyListWriter {
 		
 		org.w3c.dom.DocumentType doctype = domImpl.createDocumentType(
 		       "plist",
-		       "-/Apple Computer/DTD PLIST 1.0/EN",
+		       "-//Apple Computer//DTD PLIST 1.0//EN",
 		       "http://www.apple.com/DTDs/PropertyList-1.0.dtd");
 
 		return domImpl.createDocument(null, "plist", doctype);
@@ -266,6 +264,13 @@ public class PropertyListWriter {
 
 		if (javaProperties.isEmpty() == false) 
  			writeJavaProperties(javaProperties, javaDict);
+
+
+		// Services, optional
+		List services = bundleProperties.getServices();
+		if (services.size() > 0) 
+ 			writeServices(services,dict);
+		
 	}
 
 
@@ -317,9 +322,57 @@ public class PropertyListWriter {
 			// Only write this key if true
 			if (documentType.isBundle()) 
 				writeKeyStringPair("LSTypeIsPackage", "true", documentDict);
-
 		}
+	}
 	
+	private void writeServices(List services, Node appendTo) {
+	
+		writeKey("NSServices",appendTo);
+		Node array = createNode("array",appendTo);
+		Iterator itor = services.iterator();
+		
+		while (itor.hasNext()) {
+			Service service = (Service)itor.next();
+			Node serviceDict = createNode("dict",array);
+
+			String portName = service.getPortName();
+            if (portName == null)
+            	portName = bundleProperties.getCFBundleName();
+			
+			writeKeyStringPair("NSPortName", portName, serviceDict);
+			writeKeyStringPair("NSMessage",service.getMessage(),serviceDict);
+			
+			List sendTypes = service.getSendTypes();
+			if (!sendTypes.isEmpty()) {
+				writeKey("NSSendTypes",serviceDict);
+				writeArray(sendTypes,serviceDict);
+			}
+			
+			List returnTypes = service.getReturnTypes();
+			if (!returnTypes.isEmpty()) {
+				writeKey("NSReturnTypes",serviceDict);
+				writeArray(returnTypes,serviceDict);
+			}
+			
+			writeKey("NSMenuItem",serviceDict);
+			Node menuItemDict = createNode("dict",serviceDict);
+			writeKeyStringPair("default",service.getMenuItem(),menuItemDict);
+			
+			String keyEquivalent = service.getKeyEquivalent();
+			if (null != keyEquivalent) {
+				writeKey("NSKeyEquivalent",serviceDict);
+				Node keyEquivalentDict = createNode("dict",serviceDict);
+				writeKeyStringPair("default",keyEquivalent,keyEquivalentDict);
+			}
+			
+			String userData = service.getUserData();
+			if (null != userData)
+				writeKeyStringPair("NSUserData", userData, serviceDict);
+			
+			String timeout = service.getTimeout();
+			if (null != timeout)
+				writeKeyStringPair("NSTimeout",timeout,serviceDict);
+ 		}
 	}
 
 	private void writeClasspath(List classpath, List extraClasspath, Node appendTo) {
