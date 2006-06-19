@@ -319,6 +319,13 @@ public class PropertyListWriter {
 				writeArray(mimeTypes, documentDict);
 			}
 
+			List UTIs = documentType.getUTIs();
+			
+			if (UTIs.isEmpty() == false) {
+				writeKey("LSItemContentTypes", documentDict);
+				writeArray(UTIs, documentDict);
+			}
+			
 			// Only write this key if true
 			if (documentType.isBundle()) 
 				writeKeyStringPair("LSTypeIsPackage", "true", documentDict);

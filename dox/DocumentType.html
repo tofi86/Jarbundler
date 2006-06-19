@@ -79,6 +79,26 @@ key.
   </tr>
 
   <tr>
+    <td class="attribute">UTI</td>
+    <td class="description">
+     A comma or space delimited string of Uniform Type Identifier (UTI) strings for the document. 
+     UTIs are strings that uniquely identify abstract types. They can be used to
+     describe a file format or data type but can also be used to describe type
+     information for other sorts of entities, such as directories, volumes, or
+     packages. For more information on UTIs, see the header file UTType.h,
+     available as part of LaunchServices.framework in Mac OS X v10.3 and later.
+Also see the Apple Developer Connection document 
+    <a href="http://developer.apple.com/macosx/uniformtypeidentifiers.html">
+    "Simplifying Data Handling with Uniform type Identifiers"</a>.      
+
+    </td>
+  </tr>
+
+
+
+
+
+  <tr>
     <td class="attribute">iconfile</td>
     <td class="description">
      Specifies the name of an icon file used to associate with this document type.  This icon
@@ -113,6 +133,9 @@ key.
     <div><strong>NB: </strong>Boolean attribute, takes "true" or "false", default is "false"</div>
     </td>
   </tr>
+
+
+
 
 
 </table>
