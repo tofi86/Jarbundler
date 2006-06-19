@@ -1,3 +1,5 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <title>Mac OS X JarBundler ANT Task</title>
@@ -33,7 +35,7 @@ software licensed under the GNU General Public License.</p>
 
 
 <h2>What's New</h2>
-<!-- Released: June 8, 2006 -->
+<!-- Released: June 19, 2006 -->
 <ul>
 <li>Deprecated <tt>chmod</tt> attribute.  Using the ANT task "Chmod" internally.</li>
 <li>Using the ANT task "Delete" internally to delete any pre-existing ".app" file</li>
@@ -97,8 +99,8 @@ ANT <tt>build.xml</tt> file like this:</p>
 <table border="1" cellpadding="4" cellspacing="0" width="90%" style="font-size: 10pt;">
 
   <tr>
-    <th>Attribute</td>
-    <th>Description</td>
+    <th>Attribute</th>
+    <th>Description</th>
   </tr>
 
   <tr>
@@ -145,8 +147,8 @@ ANT <tt>build.xml</tt> file like this:</p>
 <table border="1" cellpadding="4" cellspacing="0" width="90%" style="font-size: 10pt;">
 
   <tr>
-    <th>Attribute</td>
-    <th><b>Description</td>
+    <th>Attribute</th>
+    <th>Description</th>
   </tr>
 
   <tr>
@@ -167,7 +169,7 @@ ANT <tt>build.xml</tt> file like this:</p>
     "4.3.1 (231)".  Also see <tt>version</tt> and <tt>infostring</tt> attributes.
     
     <div>
-    The corresponding bundle variable is <a href=http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html#//apple_ref/doc/uid/20001431-102364">
+    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html#//apple_ref/doc/uid/20001431-102364">
     CFBundleVersion</a>
     </div>
     
@@ -183,7 +185,7 @@ ANT <tt>build.xml</tt> file like this:</p>
     the form of a java package name, for example com.apple.myapp.
 
     <div>
-    The corresponding bundle variable is <a href=http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html#//apple_ref/doc/uid/20001431-102364">
+    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html#//apple_ref/doc/uid/20001431-102364">
     CFBundleIdentifier</a>
     </div>
     
@@ -196,7 +198,7 @@ ANT <tt>build.xml</tt> file like this:</p>
     <td class="description">The development region of the bundle.  
 
     <div>
-    The corresponding bundle variable is <a href=http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html">
+    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html">
     CFBundleDevelopmentRegion</a>
     </div>
 
@@ -222,7 +224,7 @@ ANT <tt>build.xml</tt> file like this:</p>
       the <tt>&lt;resourcefileset&gt;</tt> task to copy the Help Book HTML files into the bundle. 
     
     <div>
-    The corresponding bundle variable is <a href=http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html#//apple_ref/doc/uid/20001431-102364">
+    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html#//apple_ref/doc/uid/20001431-102364">
     CFBundleHelpBookFolder</a>
     </div>
        
@@ -243,7 +245,7 @@ ANT <tt>build.xml</tt> file like this:</p>
     </div>
     
     <div>
-    The corresponding bundle variable is <a href=http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html#//apple_ref/doc/uid/20001431-102364">
+    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html#//apple_ref/doc/uid/20001431-102364">
     CFBundleHelpBookName</a>
     </div>
        
@@ -263,7 +265,7 @@ ANT <tt>build.xml</tt> file like this:</p>
     <td class="description">A string for display in the Finder's Get Info panel.   Also see <tt>version</tt> and <tt>build</tt> attributes.
 
     <div>
-    The corresponding bundle variable is <a href=http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html">
+    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html">
     CFBundleGetInfoString</a>
     </div>
 
@@ -314,8 +316,9 @@ ANT <tt>build.xml</tt> file like this:</p>
     the application's name. For example, "<tt>Microsoft Word</tt>" displays "<tt>Word</tt>"..
     Apple recommends that this string be limited to 16 characters. JarBuilder enforces this 
     limit silently by truncating <tt>shortname</tt>.  If the <tt>shortname</tt> is not specified then 
-    the application's name will be used with no truncation.</td>
+    the application's name will be used with no truncation.
     </div>
+    </td>
   </tr>
  
    <tr>
@@ -334,7 +337,7 @@ ANT <tt>build.xml</tt> file like this:</p>
     <td class="description">The four-letter code identifying the bundle. 
 
     <div>
-    The corresponding bundle variable is <a href=http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html">
+    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html">
     CFBundleSignature</a>
     </div>
     <div>
@@ -376,7 +379,7 @@ ANT <tt>build.xml</tt> file like this:</p>
     <tt>infostring</tt> attributes.  
 
     <div>
-    The corresponding bundle variable is <a href=http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html">
+    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html">
     CFBundleShortVersionString</a>
     </div>
 
@@ -408,7 +411,6 @@ ANT <tt>build.xml</tt> file like this:</p>
 
 </table>
 
-</table>
 </div>
 
 <!-- Deprecated attributes ================================================================-->
@@ -420,8 +422,8 @@ ANT <tt>build.xml</tt> file like this:</p>
 <div align="center">
 <table border="1" cellpadding="4" cellspacing="0" width="90%" style="font-size: 10pt;">
   <tr>
-    <th class="attribute"><b>Attribute</b></td>
-    <th class="description"><b>Description</b></td>
+    <th class="attribute">Attribute</th>
+    <th class="description">Description</th>
   </tr>
 
 
@@ -787,7 +789,7 @@ order to add files to the <tt>Contents/Resources/Java</tt> directory</p>
 
 
 <p>Split the "Hello, World" example into a complex build which associates
-document types and uses a Help Book, and a simple minimal build</li>
+document types and uses a Help Book, and a simple minimal build
 
 <p>Reorganize 'example' source directory to include Objective-C JNI code and use
 package structure for "Hello, World" application rather than putting everything
@@ -861,7 +863,7 @@ for usage.
    use!</p>
    
 <h3>28 Dec 2003 (version 0.5):</h3>
-   Added setter for "execs" attribute.  Added setter for "workingdirectory"
+<p>Added setter for "execs" attribute.  Added setter for "workingdirectory"
    attribute.  Fixed missing setter for "arguments" attribute.  Added
    alternate Java runtime parameter names for Mac OS X Java VM version
    1.4.1.  Included change submitted by Pierre-Luc Paour.
