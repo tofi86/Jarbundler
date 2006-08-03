@@ -21,6 +21,13 @@
 package net.sourceforge.jarbundler;
 
 // This package's imports
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import net.sourceforge.jarbundler.AppBundleProperties;
 
 // Java I/O
@@ -58,12 +65,6 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import org.w3c.dom.Attr;
-
-
-// Xerces serializer
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
-import org.apache.xml.serialize.LineSeparator;
 
 
 
@@ -114,31 +115,24 @@ public class PropertyListWriter {
 
 			this.document = createDOM();
 			buildDOM();
-
-			// Serialize the DOM into the writer
-			writer = new BufferedWriter(new OutputStreamWriter(
-			                            new FileOutputStream(fileName), "UTF-8"));
-			// Prettify the XML Two space indenting, no line wrapping
-			OutputFormat outputFormat = new OutputFormat();
-			outputFormat.setMethod("xml");
-			outputFormat.setIndenting(true);
-			outputFormat.setIndent(2);
-			outputFormat.setLineWidth(0);             
-			
-			// Create a DOM serlializer and write the XML
-			XMLSerializer serializer = new XMLSerializer(writer, outputFormat);
-			serializer.asDOMSerializer();
-			serializer.serialize(this.document);
-
-		} catch (ParserConfigurationException pce) {
+                        
+            TransformerFactory transFactory = TransformerFactory.newInstance();                        
+            Transformer trans = transFactory.newTransformer();
+            trans.setOutputProperty(OutputKeys.INDENT, "yes");
+            trans.setOutputProperty("{http://xml.apache.org/xslt}indent-amount","2" );
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8"));
+            trans.transform(new DOMSource(document), new StreamResult(writer));
+        } catch (TransformerConfigurationException tce) {
+            throw new BuildException(tce);
+        } catch (TransformerException te) {
+            throw new BuildException(te);
+        } catch (ParserConfigurationException pce) {
 			throw new BuildException(pce);
 		} catch (IOException ex) {
 			throw new BuildException("Unable to write  \"" + fileName + "\"");
 		} finally {
 			fileUtils.close(writer);
 		}
-
-
 	}
 
 	private Document createDOM() throws ParserConfigurationException {
