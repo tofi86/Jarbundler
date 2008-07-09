@@ -37,6 +37,11 @@ software licensed under the GNU General Public License.</p>
 <h2>What's New</h2>
 <!-- Released: Jan 2007 -->
 <ul>
+<li>Added the optional 'splashfile' attribute to JarBundler task.<br>
+Thanks to Angelo van der Sijpt for this addition.
+<li>When run under any Window OS, the file separator for included libraries is written
+with a backslash, '\', instead of a forward slash, '/'.<br>
+Thanks to Anthony Goubard for this fix.
 <li>Version 2.0.0 isn't a major release, but the license as changed to the more flexible 
 Apache Software License v2.0 (ASLv2). This allows the JarBundler ANT task to be bundled 
 into other packages whose licensing does not conform with the GPL.</li>
@@ -346,6 +351,13 @@ ANT <tt>build.xml</tt> file like this:</p>
     <div>
     Default: <tt>????</tt>
     </div>
+    </td>
+  </tr>
+
+  <tr>
+    <td class="attribute">splashfile</td>
+    <td class="description">**Needs link to Apple Technical Document**
+        </div>
     </td>
   </tr>
 

@@ -248,6 +248,10 @@ public class PropertyListWriter {
 		if (bundleProperties.getWorkingDirectory() != null) 
 			writeKeyStringPair("WorkingDirectory", bundleProperties.getWorkingDirectory(), javaDict);
 
+        // SplashFile, optional
+        if (bundleProperties.getSplashFile() != null) 
+            writeKeyStringPair("SplashFile", bundleProperties.getSplashFile(), javaDict);
+
 		// Main class arguments, optional
 		if (bundleProperties.getArguments() != null) 
 			writeKeyStringPair("Arguments", bundleProperties.getArguments(), javaDict);

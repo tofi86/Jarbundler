@@ -405,6 +405,16 @@ public class JarBundler extends MatchingTask {
 	}
 
 	/**
+     * Setter for the "splash" attribute (optional). If it is somewhere
+     * in a jar file, which contains a Splash-Screen manifest entry,
+     * use "$JAVAROOT/myjar.jar"
+     */
+
+    public void setSplash(String s) {
+        bundleProperties.setSplashFile(s);
+    }
+
+    /**
 	 * Setter for the "bundleid" attribute (optional) This key specifies a
 	 * unique identifier string for the bundle. This identifier should be in the
 	 * form of a Java-style package name, for example com.mycompany.myapp. The
@@ -635,6 +645,7 @@ public class JarBundler extends MatchingTask {
 	 * Setter for the "extraclasspath" attribute (optional)
 	 */
 	public void setExtraclasspath(String s) {
+		if (s == null || s.trim().equals("")) return;
 		PatternSet patset = new PatternSet();
 		patset.setIncludes(s);
 
@@ -1158,7 +1169,8 @@ public class JarBundler extends MatchingTask {
 		for (Iterator jarIter = mExtraClassPathAttrs.iterator(); jarIter
 				.hasNext();) {
 			File src = (File) jarIter.next();
-			bundleProperties.addToExtraClassPath(src.getPath());
+			String path = src.getPath().replace(File.separatorChar, '/');
+			bundleProperties.addToExtraClassPath(path);
 		}
 	}
 
@@ -1177,7 +1189,8 @@ public class JarBundler extends MatchingTask {
 
 			for (int i = 0; i < files.length; i++) {
 				File f = new File(srcDir, files[i]);
-				bundleProperties.addToExtraClassPath(f.getPath());
+				String path = f.getPath().replace(File.separatorChar, '/');
+				bundleProperties.addToExtraClassPath(path);
 			}
 		}
 	}
@@ -1193,7 +1206,8 @@ public class JarBundler extends MatchingTask {
 
 			for (int i = 0; i < files.length; i++) {
 				File f = new File(srcDir, files[i]);
-				bundleProperties.addToExtraClassPath(f.getPath());
+				String path = f.getPath().replace(File.separatorChar, '/');
+				bundleProperties.addToExtraClassPath(path);
 			}
 		}
 	}

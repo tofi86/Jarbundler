@@ -77,6 +77,7 @@ public class AppBundleProperties {
 	// Optional keys, with no defaults.
 
 	private String mCFBundleIconFile = null;
+    private String mSplashFile = null;
 	private String mCFBundleIdentifier = null;
 	private String mVMOptions = null; // Java VM options
 	private String mWorkingDirectory = null; // Java Working Dir
@@ -232,6 +233,14 @@ public class AppBundleProperties {
 	public String getCFBundleIconFile() {
 		return mCFBundleIconFile;
 	}
+
+    public void setSplashFile(String s) {
+        mSplashFile = s;
+    }
+
+    public String getSplashFile() {
+        return mSplashFile;
+    }
 
 	public void setCFBundleAllowMixedLocalizations(boolean b) {
 		mCFBundleAllowMixedLocalizations = b;
