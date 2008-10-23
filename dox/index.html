@@ -12,7 +12,7 @@
 
 
 <h1>Mac OS X JarBundler ANT Task</h1>
-<h1>Version 2.0.0</h1>
+<h1>Version 2.1.0</h1>
 
 <p>How many times has this happened to you?  You've written a little
 Java utility, or maybe even a more complex application, and you want to
@@ -35,26 +35,11 @@ software licensed under the GNU General Public License.</p>
 
 
 <h2>What's New</h2>
-<!-- Released: Jan 2007 -->
+<!-- Released: Oct 2008 -->
 <ul>
-<li>Added the optional 'splashfile' attribute to JarBundler task.<br>
-Thanks to Angelo van der Sijpt for this addition.</li>
-<li>When run under any Window OS, the file separator for included libraries is written
-with a backslash, '\', instead of a forward slash, '/'.<br>
-Thanks to Anthony Goubard for this fix.</li>
-<li>Version 2.0.0 isn't a major release, but the license as changed to the more flexible 
-Apache Software License v2.0 (ASLv2). This allows the JarBundler ANT task to be bundled 
-into other packages whose licensing does not conform with the GPL.</li>
-<li>Removed the dependency on the Xerxes API when writing the info.plist file. 
-We lost the indenting but can look into this later.<br>
-Thanks to Christian Menz for providing this modification to the source code.
-</li>
-<li>ANT commands and shell script for creating a Disk Image. (Mac OS X only)<br>
-Thanks to Philip Weaver for providing these.  See "<a href="./DiskImage.html">Creating a Disk Image</a>"
-</li>
+<li>Added the optional 'startOnMainThread' boolean attribute to JarBundler task.<br>
+Thanks to Mitch Coopet for his patch and the many other feature requesters.</li>
 </ul>
-
-
 
 
 <h2>Download</h2>
@@ -72,10 +57,11 @@ Thanks to Philip Weaver for providing these.  See "<a href="./DiskImage.html">Cr
 
 <h2>Installation</h2>
 
-<p>Move the file <tt>jarbundler-1.9.jar</tt> 
-into <tt>/Developer/Java/Ant/lib</tt> or 
+<p>Move the file <tt>jarbundler-2.1.0.jar</tt> 
+into <tt>/usr/share/ant/lib</tt> or 
 into your local ANT lib directory.  Remove any older versions at this time.
-
+<strong>NB:</stong> This location used to be <tt>/Developer/Java/Ant/lib</tt>. You
+may have to try both to get things to work.
 
 
 <h2>Using in the Build file</h2>
@@ -742,6 +728,26 @@ the directory "release" using a JAR file which was created in the "build" direct
 
 
 <h2>History</h2>
+
+
+<h3> Released: Jan 2007 (version 2.0.0)</h3>
+<ul>
+<li>Added the optional 'splashfile' attribute to JarBundler task.<br>
+Thanks to Angelo van der Sijpt for this addition.</li>
+<li>When run under any Window OS, the file separator for included libraries is written
+with a backslash, '\', instead of a forward slash, '/'.<br>
+Thanks to Anthony Goubard for this fix.</li>
+<li>Version 2.0.0 isn't a major release, but the license as changed to the more flexible 
+Apache Software License v2.0 (ASLv2). This allows the JarBundler ANT task to be bundled 
+into other packages whose licensing does not conform with the GPL.</li>
+<li>Removed the dependency on the Xerxes API when writing the info.plist file. 
+We lost the indenting but can look into this later.<br>
+Thanks to Christian Menz for providing this modification to the source code.
+</li>
+<li>ANT commands and shell script for creating a Disk Image. (Mac OS X only)<br>
+Thanks to Philip Weaver for providing these.  See "<a href="./DiskImage.html">Creating a Disk Image</a>"
+</li>
+</ul>
 
 
 <h3>June 19, 2006 (version 1.9)</h3>

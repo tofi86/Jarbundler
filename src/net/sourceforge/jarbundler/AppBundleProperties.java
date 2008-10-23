@@ -53,6 +53,9 @@ public class AppBundleProperties {
 	// Help Book name, optional
 	private String mCFHelpBookName = null;
 
+	// StartOnMainThread, optional
+	private Boolean mStartOnMainThread = null;
+
 	// Explicit default: false
 	private boolean mCFBundleAllowMixedLocalizations = false;
 
@@ -296,6 +299,15 @@ public class AppBundleProperties {
 
 	public String getCFBundleHelpBookName() {
 		return mCFHelpBookName;
+	}
+
+
+	public void setStartOnMainThread(Boolean b) {
+		mStartOnMainThread = b;
+	}
+
+	public Boolean getStartOnMainThread() {
+		return mStartOnMainThread;
 	}
 
 	public void setMainClass(String s) {

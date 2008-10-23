@@ -520,6 +520,13 @@ public class JarBundler extends MatchingTask {
 	}
 
 	/**
+	 * Setter for the "startonmainthread" attribute (optional)
+	 */
+	public void setStartonmainthread(boolean b) {
+		bundleProperties.setStartOnMainThread(new Boolean(b));
+	}
+
+	/**
 	 * Setter for the "infostring" attribute (optional) This key identifies a
 	 * human-readable plain text string displaying the copyright information for
 	 * the bundle. The Finder displays this information in the Info window of
@@ -605,6 +612,7 @@ public class JarBundler extends MatchingTask {
 	public void setHelpBookName(String s) {
 		bundleProperties.setCFBundleHelpBookName(s);
 	}
+
 
 	/**
 	 * Setter for the "jars" attribute (required if no "jarfileset" is present)

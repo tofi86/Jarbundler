@@ -172,8 +172,7 @@ public class PropertyListWriter {
 		
 		// Mac OS X required key, defaults to "false"
 		writeKeyStringPair("CFBundleAllowMixedLocalizations", 
-		     (bundleProperties.getCFBundleAllowMixedLocalizations() ? "true" : "false"),  
-		     dict);
+		     (bundleProperties.getCFBundleAllowMixedLocalizations() ? "true" : "false"), dict);
 
 		// Mac OS X required, defaults to "6.0"
 		writeKeyStringPair("CFBundleInfoDictionaryVersion", 
@@ -210,6 +209,12 @@ public class PropertyListWriter {
 		// Help Book Name, optional
 		if (bundleProperties.getCFBundleHelpBookName() != null) 
 			writeKeyStringPair("CFBundleHelpBookName", bundleProperties.getCFBundleHelpBookName(), dict);
+
+		// StartOnMainThread, optional
+		if (bundleProperties.getStartOnMainThread() != null) {
+			writeKey("StartOnMainThread", dict);
+			createNode(bundleProperties.getStartOnMainThread().toString(), dict);
+	    }
 
 		// Document Types, optional
 		List documentTypes = bundleProperties.getDocumentTypes();
@@ -442,5 +447,4 @@ public class PropertyListWriter {
 			writeString((String)it.next(), arrayNode);
 		
 	}
-
 }
