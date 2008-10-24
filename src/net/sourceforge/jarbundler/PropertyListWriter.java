@@ -210,12 +210,6 @@ public class PropertyListWriter {
 		if (bundleProperties.getCFBundleHelpBookName() != null) 
 			writeKeyStringPair("CFBundleHelpBookName", bundleProperties.getCFBundleHelpBookName(), dict);
 
-		// StartOnMainThread, optional
-		if (bundleProperties.getStartOnMainThread() != null) {
-			writeKey("StartOnMainThread", dict);
-			createNode(bundleProperties.getStartOnMainThread().toString(), dict);
-	    }
-
 		// Document Types, optional
 		List documentTypes = bundleProperties.getDocumentTypes();
 
@@ -252,6 +246,12 @@ public class PropertyListWriter {
 		// Working directory, optional
 		if (bundleProperties.getWorkingDirectory() != null) 
 			writeKeyStringPair("WorkingDirectory", bundleProperties.getWorkingDirectory(), javaDict);
+
+		// StartOnMainThread, optional
+		if (bundleProperties.getStartOnMainThread() != null) {
+			writeKey("StartOnMainThread", javaDict);
+			createNode(bundleProperties.getStartOnMainThread().toString(), javaDict);
+	    }
 
         // SplashFile, optional
         if (bundleProperties.getSplashFile() != null) 
