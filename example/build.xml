@@ -60,7 +60,6 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
                 mainclass="net.sourceforge.jarbundler.example.HelloWorld"
                 jar="build/${ant.project.name}.jar"
                 icon="icons/${ant.project.name}.icns"
-                startOnMainThread="true"
                 version="${version}"/>
 
   </target>
