@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.LinkedList;
+// import java.util.Scanner;
 
 // Java language imports
 import java.lang.String;
@@ -90,6 +91,12 @@ public class AppBundleProperties {
 	private List mClassPath = new ArrayList();
 	private List mExtraClassPath = new ArrayList();
 
+    // New in JarBundler 2.2.0; Tobias Bley ----------------
+    private List mJVMArchs = new ArrayList();
+    private List mLSArchitecturePriority = new ArrayList();
+    private String mSUFeedURL = null;
+    // -----------------------------------------------------
+
 	// Java properties
 	private Hashtable mJavaProperties = new Hashtable();
 
@@ -113,7 +120,20 @@ public class AppBundleProperties {
 		return mJavaProperties;
 	}
 
-	public void addToClassPath(String s) {
+    // New in JarBundler 2.2.0; Tobias Bley ----------------
+    
+    public void addToJVMArchs(String s) {
+        mJVMArchs.add(s);
+    }
+
+    public List getJVMArchs() {
+        return mJVMArchs;
+    }
+    
+    //------------------------------------------------------
+
+    public void addToClassPath(String s)
+    {
 		mClassPath.add("$JAVAROOT/" + s);
 	}
 
@@ -354,4 +374,55 @@ public class AppBundleProperties {
 		return mClassPath;
 	}
 
+    // New in JarBundler 2.2.0; Tobias Bley ----------------------------------------------------
+
+    /**
+     * @param archs space separated archs, e.g. i386 x64_64 ppc
+     */
+     
+    public void setJVMArchs(String archs) {
+        
+        // Use for 1.4 backwards compatability
+        String[] tokens = archs.split("\\s+");
+        for (int i=0; i<tokens.length; i++)
+            mJVMArchs.add(tokens[i]);
+
+        // 'java.util.Scanner' is available in JDK 1.5
+        // Scanner s = new Scanner(archs);
+        // s = s.useDelimiter("\\s+");
+        // while (s.hasNext())
+        //     mJVMArchs.add(s.next());
+    }
+
+    public List getLSArchitecturePriority() {
+        return mLSArchitecturePriority;
+
+    }
+
+    /**
+     * @param lsArchitecturePriority space separated LSArchitecturePriority, e.g. i386 x64_64 ppc
+     */
+    public void setLSArchitecturePriority(String lsArchitecturePriority) {
+
+        // Use for 1.4 backwards compatability
+        String[] tokens = lsArchitecturePriority.split("\\s+");
+        for (int i=0; i<tokens.length; i++)
+            mLSArchitecturePriority.add(tokens[i]);
+
+        // 'java.util.Scanner' is available in JDK 1.5
+        // Scanner s = new Scanner(lsArchitecturePriority);
+        // s = s.useDelimiter("\\s+");
+        // while (s.hasNext())
+        //     mLSArchitecturePriority.add(s.next());
+    }
+
+    public String getSUFeedURL() {
+        return mSUFeedURL;
+    }
+ 
+    public void setSUFeedURL(String suFeedURL) {
+        this.mSUFeedURL = suFeedURL;
+    }
+    
+    //------------------------------------------------------------------------------------------
 }

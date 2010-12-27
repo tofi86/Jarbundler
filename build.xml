@@ -19,8 +19,7 @@
     
     <mkdir dir="classes"/>
         
-    <javac srcdir="src" destdir="classes" source="1.4"
-           classpath="${ant.jar}"/>
+    <javac srcdir="src" destdir="classes" source="1.4" classpath="${ant.jar}"/>
   </target>
 
 

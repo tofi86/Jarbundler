@@ -519,7 +519,25 @@ public class JarBundler extends MatchingTask {
 		bundleProperties.setJVMVersion(s);
 	}
 
+    // New in JarBundler 2.2.0; Tobias Bley ----------------
+
 	/**
+     * Setter for the "JVMArchs" attribute (optional)
+     */
+    public void setJvmArchs(String s) {
+        bundleProperties.setJVMArchs(s);
+    }
+
+    /**
+     * Setter for the "LSArchitecturePriority" attribute (optional)
+     */
+    public void setLSArchitecturePriority(String s) {
+        bundleProperties.setLSArchitecturePriority(s);
+    }
+    
+    //-------------------------------------------------------
+
+    /**
 	 * Setter for the "startonmainthread" attribute (optional)
 	 */
 	public void setStartonmainthread(boolean b) {

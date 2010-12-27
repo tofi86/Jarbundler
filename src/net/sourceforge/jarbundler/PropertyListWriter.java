@@ -226,6 +226,22 @@ public class PropertyListWriter {
 		// Target JVM version, optional but recommended
 		if (bundleProperties.getJVMVersion() != null) 
 			writeKeyStringPair("JVMVersion", bundleProperties.getJVMVersion(), javaDict);
+        
+        // New in JarBundler 2.2.0; Tobias Bley ---------------------------------
+
+        // JVMArchs, optional
+        List jvmArchs = bundleProperties.getJVMArchs();
+        
+        if (jvmArchs != null && !jvmArchs.isEmpty())
+            writeJVMArchs(jvmArchs, javaDict);
+
+        // lsArchitecturePriority, optional
+        List lsArchitecturePriority = bundleProperties.getLSArchitecturePriority();
+        
+        if (lsArchitecturePriority != null && !lsArchitecturePriority.isEmpty())
+            writeLSArchitecturePriority(lsArchitecturePriority, javaDict);
+
+        //-----------------------------------------------------------------------
 
 
 		// Classpath is composed of two types, required
@@ -409,7 +425,24 @@ public class PropertyListWriter {
 		}
 	}
 
-	private Node createNode(String tag, Node appendTo) {
+    // New in JarBundler 2.2.0; Tobias Bley ---------------------------------
+
+    private void writeJVMArchs(List jvmArchs, Node appendTo)
+    {
+        writeKey("JVMArchs", appendTo);
+        writeArray(jvmArchs, appendTo);
+    }
+
+    private void writeLSArchitecturePriority(List lsArchitecturePriority, Node appendTo)
+    {
+        writeKey("LSArchitecturePriority", appendTo);
+        writeArray(lsArchitecturePriority, appendTo);
+    }
+
+    //----------------------------------------------------------------------
+
+    private Node createNode(String tag, Node appendTo)
+    {
 		Node node = this.document.createElement(tag);
 		appendTo.appendChild(node);
 		return node;
