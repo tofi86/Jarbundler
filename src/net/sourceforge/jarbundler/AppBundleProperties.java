@@ -55,7 +55,10 @@ public class AppBundleProperties {
 	private String mCFHelpBookName = null;
 
 	// StartOnMainThread, optional
-	private Boolean mStartOnMainThread = null;
+	private Boolean	mStartOnMainThread = null;
+
+	// StartAsAgent, optional (per Michael Bader <nufan_k@me.com>)
+	private Boolean	 mLSUIElement = null;
 
 	// Explicit default: false
 	private boolean mCFBundleAllowMixedLocalizations = false;
@@ -330,7 +333,21 @@ public class AppBundleProperties {
 		return mStartOnMainThread;
 	}
 
-	public void setMainClass(String s) {
+
+
+	public Boolean getLSUIElement() {
+		return mLSUIElement;
+	}
+
+
+
+	public void setLSUIElement( Boolean b ) {
+		this.mLSUIElement = b;
+	}
+
+
+
+	public void setMainClass( String s ) {
 		mMainClass = s;
 	}
 

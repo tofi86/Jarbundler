@@ -210,6 +210,10 @@ public class PropertyListWriter {
 		if (bundleProperties.getCFBundleHelpBookName() != null) 
 			writeKeyStringPair("CFBundleHelpBookName", bundleProperties.getCFBundleHelpBookName(), dict);
 
+		// IsAgent, optional
+		if ( bundleProperties.getLSUIElement() != null )
+			writeKeyBooleanPair( "LSUIElement", bundleProperties.getLSUIElement(), dict );
+
 		// Document Types, optional
 		List documentTypes = bundleProperties.getDocumentTypes();
 
@@ -459,6 +463,16 @@ public class PropertyListWriter {
 	}
 
 
+	private void writeKeyBooleanPair(String key, Boolean b, Node appendTo) {
+
+		if ( b == null )
+			return;
+
+		writeKey( key, appendTo );
+		writeBoolean( b, appendTo );
+	}
+
+
 	private void writeKey(String key, Node appendTo) {
 		Element keyNode = this.document.createElement("key");
 		appendTo.appendChild(keyNode);
@@ -479,5 +493,18 @@ public class PropertyListWriter {
 		for (Iterator it = stringList.iterator(); it.hasNext();) 
 			writeString((String)it.next(), arrayNode);
 		
+	}
+	
+	private void writeBoolean( Boolean b, Node appendTo ) {
+		Element booleanNode = null;
+
+		if ( b.booleanValue() ) {
+			booleanNode = this.document.createElement( "true" );
+		}
+		else {
+			booleanNode = this.document.createElement( "false" );
+
+		}
+		appendTo.appendChild( booleanNode );
 	}
 }

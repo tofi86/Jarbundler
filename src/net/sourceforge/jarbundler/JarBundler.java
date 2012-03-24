@@ -528,7 +528,7 @@ public class JarBundler extends MatchingTask {
         bundleProperties.setJVMArchs(s);
     }
 
-    /**
+    /**  Michael Bader <nufan_k@me.com> --------------------
      * Setter for the "LSArchitecturePriority" attribute (optional)
      */
     public void setLSArchitecturePriority(String s) {
@@ -543,6 +543,15 @@ public class JarBundler extends MatchingTask {
 	public void setStartonmainthread(boolean b) {
 		bundleProperties.setStartOnMainThread(new Boolean(b));
 	}
+
+
+	/**
+	 * Setter for the "startasagent" attribute (optional)
+	 */
+	public void setIsAgent( boolean b ) {
+		bundleProperties.setLSUIElement( new Boolean( b ) );
+	}
+
 
 	/**
 	 * Setter for the "infostring" attribute (optional) This key identifies a
