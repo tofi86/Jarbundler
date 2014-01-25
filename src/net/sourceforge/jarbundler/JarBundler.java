@@ -428,10 +428,17 @@ public class JarBundler extends MatchingTask {
 	}
 
 	/**
-	 * Setter for the "developmentregion" attribute(optional) Default "English".
+	 * Setter for the "developmentregion" attribute (optional) Default "English".
 	 */
 	public void setDevelopmentregion(String s) {
 		bundleProperties.setCFBundleDevelopmentRegion(s);
+	}
+
+	/**  Tobias Fischer, v2.2.1
+	 * Setter for the "allowmixedlocalizations" attribute (optional) Default "false".
+	 */
+	public void setAllowMixedLocalizations(boolean b) {
+		bundleProperties.setCFBundleAllowMixedLocalizations(b);
 	}
 
 	/**

@@ -151,6 +151,21 @@ ANT <tt>build.xml</tt> file like this:</p>
     <th>Attribute</th>
     <th>Description</th>
   </tr>
+	
+	<tr>
+		<td class="attribute">allowMixedLocalizations</td>
+		<td class="description">If true, the bundle supports the retrieval of localized strings from frameworks. This should be set to true if your app supports different languages.
+			
+			<div>
+				The corresponding bundle variable is <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html">
+					CFBundleAllowMixedLocalizations</a>
+			</div>
+			
+			<div>
+				Default: <tt>false</tt>
+			</div>
+		</td>
+	</tr>
 
   <tr>
     <td class="attribute">arguments</td>
@@ -778,6 +793,12 @@ the directory "release" using a JAR file which was created in the "build" direct
 
 
 <h2>History</h2>
+
+<h3> Released: Jan 2014 (version 2.2.1)</h3>
+<ul>
+<li>Added the optional 'allowMixedLocalizations' boolean attribute to JarBundler task.<br>
+Thanks to Tobias Fischer for his patch.</li>
+</ul>
 
 <h3> Released: Oct 2008</h3>
 <ul>
