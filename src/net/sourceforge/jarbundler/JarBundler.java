@@ -441,6 +441,13 @@ public class JarBundler extends MatchingTask {
 		bundleProperties.setCFBundleAllowMixedLocalizations(b);
 	}
 
+	/**  Tobias Fischer, v2.3.0
+	 * Setter for the "NSHumanReadableCopyright" attribute (optional)
+	 */
+	public void setCopyright(String s) {
+		bundleProperties.setNSHumanReadableCopyright(s);
+	}
+
 	/**
 	 * Setter for the deprecated "aboutmenuname" attribute (optional)
 	 */

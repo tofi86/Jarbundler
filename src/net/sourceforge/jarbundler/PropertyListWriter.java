@@ -210,6 +210,10 @@ public class PropertyListWriter {
 		if (bundleProperties.getCFBundleHelpBookName() != null) 
 			writeKeyStringPair("CFBundleHelpBookName", bundleProperties.getCFBundleHelpBookName(), dict);
 
+		// Copyright, optional
+		if (bundleProperties.getNSHumanReadableCopyright() != null) 
+			writeKeyStringPair("NSHumanReadableCopyright", bundleProperties.getNSHumanReadableCopyright(), dict);
+
 		// IsAgent, optional
 		if ( bundleProperties.getLSUIElement() != null )
 			writeKeyBooleanPair( "LSUIElement", bundleProperties.getLSUIElement(), dict );
