@@ -442,9 +442,10 @@ public class JarBundler extends MatchingTask {
 	}
 
 	/**
-	 * Setter for the "aboutmenuname" attribute (optional)
+	 * Setter for the deprecated "aboutmenuname" attribute (optional)
 	 */
 	public void setAboutmenuname(String s) {
+		System.err.println("WARNING: 'aboutmenuname' is deprecated! Use JarBundler attribute 'shortname' instead!");
 		bundleProperties.setCFBundleName(s);
 	}
 
