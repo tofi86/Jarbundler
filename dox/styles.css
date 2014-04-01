@@ -2,7 +2,7 @@ body { margin:1.5em;
        margin-right:3em;
      }
 
-h1 {text-align:center;}
+h1, h1+h2 {text-align:center;}
 
 h2 {margin-top:2em;}
 

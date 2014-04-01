@@ -9,9 +9,10 @@ JarBundler is a feature-rich Apache ANT task that can create Mac OS X Applicatio
 Modifications
 -----
 
-* **version 2.2.2** (2014-04-01)
- * Issue a warning when using deprecated 'aboutmenuname' attribute
- * Issue a warning when using deprecated 'shortinfostring' attribute
+* **version 2.3.0** (2014-04-01)
+ * Added optional `copyright` attribute to JarBundler task (for Plist key `NSHumanReadableCopyright`)
+ * Issue a warning when using deprecated `aboutmenuname` attribute
+ * Issue a warning when using deprecated `shortinfostring` attribute
 
 * **version 2.2.1** (2014-01-25)
  * Added optional `allowMixedLocalizations` attribute to ant task. If `true`, the bundle supports the retrieval of localized strings from frameworks. This should be set to true if your app supports different languages. Default: `false`
