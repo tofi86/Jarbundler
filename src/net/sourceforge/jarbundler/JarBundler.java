@@ -591,6 +591,7 @@ public class JarBundler extends MatchingTask {
 	 * build.
 	 */
 	public void setShortInfoString(String s) {
+		System.err.println("WARNING: 'shortinfostring' is deprecated! Use JarBundler attribute 'infostring' instead!");
 		setVersion(s);
 	}
 
