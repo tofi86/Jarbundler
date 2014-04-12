@@ -428,16 +428,24 @@ public class JarBundler extends MatchingTask {
 	}
 
 	/**
-	 * Setter for the "developmentregion" attribute(optional) Default "English".
+	 * Setter for the "developmentregion" attribute (optional) Default "English".
 	 */
 	public void setDevelopmentregion(String s) {
 		bundleProperties.setCFBundleDevelopmentRegion(s);
 	}
 
+	/**  Tobias Fischer, v2.2.1
+	 * Setter for the "allowmixedlocalizations" attribute (optional) Default "false".
+	 */
+	public void setAllowMixedLocalizations(boolean b) {
+		bundleProperties.setCFBundleAllowMixedLocalizations(b);
+	}
+
 	/**
-	 * Setter for the "aboutmenuname" attribute (optional)
+	 * Setter for the deprecated "aboutmenuname" attribute (optional)
 	 */
 	public void setAboutmenuname(String s) {
+		System.err.println("WARNING: 'aboutmenuname' is deprecated! Use JarBundler attribute 'shortname' instead!");
 		bundleProperties.setCFBundleName(s);
 	}
 
@@ -583,6 +591,7 @@ public class JarBundler extends MatchingTask {
 	 * build.
 	 */
 	public void setShortInfoString(String s) {
+		System.err.println("WARNING: 'shortinfostring' is deprecated! Use JarBundler attribute 'infostring' instead!");
 		setVersion(s);
 	}
 
