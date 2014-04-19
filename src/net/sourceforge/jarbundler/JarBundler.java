@@ -434,11 +434,19 @@ public class JarBundler extends MatchingTask {
 		bundleProperties.setCFBundleDevelopmentRegion(s);
 	}
 
-	/**  Tobias Fischer, v2.2.1
+	/**  Tobias Fischer, v2.3.0
 	 * Setter for the "allowmixedlocalizations" attribute (optional) Default "false".
 	 */
 	public void setAllowMixedLocalizations(boolean b) {
 		bundleProperties.setCFBundleAllowMixedLocalizations(b);
+	}
+
+	/** Tobias Fisher, v2.3.1
+	 * Setter for the "NSHumanReadableCopyright" attribute (optional)
+	 */
+
+	public void setCopyright(String s) {
+		bundleProperties.setNSHumanReadableCopyright(s);
 	}
 
 	/**

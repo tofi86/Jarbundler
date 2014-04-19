@@ -9,7 +9,12 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
 
   <property name="version" value="4.3.1"/>
   <property name="buildnumber" value="213"/>
-  <property name="copyright" value="Copyright &#xa9; 2006 Informagen, Inc."/>
+
+  <tstamp>
+    <format property="this_year" pattern="yyyy"/>
+  </tstamp>
+
+  <property name="copyright" value="Copyright &#xa9; ${this_year} Informagen, Inc."/>
 
    
   <target name="compile" description="Compile the classes">
@@ -60,7 +65,8 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
                 mainclass="net.sourceforge.jarbundler.example.HelloWorld"
                 jar="build/${ant.project.name}.jar"
                 icon="icons/${ant.project.name}.icns"
-                version="${version}"/>
+                version="${version}"
+                copyright="${copyright}"/>
 
   </target>
 
@@ -81,13 +87,14 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
 
     <jarbundler dir="${basedir}" verbose="true" showPlist="false"
                 name="${ant.project.name}"
+                copyright="${copyright}"
                 shortname="Hello"
                 signature="Helo"
                 stubfile="Hello World"
                 mainclass="net.sourceforge.jarbundler.example.HelloWorld"
                 jar="build/${ant.project.name}.jar"
                 icon="icons/${ant.project.name}.icns"
-                jvmversion="1.4+"
+                jvmversion="1.5+"
                 version="${version}"
                 infostring="${ant.project.name}, ${copyright}"
                 build="${buildnumber}"

@@ -63,6 +63,10 @@ public class AppBundleProperties {
 	// Explicit default: false
 	private boolean mCFBundleAllowMixedLocalizations = false;
 
+	// Copyright, optional
+
+	private String mNSHumanReadableCopyright = null;
+
 	// Explicit default: JavaApplicationStub
 	private String mCFBundleExecutable = "JavaApplicationStub";
 
@@ -274,6 +278,14 @@ public class AppBundleProperties {
 
 	public boolean getCFBundleAllowMixedLocalizations() {
 		return mCFBundleAllowMixedLocalizations;
+	}
+
+	public void setNSHumanReadableCopyright(String s) {
+		mNSHumanReadableCopyright = s;
+	}
+
+	public String getNSHumanReadableCopyright() {
+		return mNSHumanReadableCopyright;
 	}
 
 	public void setCFBundleExecutable(String s) {

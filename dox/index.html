@@ -12,7 +12,7 @@
 
 
 <h1>Mac OS X JarBundler ANT Task</h1>
-<h1>Version 2.3.0</h1>
+<h1>Version 2.3.1</h1>
 
 <p>How many times has this happened to you?  You've written a little
 Java utility, or maybe even a more complex application, and you want to
@@ -39,6 +39,7 @@ software licensed under the GNU General Public License.</p>
 <ul>
 <li>Issue a warning when using deprecated 'shortinfostring' attribute</li>
 <li>Issue a warning when using deprecated 'aboutmenuname' attribute</li>
+<li>Added the optional '<tt>copyright</tt>' string attribute to JarBundler task</li>
 <li>Added the optional 'allowMixedLocalizations' boolean attribute to JarBundler task.<br>
 <b>Many thanks to Tobias Fischer for these additions and updates.</b></li>
 </ul>
@@ -59,7 +60,7 @@ software licensed under the GNU General Public License.</p>
 
 <h2>Installation</h2>
 
-<p>Move the file <tt>jarbundler-2.3.0.jar</tt> 
+<p>Move the file <tt>jarbundler-2.3.1.jar</tt> 
 into your local ANT lib directory.  Remove any older versions at this time.
 
 <h2>Using in the Build file</h2>
@@ -199,6 +200,16 @@ ANT <tt>build.xml</tt> file like this:</p>
     
     </td>
   </tr>
+
+  <tr>
+    <td class='attribute'>copyright</td>
+    <td class='description'>A string with the copyright notice for the bundle; for example "<tt>&copyright; 2008, My Company</tt>"
+      <div>
+        The corresponding bundle variable is <a href='https://developer.apple.com/library/mac/documentation/general/Reference/InfoPlistKeyReference/Articles/CocoaKeys.html'>NSHumanReadableCopyright</a>
+      </div>
+    </td>
+  </tr>
+
 
   <tr>
     <td class="attribute">developmentregion</td>
