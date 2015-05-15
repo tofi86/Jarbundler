@@ -14,7 +14,7 @@
 <h1>Mac OS X JarBundler ANT Task</h1>
 <h1>Version 2.4.0</h1>
 
-<p>How many times has this happened to you?  You've written a little
+<p>How many times has this happened to you? You've written a little
 Java utility, or maybe even a more complex application, and you want to
 create Mac OS X application bundle for easy distribution.
 
@@ -22,11 +22,11 @@ create Mac OS X application bundle for easy distribution.
 but you're forced to go run the Apple Jar Bundler and tweak all the
 settings manually every time you build.</p>
 
-<p>Well no more!  JarBundler is a feature-rich Ant task which will
+<p>Well no more! JarBundler is a feature-rich Ant task which will
 create a Mac OS X application bundle from a list of Jar files and a
-main class name.  You can add an Icon resource, set various Mac OS X
+main class name. You can add an Icon resource, set various Mac OS X
 native look-and-feel bells and whistles, and maintain your application
-bundles as part of your normal build and release cycle.  It is free
+bundles as part of your normal build and release cycle. It is free
 software licensed under the GNU General Public License.</p>
 
 <p>This release is based on the earlier work of
@@ -107,7 +107,7 @@ ANT <tt>build.xml</tt> file like this:</p>
     <td class="attribute">mainclass</td>
     <td class="description">The name of the main class to run when the application bundle is launched.
     <div>
-    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaDictionaryInfo.plistKeys.html">
+    The corresponding bundle variable is <a href="https://developer.apple.com/library/mac/documentation/Java/Reference/Java_InfoplistRef/Articles/JavaDictionaryInfo.plistKeys.html#//apple_ref/doc/uid/TP40001969-DontLinkElementID_3">
      MainClass</a>
     </div>
     </td>
@@ -146,7 +146,7 @@ ANT <tt>build.xml</tt> file like this:</p>
 		<td class="description">If true, the bundle supports the retrieval of localized strings from frameworks. This should be set to true if your app supports different languages.
 			
 			<div>
-				The corresponding bundle variable is <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html">
+				The corresponding bundle variable is <a href="https://developer.apple.com/library/ios/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html#//apple_ref/doc/uid/20001431-130418">
 					CFBundleAllowMixedLocalizations</a>
 			</div>
 			
@@ -160,7 +160,7 @@ ANT <tt>build.xml</tt> file like this:</p>
     <td class="attribute">arguments</td>
     <td class="description">Extra command-line arguments for the Java application.
     <div>
-    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaDictionaryInfo.plistKeys.html">
+    The corresponding bundle variable is <a href="https://developer.apple.com/library/mac/documentation/Java/Reference/Java_InfoplistRef/Articles/JavaDictionaryInfo.plistKeys.html#//apple_ref/doc/uid/TP40001969-DontLinkElementID_3">
     Arguments</a>
     </div>
     </td>
@@ -174,7 +174,7 @@ ANT <tt>build.xml</tt> file like this:</p>
     "4.3.1 (231)".  Also see <tt>version</tt> and <tt>infostring</tt> attributes.
     
     <div>
-    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html#//apple_ref/doc/uid/20001431-102364">
+    The corresponding bundle variable is <a href="https://developer.apple.com/library/ios/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html#//apple_ref/doc/uid/20001431-102364">
     CFBundleVersion</a>
     </div>
     
@@ -190,7 +190,7 @@ ANT <tt>build.xml</tt> file like this:</p>
     the form of a java package name, for example com.apple.myapp.
 
     <div>
-    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html#//apple_ref/doc/uid/20001431-102364">
+    The corresponding bundle variable is <a href="https://developer.apple.com/library/ios/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html#//apple_ref/doc/uid/20001431-102070">
     CFBundleIdentifier</a>
     </div>
     
@@ -198,7 +198,7 @@ ANT <tt>build.xml</tt> file like this:</p>
     </td>
   </tr>
 	
-	<tr>
+  <tr>
     <td class='attribute'>copyright</td>
     <td class='description'>A string with the copyright notice for the bundle; for example "<tt>&copy;2014, My Company</tt>"
       <div>
@@ -207,13 +207,12 @@ ANT <tt>build.xml</tt> file like this:</p>
     </td>
   </tr>
 
-
   <tr>
     <td class="attribute">developmentregion</td>
     <td class="description">The development region of the bundle.  
 
     <div>
-    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html">
+    The corresponding bundle variable is <a href="https://developer.apple.com/library/ios/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html#//apple_ref/doc/uid/20001431-130430">
     CFBundleDevelopmentRegion</a>
     </div>
 
@@ -239,7 +238,7 @@ ANT <tt>build.xml</tt> file like this:</p>
       the <tt>&lt;resourcefileset&gt;</tt> task to copy the Help Book HTML files into the bundle. 
     
     <div>
-    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html#//apple_ref/doc/uid/20001431-102364">
+    The corresponding bundle variable is <a href="https://developer.apple.com/library/ios/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html#//apple_ref/doc/uid/20001431-102003">
     CFBundleHelpBookFolder</a>
     </div>
        
@@ -260,7 +259,7 @@ ANT <tt>build.xml</tt> file like this:</p>
     </div>
     
     <div>
-    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html#//apple_ref/doc/uid/20001431-102364">
+    The corresponding bundle variable is <a href="https://developer.apple.com/library/ios/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html#//apple_ref/doc/uid/20001431-102021">
     CFBundleHelpBookName</a>
     </div>
        
@@ -288,23 +287,6 @@ ANT <tt>build.xml</tt> file like this:</p>
     the Mac OS application located at "<tt>/Developer/Applications/Utilites/Icon Composer</tt>"
   </tr>
 
-
-  <tr>
-    <td class="attribute">infostring</td>
-    <td class="description">A string for display in the Finder's Get Info panel.   Also see <tt>version</tt> and <tt>build</tt> attributes.
-
-    <div>
-    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html">
-    CFBundleGetInfoString</a>
-    </div>
-
-    <div>
-    Default: the value of the <tt>version</tt> attribute
-    </div>
-    </td>
-  </tr>
-
-
   <tr>
     <td class="attribute">isAgent</td>
     <td class="description">boolean</td>
@@ -312,7 +294,7 @@ ANT <tt>build.xml</tt> file like this:</p>
 
   <tr>
     <td class="attribute">jvmarchs</td>
-    <td class="description">A space delimited string. Used to take advantage of 64-bit computing.
+    <td class="description">A space delimited string. Used to take advantage of 64-bit computing. Also use additional <tt>lsArchitecturePriority</tt> property as described in the <a href="https://developer.apple.com/library/mac/documentation/Java/Reference/Java_InfoplistRef/Articles/JavaDictionaryInfo.plistKeys.html#//apple_ref/doc/uid/TP40001969-DontLinkElementID_3">Apple docs</a>.
 
     <div>
     Example: <tt>jvmarchs="i386 x64_86 ppc"</tt>
@@ -320,10 +302,9 @@ ANT <tt>build.xml</tt> file like this:</p>
     </td>
   </tr>
 
-
   <tr>
     <td class="attribute">lsArchitecturePriority</td>
-    <td class="description">A space delimited string. Contains an array of strings identifying the supported code architectures and their preferred execution priority.
+    <td class="description">A space delimited string. Contains an array of strings identifying the supported code architectures and their preferred execution priority. Should be used together with <tt>jvmarchs</tt> property.
 
     <div>
     Example: <tt>jvmarchs="i386 x64_86 ppc"</tt>
@@ -337,21 +318,14 @@ ANT <tt>build.xml</tt> file like this:</p>
         Typically a string in the form "1.3", "1.3+", "1.4", "1.4+", etc.
 
     <div>
-    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaDictionaryInfo.plistKeys.html">
+    The corresponding bundle variable is <a href="https://developer.apple.com/library/mac/documentation/Java/Reference/Java_InfoplistRef/Articles/JavaDictionaryInfo.plistKeys.html#//apple_ref/doc/uid/TP40001969-DontLinkElementID_3">
     JVMVersion</a>
     </div>
 
 
         <div style="margin-top:1em;">ADC:&nbsp;
-        <a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaDictionaryInfo.plistKeys.html">
+        <a href="https://developer.apple.com/library/mac/documentation/Java/Reference/Java_InfoplistRef/Articles/JavaDictionaryInfo.plistKeys.html#//apple_ref/doc/uid/TP40001969-DontLinkElementID_3">
         Specifing the Java Version
-        </a>
-        </div>
-
-
-        <div>ADC:&nbsp;
-        <a href="http://developer.apple.com/ReleaseNotes/Java/Java50RN/1_NewFeatures/chapter_2_section_4.html#//apple_ref/doc/uid/TP40001881-202-BCIBFCJB">
-        Specifing the Java Version after installing J2SE 5.0
         </a>
         </div>
 
@@ -392,7 +366,7 @@ ANT <tt>build.xml</tt> file like this:</p>
     <td class="description">The four-letter code identifying the bundle. 
 
     <div>
-    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html">
+    The corresponding bundle variable is <a href="https://developer.apple.com/library/ios/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html#//apple_ref/doc/uid/20001431-102193">
     CFBundleSignature</a>
     </div>
     <div>
@@ -450,7 +424,7 @@ ANT <tt>build.xml</tt> file like this:</p>
     <tt>infostring</tt> attributes.  
 
     <div>
-    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/Articles/PListKeys.html">
+    The corresponding bundle variable is <a href="https://developer.apple.com/library/ios/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html#//apple_ref/doc/uid/20001431-111349">
     CFBundleShortVersionString</a>
     </div>
 
@@ -464,7 +438,7 @@ ANT <tt>build.xml</tt> file like this:</p>
     <td class="attribute">vmoptions</td>
     <td class="description">Command line options to pass the JVM at startup.
     <div>
-    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaDictionaryInfo.plistKeys.html">
+    The corresponding bundle variable is <a href="https://developer.apple.com/library/mac/documentation/Java/Reference/Java_InfoplistRef/Articles/JavaDictionaryInfo.plistKeys.html#//apple_ref/doc/uid/TP40001969-DontLinkElementID_3">
     VMOptions</a>
     </div>
     </td>
@@ -474,7 +448,7 @@ ANT <tt>build.xml</tt> file like this:</p>
     <td class="attribute">workingdirectory</td>
     <td class="description">The working directory for the Java application.
     <div>
-    The corresponding bundle variable is <a href="http://developer.apple.com/documentation/Java/Conceptual/JavaPropVMInfoRef/Articles/JavaDictionaryInfo.plistKeys.html">
+    The corresponding bundle variable is <a href="https://developer.apple.com/library/mac/documentation/Java/Reference/Java_InfoplistRef/Articles/JavaDictionaryInfo.plistKeys.html#//apple_ref/doc/uid/TP40001969-DontLinkElementID_3">
     WorkingDirectory</a>
     </div>
     </td>
@@ -578,6 +552,11 @@ ANT <tt>build.xml</tt> file like this:</p>
        into AWT content. If turned off, the bottom of the window is 
        pushed down 15 pixels. <i>(Deprecated under JVM 1.4.1)</i></td>
   </tr>
+  
+  <tr>
+    <td class="attribute">infostring</td>
+    <td class="description">Use <tt>copyright</tt> attribute instead.</td>
+  </tr>
 
   <tr>
     <td class="attribute">jars</td>
@@ -608,10 +587,9 @@ ANT <tt>build.xml</tt> file like this:</p>
 
   <tr>
     <td class="attribute">shortinfostring</td>
-    <td class="description">Use <tt>infostring</tt> attribute instead.
+    <td class="description">Use <tt>copyright</tt> attribute instead.
     </td>
   </tr>
-
 
   <tr>
     <td class="attribute">smalltabs</td>
