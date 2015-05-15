@@ -1,6 +1,6 @@
 <project name="jarbundler" default="jar" basedir=".">
 
-  <property name="version" value="2.3.0"/>
+  <property name="version" value="2.3.1"/>
   <property name="description" value="ANT task for creating Mac OS X application bundles"/>    
 
 
@@ -19,7 +19,7 @@
     
     <mkdir dir="classes"/>
         
-    <javac srcdir="src" destdir="classes" source="1.4" classpath="${ant.jar}"/>
+    <javac srcdir="src" destdir="classes" source="1.6" classpath="${ant.jar}"/>
   </target>
 
 

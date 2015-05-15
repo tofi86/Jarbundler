@@ -211,7 +211,7 @@ public class PropertyListWriter {
 			writeKeyStringPair("CFBundleHelpBookName", bundleProperties.getCFBundleHelpBookName(), dict);
 
 		// Copyright, optional
-		if (bundleProperties.getNSHumanReadableCopyright() != null) 
+		if(bundleProperties.getNSHumanReadableCopyright() != null)
 			writeKeyStringPair("NSHumanReadableCopyright", bundleProperties.getNSHumanReadableCopyright(), dict);
 
 		// IsAgent, optional

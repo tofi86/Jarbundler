@@ -62,8 +62,9 @@ public class AppBundleProperties {
 
 	// Explicit default: false
 	private boolean mCFBundleAllowMixedLocalizations = false;
-	
+
 	// Copyright, optional
+
 	private String mNSHumanReadableCopyright = null;
 
 	// Explicit default: JavaApplicationStub
