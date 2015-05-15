@@ -96,7 +96,6 @@ your ANT library remove the 'classpath' attribute from the "taskdef" element.
                 icon="icons/${ant.project.name}.icns"
                 jvmversion="1.5+"
                 version="${version}"
-                infostring="${ant.project.name}, ${copyright}"
                 build="${buildnumber}"
                 bundleid="net.sourceforge.jarbundler.example.HelloWorld" 
                 helpbookfolder="HelpBook"

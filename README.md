@@ -9,6 +9,11 @@ JarBundler is a feature-rich Apache ANT task that can create Mac OS X Applicatio
 Modifications
 -----
 
+* **version 2.4.0** (2015-05-15)
+ * Added optional `hiResCapable` attribute to JarBundler task (for Plist key `NSHighResolutionCapable`)
+ * removed deprecated `aboutmenuname` attribute
+ * removed deprecated `infostring` and `shortinfostring` attributes (use `copyright` attribute instead)
+
 * **version 2.3.0** (2014-04-01)
  * Added optional `copyright` attribute to JarBundler task (for Plist key `NSHumanReadableCopyright`)
  * Issue a warning when using deprecated `aboutmenuname` attribute

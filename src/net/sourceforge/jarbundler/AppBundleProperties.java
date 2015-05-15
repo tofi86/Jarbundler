@@ -42,9 +42,6 @@ public class AppBundleProperties {
 	// Finder version, with default
 	private String mCFBundleShortVersionString = "1.0";
 
-	// Get Info string, optional
-	private String mCFBundleGetInfoString = null;
-
 	// Build number, optional
 	private String mCFBundleVersion = null;
 
@@ -237,17 +234,6 @@ public class AppBundleProperties {
 
 	public String getCFBundleIdentifier() {
 		return mCFBundleIdentifier;
-	}
-
-	public void setCFBundleGetInfoString(String s) {
-		mCFBundleGetInfoString = s;
-	}
-
-	public String getCFBundleGetInfoString() {
-		if (mCFBundleGetInfoString == null)
-			return getCFBundleShortVersionString();
-
-		return mCFBundleGetInfoString;
 	}
 
 	public void setCFBundleShortVersionString(String s) {
