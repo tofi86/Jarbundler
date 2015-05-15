@@ -1,7 +1,7 @@
 Jarbundler
 ==========
 
-Inofficial git port of the Sourceforge Ant-Jarbundler Task.
+Unofficial git port of the Sourceforge Ant-Jarbundler Task.
 
 JarBundler is a feature-rich Apache ANT task that can create Mac OS X Application Bundles from a list of JAR files and a main class name. It also provides fine-grained control over the Mac OS X Application Bundle options and application behavior.
 
