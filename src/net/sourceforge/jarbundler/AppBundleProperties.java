@@ -66,6 +66,9 @@ public class AppBundleProperties {
 	// HiRes capability, optional
 	private boolean mNSHighResolutionCapable = false;
 
+	// Support for JavaX key, optional
+	private boolean mJavaXKey = false;
+
 	// Explicit default: JavaApplicationStub
 	private String mCFBundleExecutable = "JavaApplicationStub";
 
@@ -282,6 +285,14 @@ public class AppBundleProperties {
 
 	public boolean getNSHighResolutionCapable() {
 		return mNSHighResolutionCapable;
+	}
+
+	public void setJavaXKey(boolean b) {
+		mJavaXKey = b;
+	}
+
+	public boolean getJavaXKey() {
+		return mJavaXKey;
 	}
 
 	public void setCFBundleExecutable(String s) {

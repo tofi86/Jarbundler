@@ -225,8 +225,8 @@ public class PropertyListWriter {
 		if (documentTypes.size() > 0) 
  			writeDocumentTypes(documentTypes, dict);
 
-		// Java entry in the plist dictionary
-		writeKey("Java", dict);
+		// Java / JavaX entry in the plist dictionary
+		writeKey(bundleProperties.getJavaXKey() ? "JavaX" : "Java", dict);
 		Node javaDict = createNode("dict", dict);
 
 		// Main class, required

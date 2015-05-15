@@ -10,6 +10,7 @@ Modifications
 -----
 
 * **version 2.4.0** (2015-05-15)
+ * Added optional `useJavaXKey` attribute to JarBundler task (for [universalJavaApplicationStub](https://github.com/tofi86/universalJavaApplicationStub)-Support)
  * Added optional `hiResCapable` attribute to JarBundler task (for Plist key `NSHighResolutionCapable`)
  * removed deprecated `aboutmenuname` attribute
  * removed deprecated `infostring` and `shortinfostring` attributes (use `copyright` attribute instead)

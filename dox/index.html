@@ -37,9 +37,10 @@ software licensed under the GNU General Public License.</p>
 <h2>What's New, May 2015</h2>
 <!-- Released: May 2015 (version 2.4.0) -->
 <ul>
-<li>Added the optional 'hiResCapable' boolean attribute to JarBundler task.</li>
-<li>Removed deprecated `aboutmenuname` attribute</li>
-<li>Removed deprecated `infostring` and `shortinfostring` attributes (use `copyright` attribute instead)</li>
+<li>Added optional <tt>useJavaXKey</tt> attribute to JarBundler task (for <a href="https://github.com/tofi86/universalJavaApplicationStub">universalJavaApplicationStub</a>-Support)</li>
+<li>Added the optional <tt>hiResCapable</tt> boolean attribute to JarBundler task (for Plist key <tt>NSHighResolutionCapable</tt>)</li>
+<li>Removed deprecated <tt>aboutmenuname</tt> attribute</li>
+<li>Removed deprecated <tt>infostring</tt> and <tt>shortinfostring</tt> attributes (use <tt>copyright</tt> attribute instead)</li>
 </ul>
 
 
@@ -404,7 +405,17 @@ ANT <tt>build.xml</tt> file like this:</p>
     </td>
   </tr>
 
-
+  <tr>
+    <td class="attribute">useJavaXKey</td>
+    <td class="description">If true, the Plist dictionary key for Java options will be named <em>JavaX</em> instead of <em>Java</em>.<br/>
+      This feature was added for a better support of the alternative JavaApplication Stub "<a href="https://github.com/tofi86/universalJavaApplicationStub">universalJavaApplicationStub</a>"
+      which aims to support a variety of Java versions and beeing compatible with Apple AND Oracle Java.<br/>However, starting with Mac OS X 10.10, Apple is forcing to download the old Apple JRE 6
+      for all applications with a <em>Java</em> Plist dictionary key, regardless whether <tt>jvmversion</tt> says e.g. <em>1.6+</em>
+        <div>
+        Default: <tt>false</tt>
+        </div>
+    </td>
+  </tr>
 
   <tr>
     <td class="attribute">verbose</td>
@@ -785,9 +796,10 @@ the directory "release" using a JAR file which was created in the "build" direct
 
 <h3> Released: May 2015 (version 2.4.0)</h3>
 <ul>
-<li>Added the optional 'hiResCapable' boolean attribute to JarBundler task.</li>
-<li>Removed deprecated `aboutmenuname` attribute</li>
-<li>Removed deprecated `infostring` and `shortinfostring` attributes (use `copyright` attribute instead)</li>
+<li>Added optional <tt>useJavaXKey</tt> attribute to JarBundler task (for <a href="https://github.com/tofi86/universalJavaApplicationStub">universalJavaApplicationStub</a>-Support)</li>
+<li>Added the optional <tt>hiResCapable</tt> boolean attribute to JarBundler task (for Plist key <tt>NSHighResolutionCapable</tt>)</li>
+<li>Removed deprecated <tt>aboutmenuname</tt> attribute</li>
+<li>Removed deprecated <tt>infostring</tt> and <tt>shortinfostring</tt> attributes (use <tt>copyright</tt> attribute instead)</li>
 </ul>
 
 <h3> Released: Apr 2014 (version 2.3.0)</h3>

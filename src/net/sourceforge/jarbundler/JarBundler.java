@@ -452,6 +452,13 @@ public class JarBundler extends MatchingTask {
 		bundleProperties.setNSHighResolutionCapable(b);
 	}
 
+	/**  Tobias Fischer, v2.4.0
+	 * Setter for the alternative 'JavaX' dictionary key
+	 */
+	public void setUseJavaXKey(boolean b) {
+		bundleProperties.setJavaXKey(b);
+	}
+
 	/**
 	 * Setter for the "smalltabs" attribute (optional)
 	 */
