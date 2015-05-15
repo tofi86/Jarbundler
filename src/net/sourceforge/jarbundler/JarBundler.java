@@ -444,9 +444,15 @@ public class JarBundler extends MatchingTask {
 	/** Tobias Fisher, v2.3.1
 	 * Setter for the "NSHumanReadableCopyright" attribute (optional)
 	 */
-
 	public void setCopyright(String s) {
 		bundleProperties.setNSHumanReadableCopyright(s);
+	}
+
+	/**  Tobias Fischer, v2.4.0
+	 * Setter for the "NSHighResolutionCapable" attribute (optional) Default "false".
+	 */
+	public void setHiResCapable(boolean b) {
+		bundleProperties.setNSHighResolutionCapable(b);
 	}
 
 	/**

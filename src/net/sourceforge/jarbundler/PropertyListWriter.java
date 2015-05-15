@@ -214,6 +214,10 @@ public class PropertyListWriter {
 		if(bundleProperties.getNSHumanReadableCopyright() != null)
 			writeKeyStringPair("NSHumanReadableCopyright", bundleProperties.getNSHumanReadableCopyright(), dict);
 
+		// HiRes capability, optional
+		if ( bundleProperties.getNSHighResolutionCapable() != false )
+			writeKeyBooleanPair( "NSHighResolutionCapable", bundleProperties.getNSHighResolutionCapable(), dict );
+
 		// IsAgent, optional
 		if ( bundleProperties.getLSUIElement() != null )
 			writeKeyBooleanPair( "LSUIElement", bundleProperties.getLSUIElement(), dict );

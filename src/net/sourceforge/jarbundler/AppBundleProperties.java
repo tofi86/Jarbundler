@@ -64,8 +64,10 @@ public class AppBundleProperties {
 	private boolean mCFBundleAllowMixedLocalizations = false;
 
 	// Copyright, optional
-
 	private String mNSHumanReadableCopyright = null;
+
+	// HiRes capability, optional
+	private boolean mNSHighResolutionCapable = false;
 
 	// Explicit default: JavaApplicationStub
 	private String mCFBundleExecutable = "JavaApplicationStub";
@@ -286,6 +288,14 @@ public class AppBundleProperties {
 
 	public String getNSHumanReadableCopyright() {
 		return mNSHumanReadableCopyright;
+	}
+
+	public void setNSHighResolutionCapable(boolean b) {
+		mNSHighResolutionCapable = b;
+	}
+
+	public boolean getNSHighResolutionCapable() {
+		return mNSHighResolutionCapable;
 	}
 
 	public void setCFBundleExecutable(String s) {
