@@ -711,7 +711,7 @@ public class JarBundler extends MatchingTask {
 	 * Set the 'chmod' executable.
 	 */
 	public void setChmod(String s) {
-		log("The \"chmod\" attribute has deprecaited, using the ANT Chmod task internally");
+		log("The \"chmod\" attribute is deprecated, use the ANT Chmod task instead");
 	}
 
 	/***************************************************************************
