@@ -9,6 +9,9 @@ JarBundler is a feature-rich Apache ANT task that can create Mac OS X Applicatio
 Modifications
 -----
 
+* **version 2.5.0** (2015-11-06)
+ * Added optional `contentSize` attribute to JarBundler task (for Plist key `NSPreferencesContentSize`)
+
 * **version 2.4.0** (2015-05-15)
  * Added optional `useJavaXKey` attribute to JarBundler task (for [universalJavaApplicationStub](https://github.com/tofi86/universalJavaApplicationStub)-Support)
  * Added optional `hiResCapable` attribute to JarBundler task (for Plist key `NSHighResolutionCapable`)

@@ -65,6 +65,9 @@ public class AppBundleProperties {
 
 	// HiRes capability, optional
 	private boolean mNSHighResolutionCapable = false;
+	
+	// Window size, optional (per Adrien Quillet <aquillet@is2t.com>)
+	private String mNSPreferencesContentSize = null;
 
 	// Support for JavaX key, optional
 	private boolean mJavaXKey = false;
@@ -285,6 +288,14 @@ public class AppBundleProperties {
 
 	public boolean getNSHighResolutionCapable() {
 		return mNSHighResolutionCapable;
+	}
+	
+	public void setNSPreferencesContentSize(String s) {
+		mNSPreferencesContentSize = s;
+	}
+
+	public String getNSPreferencesContentSize() {
+		return mNSPreferencesContentSize;
 	}
 
 	public void setJavaXKey(boolean b) {
