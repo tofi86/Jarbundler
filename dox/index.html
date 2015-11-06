@@ -12,7 +12,7 @@
 
 
 <h1>Mac OS X JarBundler ANT Task</h1>
-<h1>Version 2.4.0</h1>
+<h1>Version 2.5.0</h1>
 
 <p>How many times has this happened to you? You've written a little
 Java utility, or maybe even a more complex application, and you want to
@@ -34,13 +34,10 @@ software licensed under the GNU General Public License.</p>
 
 
 
-<h2>What's New, May 2015</h2>
-<!-- Released: May 2015 (version 2.4.0) -->
+<h2>What's New, November 2015</h2>
+<!-- Released: November 2015 (version 2.5.0) -->
 <ul>
-<li>Added optional <tt>useJavaXKey</tt> attribute to JarBundler task (for <a href="https://github.com/tofi86/universalJavaApplicationStub">universalJavaApplicationStub</a>-Support)</li>
-<li>Added the optional <tt>hiResCapable</tt> boolean attribute to JarBundler task (for Plist key <tt>NSHighResolutionCapable</tt>)</li>
-<li>Removed deprecated <tt>aboutmenuname</tt> attribute</li>
-<li>Removed deprecated <tt>infostring</tt> and <tt>shortinfostring</tt> attributes (use <tt>copyright</tt> attribute instead)</li>
+<li>Added optional <tt>contentSize</tt> attribute to JarBundler task (for Plist key <tt>NSPreferencesContentSize</tt>)</li>
 </ul>
 
 
@@ -59,7 +56,7 @@ software licensed under the GNU General Public License.</p>
 
 <h2>Installation</h2>
 
-<p>Move the file <tt>jarbundler-2.4.0.jar</tt> 
+<p>Move the file <tt>jarbundler-2.5.0.jar</tt> 
 into your local ANT lib directory.  Remove any older versions at this time.
 
 <h2>Using in the Build file</h2>
@@ -197,6 +194,16 @@ ANT <tt>build.xml</tt> file like this:</p>
     </div>
     
     
+    </td>
+  </tr>
+  
+  <tr>
+    <td class='attribute'>contentSize</td>
+<td class='description'>A string with the window content size, in the form of a couple of integers (the first one for content width, the second one for content height); for example "<tt>400,200</tt>"
+      <div>
+      	<!--It seems like this bundle variable is never referenced in Apple documentation... -->
+        The corresponding bundle variable is NSPreferencesContentSize.
+      </div>
     </td>
   </tr>
 	
@@ -793,6 +800,11 @@ the directory "release" using a JAR file which was created in the "build" direct
 
 
 <h2>History</h2>
+
+<h3> Released: November 2015 (version 2.5.0)</h3>
+<ul>
+<li>Added optional <tt>contentSize</tt> attribute to JarBundler task (for Plist key <tt>NSPreferencesContentSize</tt>)</li>
+</ul>
 
 <h3> Released: May 2015 (version 2.4.0)</h3>
 <ul>

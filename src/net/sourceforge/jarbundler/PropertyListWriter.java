@@ -214,6 +214,10 @@ public class PropertyListWriter {
 		// HiRes capability, optional
 		if ( bundleProperties.getNSHighResolutionCapable() != false )
 			writeKeyBooleanPair( "NSHighResolutionCapable", bundleProperties.getNSHighResolutionCapable(), dict );
+		
+		// Content size, optional
+		if ( bundleProperties.getNSPreferencesContentSize() != null )
+			writeKeyStringPair( "NSPreferencesContentSize", "{" + bundleProperties.getNSPreferencesContentSize() + "}", dict );
 
 		// IsAgent, optional
 		if ( bundleProperties.getLSUIElement() != null )
