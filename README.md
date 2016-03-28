@@ -1,3 +1,16 @@
+----
+
+> ATTENTION!
+> ==========
+> 
+> This project is DEPRECATED! It is no longer maintained!
+> 
+> All my modifications to the original sources have been [merged back to the official project](https://github.com/UltraMixer/JarBundler/commit/332aede630a8030eca397a729f706beaf3ff0676) by the new project maintainer.
+> 
+> I suggest to use the official project instead: https://github.com/UltraMixer/JarBundler/
+
+----
+
 Jarbundler
 ==========
 
